@@ -43,30 +43,72 @@
     color: #000;
     margin-right: 10px;
 }
+/* Responsive styles */
+        @media only screen and (max-width: 600px) {
+            .header {
+                flex-direction: column;
+            }
+            .search-bar {
+                margin-bottom: 10px;
+                width: 75%; /* Full width for mobile */
+            }
+            .dropdown {
+                margin-top: 10px;
+            }
+        }
   </style>
   <body>
     
     
     <div class="body-wrapper">
       <div class="container-fluid">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'staff_dashboard' %}" class="text-warning-emphasis">Dashboard</a></li>
-            <li class="breadcrumb-item" aria-current="page">invoices</li>
-          </ol>
-        </nav>
-        
-        <h1>ALL INVOICES</h1>
+          <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'staff_dashboard' %}" class="text-warning-emphasis">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">sales</a></li>
+                <li class="breadcrumb-item" aria-current="page">invoice</li>
+              </ol>
+          </nav>
+       
+          <div class="row mt-3">
+            <div class="container">
+                
+            </div>
+        </div>
+        <div class="row mt-3">
+          <div class="container">
+              <h4 class="text-white ms-4">All invoices</h4>
+              <hr class="text-warning">
+          </div>
+      </div>
 <div class="header">
     <div>
         <input type="text" class="search-bar" placeholder="Search...">
-        <button type="button" class="btn btn-outline-warning">*</button>
+        
     </div>
     <div>
-        <button type="button" class="btn btn-outline-warning">import</button>
-        <button type="button" class="btn btn-outline-warning">export</button>
-        <button type="button" class="btn btn-outline-warning">sort</button>
-        <button type="button" class="btn btn-outline-warning">filter</button>
+      <select name="status-select" id="status-select" class="form-select bg-black text-white" style="border: 1px solid rgba(255, 255, 255, 0.3);">
+        <option value="" hidden>All</option>
+        <option value="Active">Draft</option>
+        <option value="Expired">Saved</option>
+      </select>
+    </div>
+    <div>
+      <select name="status-select" id="status-select" class="form-select bg-black text-white" style="border: 1px solid rgba(255, 255, 255, 0.3);">
+        <option value="" hidden>sort</option>
+        <option value="Active">All</option>
+        <option value="Expired">Name</option>
+        <option value="Expired">INV No</option>
+
+      </select>
+    </div>
+    <div>
+      <a class="btn btn-outline-warning" href="#" role="button">Import</a>
+      <a class="btn btn-outline-warning" href="#" role="button">export</a>
+        
+        
+        <a class="btn btn-outline-warning" href="{% url 'invoice_create' %}" role="button">New</a>
+
 
     </div>
 </div>

@@ -2,7 +2,7 @@
 from django.db import models
 from Register_Login.models import *
 from django.contrib.auth.models import User
-from Register_Login.models import LoginDetails,CompanyDetails
+from Register_Login.models import LoginDetails,CompanyDetails,StaffDetails
 # Create your models here.
 
 #---------------- models for zoho modules--------------------
@@ -343,5 +343,49 @@ class CustomerHistory(models.Model):
 
     action = models.CharField(max_length=220,null=True,blank=True)
     date = models.DateField(auto_now_add=True, null=True, blank=True)
+    #----------------- Banking  end-----------------------------#
+
+#-----------------invoice -----------------------------#
+class invoice(models.Model):
+    company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True,blank=True)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE,null=True,blank=True)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True,blank=True)
+
+class invoiceHistory(models.Model):
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE,null=True,blank=True)
+    company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True,blank=True)
+    invoice = models.ForeignKey(invoice,on_delete=models.CASCADE,null=True,blank=True)
+
+    action = models.CharField(max_length=220,null=True,blank=True)
+    date = models.DateField(auto_now_add=True, null=True, blank=True)  
+    
+    
+class invoiceReference(models.Model):
+    reference_number = models.CharField(max_length=220,null=True,blank=True)
+    company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True,blank=True)
+    staff = models.ForeignKey(StaffDetails,on_delete=models.CASCADE,null=True,blank=True)
+
+    
+class invoiceitems(models.Model):
+    company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE)
+    logindetails = models.ForeignKey(LoginDetails,on_delete=models.CASCADE)
+    Items = models.ForeignKey(Items,on_delete=models.CASCADE)
+    invoice = models.ForeignKey(invoice,on_delete=models.CASCADE,null=True,blank=True)
+
+    hsn = models.CharField(max_length=220,null=True,blank=True)
+    quantity=models.IntegerField(blank=True,null=True,default=0)
+    price=models.IntegerField(blank=True,null=True,default=0)
+    tax_rate=models.IntegerField(blank=True,null=True,)
+    discount=models.IntegerField(blank=True,null=True,)
+    total=models.IntegerField(blank=True,null=True,)
+
+
+
+    
+
+
+
+
+
 
     

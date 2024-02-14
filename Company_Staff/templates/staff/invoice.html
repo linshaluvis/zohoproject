@@ -1,17 +1,792 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+<style>
+    .search-dropdown-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .search-dropdown {
+        width: 200px;
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: #fff;
+        outline: none;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .search-dropdown:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+   
+</style>
 
 <div class="body-wrapper">
     <div class="container-fluid">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item" aria-current="page">Dashboard</li>
+              <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">sales</a></li>
+              <li class="breadcrumb-item" aria-current="page">invoice</li>
             </ol>
         </nav>
+
+        <div class="row mt-3">
+            <div class="container">
+                
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="container">
+                <h4 class="text-white ms-4">New Invoice</h4>
+                <hr class="text-warning">
+            </div>
+        </div>
+        <div class="row g-0 mt-2 mt-lg-3">
+            <div class="col-md-6">
+                <div class="card-body ">
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Customer Name : </p>
+
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="search-dropdown-container">
+                                <input type="text" id="searchDropdown" class="search-dropdown" placeholder="Search or select...">
+                                <ul class="dropdown-menu" id="dropdownMenu">
+                                    <li class="dropdown-item">Option 1</li>
+                                    <li class="dropdown-item">Option 2</li>
+                                    <li class="dropdown-item">Option 3</li>
+                                </ul>
+                            </div>
+                            <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createcustomer" href="" role="button">+</a>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Customer Email ID</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-white">: </h5>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Billing Address</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-white">: </h5>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">GST Treatment</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-white">: </h5>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">GST Number</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-white">: </h5>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Payment method</p>
+
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="fname" name="fname" class="form-control text-white" >
+                        </div>
+                    </div>
+                    
+                 
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card-body ">
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">invoice number </p>
+
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="fname" name="fname" class="form-control text-white" >
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Reference number</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-white">: </h5>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">place of supply</p>
+
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="fname" name="fname" class="form-control text-white" >
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Order number</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-white">: </h5>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">invoice date</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-white">: </h5>
+                        </div>
+                    </div>
+                                                
+                 
+                </div>
+                
+            </div>
           
+        </div>
+        <div class="row mt-3">
+            <div class="container">
+                <h4 class="text-white ms-4"></h4>
+                <hr class="text-warning">
+            </div>
+        </div>
+        <div style="overflow-x:auto;"> 
+            <div class="table-responsive">
+              <table class="table mt-lg-5 mt-2 rounded" style="background-color: rgb(0, 0, 0);color: white;">
+                <thead>
+                  <tr class="border-bottom border-dark">
+                    <th scope="col" ><b>index</b></th>
+                    <th scope="col" ><b>item</b></th>
+                    <th scope="col" ><b>HSN</b></th>
+                    <th scope="col" ><b>Quantity</b></th>
+                    <th scope="col" ><b>Rate</b></th>
+                    <th scope="col" ><b>Discount</b></th>
+                    <th scope="col" ><b>Tax</b></th>
+                    <th scope="col" ><b>Amount</b></th>
+                    <th scope="col" ><b>remove</b></th>
+
+  
+      
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-bottom border-dark">
+                    <td></th>
+                    <td>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="search-dropdown-container">
+                                <input type="text" id="searchDropdown" class="search-dropdown" placeholder="Search or select...">
+                                <ul class="dropdown-menu" id="dropdownMenu">
+                                    <li class="dropdown-item">Option 1</li>
+                                    <li class="dropdown-item">Option 2</li>
+                                    <li class="dropdown-item">Option 3</li>
+                                </ul>
+                            </div>
+                            <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createitem" href="" role="button">+</a>
+                        </div>
+                    </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    
+                    <td>
+                      
+                    </td>
+                  </tr>
+                </tbody>
+              </table> 
+      
+            </div> 
+          </div>
+    
+        </div>
+      </div>  
+                 
+                </div>
+                
+            </div>
+
+          
+        </div>
         
-    </div>
+           
+        
+        
+<!-- Modal createcustomer -->
+<div class="modal fade bd-example-modal-lg"id="createcustomer" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content shadow p-3  rounded" style="background-color: rgb(30,30,30);border: 1px solid rgba(255, 255, 255, 0.3);">
+            <div class="modal-header" style="background: rgb(32, 35, 37);">
+                <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #eeeaea;"><b>New Customer</b></h5>
+                <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+              </div>
+            <div class="modal-body">
+              <form action="" method="post">
+                {% csrf_token %}
+                <div class="card-body ">
+                                   
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">First Name</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="fname" name="fname" class="form-control text-white" value=" " required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Last Name</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="lname" name="lname" class="form-control text-white" value="" required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Username</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="uname" name="uname" class="form-control text-white" value="" required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Email</p>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="email" id="eid" name="eid" class="form-control text-white" value="" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required>                                       
+                        </div>
+                    </div>
+          
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Company Name</p>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="cname" name="cname" class="form-control text-white" value=""  required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Contact</p>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="phone" name="phone" class="form-control text-white" value="" pattern="[7896][0-9]{9}" title="Mobile number should contain 10 digits and start with 7,8,9 or 6." required>                                      
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Address </p>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="address" name="address" class="form-control text-white" value="{{details.address}}" required>                                        
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">City</p>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="city" name="city" class="form-control text-white"  value="{{details.city}}" required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">State</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <select type="text" class="form-select rounded bg-black text-white" id="state" name="state">
+                                <option value="{{details.state}}" hidden>{{details.state}}</option>
+                                <option value="[AN]-Andaman And Nicobar Islands">[AN]-Andaman And Nicobar Islands</option> <option value="[AD]-Andhra Pradesh">[AD]-Andhra Pradesh</option>
+                                <option value="[AR]-Arunachal Pradesh">[AR]-Arunachal Pradesh	</option> <option value="volvo">[AS]-Assam</option>
+                                <option value="[BR]-Bihar">[BR]-Bihar</option> <option value="volvo">[CH]-	Chandhigarh</option><option value="[CG]-Chattisgarh">[CG]-Chattisgarh</option>
+                                <option value="[DD]-Daman Diu">[DD]-Daman Diu</option><option value="volvo">[DL]-	Delhi</option><option value="[GA]-Goa">[GA]-Goa</option> <option value="[GJ]-Gujarat">[GJ]-Gujarat</option>
+                                <option value="[HR]-Haryana">[HR]-Haryana</option> <option value="[HP]-Himachal Pradesh">[HP]-Himachal Pradesh</option>
+                                <option value="[JK]-Jammu And Kashmir">[JK]-Jammu And Kashmir</option><option value="[JH]-Jharkand">[JH]-Jharkand</option>
+                                <option value="[KA]-Karnataka">[KA]-Karnataka</option><option value="[KL]-Kerala">[KL]-Kerala</option>
+                                <option value="[LA]-Ladakh">[LA]-Ladakh</option><option value="[LD]-Lakshadweep">[LD]-Lakshadweep</option>
+                                <option value="[MP]-Madhyapradesh">[MP]-Madhyapradesh</option><option value="[MH]-Maharashtra">[MH]-Maharashtra</option>
+                                <option value="[MN]-Manipur">[MN]-Manipur</option>  <option value="[ML]-Meghalaya">[ML]-Meghalaya</option>
+                                <option value="[MZ]-Mizoram">[MZ]-Mizoram</option> <option value="[NL]-Nagaland">[NL]-Nagaland</option> <option value="[NL]-Nagaland">[NL]-Nagaland</option>
+                                <option value="[OD]-Odisha">[OD]-Odisha</option><option value="[PY]-Puducherry">[PY]-Puducherry</option>
+                                <option value="[PB]-Punjab">[PB]-Punjab.</option><option value="[RL]-Rajasthan">[RL]-Rajasthan</option>
+                                <option value="[SK]-Sikkim">[SK]-Sikkim</option><option value="[TN]-Tamilnadu">[TN]-Tamilnadu</option>
+                                <option value="[TS]-Telenghana">[TS]-Telenghana</option><option value="[TR]-Tripura">[TR]-Tripura</option><option value="[UP]-Uttar Pradesh">[UP]-Uttar Pradesh</option>
+                                <option value="[UK]-Utharakhand">[UK]-Utharakhand</option><option value="[WB]-West Bengal">[WB]-West Bengal</option>
+                                <option value="[OT]-Other Territory">[OT]-Other Territory</option>
+                            </select>
+                            
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Country</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="country" name="country" class="form-control text-white" value="{{details.country}}" required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Pincode</p>
+
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" id="pincode" name="pincode" class="form-control text-white" value="{{details.pincode}}" required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">PAN Number</p>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="pannumber" name="pannumber" class="form-control text-white" value="{{details.pan_number}}" title="PAN Number must be in the format: 'ABCDE1234A'" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">GST Type</p>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="gstno"  value="" class=" form-control text-white" >
+                            
+                        </div>
+                    </div>
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <p class="text-white">GST Number</p>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="pannumber" name="pannumber" class="form-control text-white" value="{{details.pan_number}}" title="PAN Number must be in the format: 'ABCDE1234A'" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required>
+                            </div>
+                        </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">GST Number</p>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" name="gstno" id="gstnum" title="GST Number must be in the format:'11AAAAA1111A1ZA'" value="{{details.gst_no}}" class="form-control text-white" pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Profile Picture</p>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="file" id="image" name="image" accept="image/*" class="form-control text-white" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="d-grid gap-2 d-md-block">
+                        <center>
+                            <button type="submit" class="btn btn-outline-warning mt-2 mb-3 w-75" >Register</button>
+                        </center>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </form>
+    
+
 </div>
+</div>
+</div>
+
+</div>
+</div>        
+<!-- MODAL createcustomer END -->     
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg"  id="createitem"tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content shadow p-3  rounded" style="background-color: rgb(30,30,30);border: 1px solid rgba(255, 255, 255, 0.3);">
+            <div class="modal-header" style="background: rgb(32, 35, 37);">
+                <h5 class="m-3 text-uppercase"  style="color: #eeeaea;"><b>New Item</b></h5>
+                <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+              </div>
+            <div class="modal-body">
+             <br>
+              {% for m in messages %}
+              <p style="color: chocolate;">{{m}}</p>
+              {% endfor %}
+      
+              <form action="" method="POST" id="add" style="padding-left: 20px;">
+                {% csrf_token%}
+                <br>  
+                <h3 class="mb-3 text-white mt-4" style="font-size: 2rem;"></h3>
+                <br>
+                <fieldset class="form-group" >
+                    <div class="row">
+                      <hr>
+                     
+                        <div class="col-12 col-md-10">
+                          <label class="col-12 col-md-2 col-form-label pt-3" style="color: aliceblue;">Type  &nbsp;&nbsp;<i
+                            class="fa fa-question-circle"></i></label>
+                            <div class="form-check form-check-inline">
+                                <input required class="form-check-input" type="radio" name="type" id="gridRadios1" value="Goods">
+                                <label class="form-check-label text-white" for="gridRadios1">Goods</label>
+                            </div> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                            <div class="form-check form-check-inline ml-md-3">
+                                <input required class="form-check-input" type="radio" name="type" id="gridRadios2" value="Services">
+                                <label class="form-check-label text-white" for="gridRadios2">Services</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <br>
+                <div class="form-group row">
+                    <label  class="col-sm-5 col-form-label " style="color: aliceblue;">Name *</label>
+                    <div class="col-sm-10 col-md-7 col-9" style="margin-left: -2.2rem;">
+                      <input required type="text" class="form-control" name="name" id="nameInput" style="color: aliceblue;" placeholder="Enter Item Name">  
+                    </div>
+                  </div>
+                  <br>
+                  <div class="form-group row">
+                    <label class="col-sm-5 col-form-label" style="color: aliceblue;">Unit <i class="fa fa-question-circle"></i></label>
+                    <div class="col-sm-10 col-md-7 col-9" style="margin-left: -2.2rem;">
+                        <div class="d-flex align-items-center">
+                            <select name="unit" class="form-control" id="selunit"  style="background-color: black; color: white;border-radius: 5px;"  >
+                              {% for i in units %}
+                                <option value={{i.id}}>{{i.unit_name}}</option>
+                              {% endfor %}
+                            </select>
+                            <script>
+                              $(document).ready(function() {
+                                // Initialize select2
+                                $('#selunit').select2();
+                              });
+                              </script>                        
+                               <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" defer ></script>
+            <a class="btn btn-outline-warning py-2" style="cursor: pointer;" data-toggle="modal" data-target="#unitmodal" style="height: 38px; margin-right: 3px;">+</a>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-sm-5 col-form-label" style="color: aliceblue;">HSN Code</label>
+                    <div class="col-sm-10 col-md-7 col-9" style="margin-left: -2.2rem;">
+                        <input required type="text" class="form-control" name="hsn" required id="myInputField" style="color: aliceblue;" placeholder="Enter six digit HSN code" oninput="validateInput()">
+                        <div id="validationResult"></div>
+                    </div>
+                </div>
+                <br>
+                <fieldset class="form-group" >
+                    <div class="row">
+                  
+                        <div class="col-10 col-md-10">
+                          <label class="col-12 col-md-2 col-form-label pt-3" style="color: aliceblue;">Tax Preference: &nbsp;&nbsp;</label>
+                            <div class="form-check form-check-inline">
+                                <input required class="form-check-input" type="radio" name="radio" id="gridRadios1" onclick="showAllSelect()" value="taxable">
+                                <label class="form-check-label text-white" for="gridRadios1">Taxable</label>
+                            </div> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                            <div class="form-check form-check-inline ml-md-3">
+                                <input required class="form-check-input" type="radio" name="radio" id="gridRadios2"  onclick="hideAllSelect()" value="None-Taxable">
+                                <label class="form-check-label text-white" for="gridRadios2"> None-Taxable</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+              
+      <br>
+                  <div class="row">
+                    <div class="col-md-3">
+                  
+                      <div id="select1_div" style="display: none;">
+                        <label for="select1">Intra-State TAX</label><br> <br>
+                        <select name="intra" class="form-control" id="select1" style="background-color: black; color: white;">
+                            <option value="0">GST0[0%]</option>
+                            <option value="3">GST3[3%]</option>
+                            <option value="5">GST5[5%]</option>
+                            <option value="12">GST12[12%]</option>
+                            <option value="18">GST18[18%]</option>
+                            <option value="28">GST28[28%]</option>
+                        </select>
+                        
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div id="select2_div" style="display: none;">
+                        <label for="select2">Inter-State TAX</label> <br><br>
+                        <select name="inter" class="form-control " id="select2" style="background-color: black; color: white;">
+                          <option value="0">IGST0[0%]</option>
+                          <option value="5">IGST3[3%]</option>
+                          <option value="5">IGST5[5%]</option>
+                          <option value="12">IGST12[12%]</option>
+                          <option value="18">IGST18[18%]]</option>
+                          <option value="28">IGST28[28%]</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <input  type="checkbox" name="selling" checked> <label >selling  information</label><br><br>
+                      <div class="form-group row">
+                        <br>
+                        <label class="col-sm-5 col-form-label" style="color: aliceblue;">Selling price </label>
+                        <div class="col-sm-12 col-md-7 col-9 ml-5">
+                          <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                              <div class="input-group-text text-white" style="background-color: black;">INR</div>
+                            </div>
+                            <input required type="text" name="sel_price" style="color: #ede4e4;" class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <br>
+                      <div class="form-group row">
+                        <label  class="col-sm-5 col-form-label" style="color: aliceblue;">Account *</label>
+                        <div class="col-sm-10 col-md-7 col-9 ml-5">
+                          <select name="sel_acc" class="form-control " style="background-color: black; color: white;">
+                            <option value=" ">--Select Account--</option>
+                            <option value="General Income">General Income</option>
+                            <option value="Interest Income">Interest Income</option>
+                            <option value="Late Fee  Income">Late Fee  Income</option>  
+                            <option value="Discount Income">Discount Income</option>
+                            <option value="Other Charges">Other Charges</option>
+                            <option value="Shipping Charge">Shipping Charge</option>
+                        
+                          </select>                              
+                        </div>
+                      </div>
+                      <br>
+                      <br>
+                      <div class="form-group row">
+                        <label  class="col-sm-5 col-form-label" style="color: aliceblue;">Description </label>
+                        <div class="col-sm-10 col-md-7 col-9 ml-5">
+                          <input  type="text" style="color: #ede4e4;" name="sel_desc" class="form-control " placeholder="Enter Discription">
+                        </div>
+                      </div>
+                                            
+                    </div>
+                    <div class="col-md-6">
+                      <input type="checkbox" name="purchase" checked> <label for="">Purchase information</label><br><br>
+                      <div class="form-group row">
+                        <br>
+                        <label  class="col-sm-5 col-form-label" style="color: aliceblue;">Cost Price*</label>
+                        <div class="col-sm-10 col-md-7 col-9">
+                          <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                              <div class="input-group-text text-white" style="background-color: black;">INR</div>
+                            </div>
+                            <input required type="text" style="color: #ede4e4;" class="form-control " name="cost_price" >
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="form-group row in">
+              
+                        <label class="col-sm-5 col-form-label" style="color: aliceblue;">Account*</label>
+                        <div class="col-sm-10 col-md-7 col-5">
+                            <div class="d-flex align-items-center">
+                                <select name="cost_acc" class="form-control " id="myaccount" style="color: #fefefe;background-color: #000;" required>
+                                  <option value="">--Select Account--</option>
+                                  <optgroup id="expensesel" label="Expense">
+                             
+                                  {% for i in accounts %}
+      
+                                  {% if i.account_type == 'Expense' %}
+                                
+                                    <option value="{{i.account_name}}">{{i.account_name}}</option>
+                            
+                                  {% endif %}
+                                  {% endfor %}
+                                </optgroup>
+                                <optgroup id="costofgoods" label="Cost Of Goods Sold">
+                                  {% for i in accounts %}
+                                  {% if i.account_type == 'Cost Of Goods Sold' %}
+                            
+                                    <option value="{{i.account_name}}">{{i.account_name}}</option>
+                                    
+                                    {% endif %}
+                                    {% endfor %}
+                                  </optgroup>
+                                  <optgroup id="otherexpensesel" label="Other Expense">
+                                  {% for i in accounts %}
+                                  {% if i.account_type == 'Other Expense' %}
+                            
+                                    <option value="{{i.account_name}}">{{i.account_name}}</option>
+                                    
+                                    {% endif %}
+                                    {% endfor %}
+                                  </optgroup>
+                      
+                                 
+                              
+                                </select>
+                                <script>
+                                  $(document).ready(function() {
+                                    // Initialize select2
+                                    $('#myaccount').select2();
+                                  });
+                                  </script>                        
+                                   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" defer ></script>
+                                <a class="btn btn-outline-warning py-2" style="cursor: pointer;" data-toggle="modal" data-target="#account" style="height: 38px; margin-right: 3px;">+</a>
+         
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group row in">
+                        <label class="col-sm-5 col-form-label" style="color: aliceblue;">Description</label>
+                        <div class="col-sm-10 col-md-7 col-5">
+                            <div class="d-flex align-items-center">
+                                <input  type="text" style="color: #ede4e4;" name="pur_desc" class="form-control " placeholder="Enter Discription">
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                    <br>     <br>
+                    <div class="form-group row text-center">
+                        <label class="col-sm-5 col-form-label" style="color: aliceblue;">Minimum Stock to maintain :</label>
+                        <div class="col-sm-10 col-md-7 col-9 d-flex align-items-center" style="margin-left: -2.2rem;">
+                          <input type="number" style="color: #ede4e4;" name="minimum_stock" class="form-control mx-auto" placeholder="Enter Minimum Stock">
+                        </div>
+                      </div>
+                      <br>
+                     
+                    <br><br>     
+                    <div class="row" >
+                      <div class="col-md-10">
+                        {% comment %} <label style="color: aliceblue;"><input type="checkbox" value="trackstate" name="trackstate" onclick="toggleForm()" style="display: none;">
+                       Track Inventory for this item</label> {% endcomment %}
+                        <!-- {% comment %} <input type="checkbox" name="trackState" id="trackStateCheckbox">{% endcomment %} -->
+                        <label style="color: aliceblue;">
+                       
+                          <input type="checkbox" name="trackstate" class=" "  onclick="toggleFormFields()">
+                          Track Inventory for this item
+                        </label>   <br>   <br>
+                        <div id="formFields" style="display: none;"> 
+                          <div class="form-group row" >
+                            <label class="col-sm-2 col-form-label" style="color: aliceblue;">Inventory Account *</label>
+                            <div class="col-sm-10 col-md-7 col-9" style="margin-left: -1rem;">
+                              <select class="form-select form-select-sm mt-3 " name="invacc" style="background-color: black; color: white;">
+                                <option value="">Choose..</option>
+                                <option value="inventory assets">Inventory Asset</option>
+                              </select>
+                            </div>
+                          </div>
+                          <br>
+                          <div class="form-group row ">
+                            <label class="col-sm-2 col-form-label" style="color: aliceblue;">Opening Stock</label>
+                            <div class=" col-md-5">
+                              <input  type="number" style="color: #ede4e4;" class="form-control "  name="openstock" value="0">
+                            </div>
+                            </div>
+                            <br>
+                            <div class="form-group row ">
+                                <label class="col-sm-2 col-form-label" style="color: aliceblue;">Opening Stock Rate per Unit</label>
+                                <div class=" col-md-5">
+                                    <input type="number" style="color: #ede4e4;" class="form-control" name="rate"  value="0">
+                                </div>
+                                </div>
+      
+                          </div>
+                        </div>
+                      </div>
+                      
+                    <div class="form-inline " style="margin-bottom: 200px;padding-bottom: 20px;">
+                        <button type="submit"  class="mr-3 btn" style="background-color: chocolate;color: aliceblue;" value="Save">Save</button>
+                        <button type="button" class="mr-3 btn" onclick="resetForm()" value="Cancel" style="margin-left:10px;background-color: chocolate;color: aliceblue;">Cancel</button>
+                      </div>   
+                      
+                      <div class="form-inline " style="margin-bottom: 200px;"></div>
+                      <div class="form-inline " style="margin-bottom: 200px;"></div>
+                      <div class="form-inline " style="margin-bottom: 200px;"></div>
+            </form>
+            </div>
+            </div>
+            </div>
+            
+            {% comment %} <div id="total-bill-amount" class="mt-3" style="color: white;"></div> {% endcomment %}
+            <div>
+                <div id="noDataMessage" style="display: none; color: white;">No data found for selected dates.</div>	
+                <br><br><br><br><br>
+            </div>
+        
+      </div>
+      <div class="form-inline " style="margin-bottom: 200px;"></div>                <div class="form-inline " style="margin-bottom: 200px;"></div>
+      
+      
+      </div>
+                    
+ 
+               
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"></script>
+      
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var searchDropdown = document.getElementById("searchDropdown");
+        var dropdownMenu = document.getElementById("dropdownMenu");
+
+        searchDropdown.addEventListener("input", function() {
+            if (this.value.trim() !== "") {
+                dropdownMenu.classList.add("show");
+            } else {
+                dropdownMenu.classList.remove("show");
+            }
+        });
+
+        dropdownMenu.addEventListener("click", function(e) {
+            var target = e.target;
+            if (target && target.matches(".dropdown-item")) {
+                searchDropdown.value = target.textContent;
+                dropdownMenu.classList.remove("show");
+            }
+        });
+
+        // Close dropdown menu when clicking outside
+        document.addEventListener("click", function(e) {
+            if (!searchDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove("show");
+            }
+        });
+    });
+</script>
 
 {% endblock %}

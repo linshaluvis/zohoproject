@@ -37,6 +37,8 @@ urlpatterns = [
     path('Staff/Password_Change',views.staff_password_change,name='staff_password_change'),
         # -------------------------------Staff section invoice--------------------------------
     path('Staff/invoice_listout',views.invoice_list_out,name='invoice_list_out'),
+    path('Staff/invoice/create',views.invoice_create,name='invoice_create'),
+
 
 
     
