@@ -626,11 +626,31 @@ def invoice_create(request):
         log_details= LoginDetails.objects.get(id=log_id)
         dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
         allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        customers=Customer.objects.all()
+
+       
+        context={
+            'details':dash_details,
+            'allmodules': allmodules,
+            'customers':customers
+            
+        }
+        return render(request,'staff/invoice.html',context)  
+    
+def invoice_overview(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
         context={
             'details':dash_details,
             'allmodules': allmodules,
         }
-        return render(request,'staff/invoice.html',context)    
+        return render(request,'staff/overview.html',context)
+  
        
 def company_gsttype_change(request):
     if 'login_id' in request.session:

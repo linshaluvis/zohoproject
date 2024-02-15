@@ -21,9 +21,45 @@
         border-color: #80bdff;
         box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
+    /* Style for the close button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
 
+  /* Hover effect for the close button */
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .quantity-input-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Style for the quantity input box */
+  .quantity-input {
+    width: 50px;
+    text-align: center;
+    padding-right: 20px; /* Make space for the up/down arrows */
+  }
+
+  /* Style for the up and down arrow buttons */
+  .quantity-arrow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    cursor: pointer;
+  }
    
 </style>
+
 
 <div class="body-wrapper">
     <div class="container-fluid">
@@ -57,49 +93,125 @@
                         <div class="col-md-6 d-flex align-items-center">
                             <div class="search-dropdown-container">
                                 <input type="text" id="searchDropdown" class="search-dropdown" placeholder="Search or select...">
+                                
                                 <ul class="dropdown-menu" id="dropdownMenu">
-                                    <li class="dropdown-item">Option 1</li>
-                                    <li class="dropdown-item">Option 2</li>
-                                    <li class="dropdown-item">Option 3</li>
+                                    {% for c in customers %}
+
+			                        <a class="dropdown-item" value="{{ c.id }}" data-name="{{ c.first_name }}" data-email="{{ c.customer_email }}" data-gstno="{{c.GST_number}}" data-place="{{c.place_of_supply}}"  data-billingcountry="{{c.billing_country}}"data-billingstate="{{c.billing_state}}" data-billingcity="{{c.billing_city}}" data-billing="{{c.billing_address}}" data-gst="{{c.GST_treatement}}"data-phone="{{ c.customer_phone }}"href="">{{c.first_name}}</a>
+
+			                        {% endfor %}
+
+			 
                                 </ul>
                             </div>
-                            <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createcustomer" href="" role="button">+</a>
+                            <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createcustomer"  onclick="openModal2" href="" role="button">+</a>
+                        </div>
+                    </div>
+                    
+
+
+<!-- Other fields can be added here -->
+
+<script>document.addEventListener('DOMContentLoaded', function() {
+    var dropdownMenu = document.getElementById('dropdownMenu');
+    dropdownMenu.addEventListener('click', function(event) {
+        var target = event.target;
+        if (target.classList.contains('dropdown-item')) {
+            event.preventDefault();
+
+            document.getElementById('searchDropdown').value = target.dataset.name;
+            document.getElementById('customerEmail').value = target.dataset.email;
+            document.getElementById('customerPhone').value = target.dataset.phone;
+            document.getElementById('customergst').value = target.dataset.gst;
+            document.getElementById('customergstno').value = target.dataset.gstno;
+            document.getElementById('customerplace').value = target.dataset.place;
+
+            alert("ok")
+
+           
+
+
+            var combinedValues = target.dataset.billing + '\n' + target.dataset.billingcity + '\n' + target.dataset.billingstate + '\n' + target.dataset.billingcountry;
+            alert('Combined Values:\n' + combinedValues);
+
+            document.getElementById('combinedValuesTextarea').value = combinedValues;
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var placeDropdown = document.getElementById('customerplace');
+                var newOptionValue = target.dataset.place;
+            
+                // Check if the new option value already exists in the dropdown
+                var optionExists = false;
+                for (var i = 0; i < placeDropdown.options.length; i++) {
+                    if (placeDropdown.options[i].value === newOptionValue) {
+                        optionExists = true;
+                        // Make the existing option the selected one
+                        placeDropdown.selectedIndex = i;
+                        break;
+                    }
+                }
+            
+                // If the option doesn't exist, add it to the dropdown
+                if (!optionExists) {
+                    var newOption = document.createElement('option');
+                    newOption.value = newOptionValue;
+                    newOption.textContent = newOptionValue;
+                    placeDropdown.appendChild(newOption);
+                    // Make the newly added option the selected one
+                    placeDropdown.selectedIndex = placeDropdown.options.length - 1;
+                }
+            });
+          
+        }
+    });
+});
+
+
+
+</script>
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white" for="customerEmail">Customer Email ID</p>
+
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="customerEmail" name="customerEmail" readonly class="form-control text-white" >
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-4">
-                            <p class="text-white">Customer Email ID</p>
+                            <p class="text-white" for="customerPhone">Customer contact number</p>
 
                         </div>
-                        <div class="col-md-8">
-                            <h5 class="text-white">: </h5>
+                        <div class="col-md-6">
+                            <input type="text" id="customerPhone" name="customerPhone" readonly class="form-control text-white" >
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-4">
-                            <p class="text-white">Billing Address</p>
+                            <p class="text-white" for="combinedValuesTextarea" >Billing Address</p>
 
                         </div>
-                        <div class="col-md-8">
-                            <h5 class="text-white">: </h5>
+                        <div class="col-md-6">
+                            <textarea class="form-control text-white" id="combinedValuesTextarea" rows="6" cols="40"></textarea>
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-4">
-                            <p class="text-white">GST Treatment</p>
+                            <p class="text-white" for="customergst">GST Treatment</p>
 
                         </div>
-                        <div class="col-md-8">
-                            <h5 class="text-white">: </h5>
+                        <div class="col-md-6">
+                            <input type="text" id="customergst" name="customergst" readonly class="form-control text-white" >
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-4">
-                            <p class="text-white">GST Number</p>
+                            <p class="text-white" for="customergstno">GST Number</p>
 
                         </div>
-                        <div class="col-md-8">
-                            <h5 class="text-white">: </h5>
+                        <div class="col-md-6">
+                            <input type="text" id="customergstno" name="customergstno" readonly class="form-control text-white" >
                         </div>
                     </div>
                     <div class="row mt-2">
@@ -138,13 +250,51 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-4">
-                            <p class="text-white">place of supply</p>
+                            <p class="text-white" for="customerplace">place of supply</p>
 
                         </div>
                         <div class="col-md-6">
-                            <input type="text" id="fname" name="fname" class="form-control text-white" >
+                            <select type="text" class="form-select rounded bg-black text-white" id="customerplace" name="customerplace">
+                                <option value=""></option>
+
+                                
+                                <option value="[AN]-Andaman And Nicobar Islands">[AN]-Andaman And Nicobar Islands</option>
+                                 <option value="[AD]-Andhra Pradesh">[AD]-Andhra Pradesh</option>
+                                <option value="[AR]-Arunachal Pradesh">[AR]-Arunachal Pradesh	</option> <option value="volvo">[AS]-Assam</option>
+                                <option value="[BR]-Bihar">[BR]-Bihar</option> <option value="volvo">[CH]-	Chandhigarh</option><option value="[CG]-Chattisgarh">[CG]-Chattisgarh</option>
+                                <option value="[DD]-Daman Diu">[DD]-Daman Diu</option><option value="volvo">[DL]-	Delhi</option><option value="[GA]-Goa">[GA]-Goa</option> <option value="[GJ]-Gujarat">[GJ]-Gujarat</option>
+                                <option value="[HR]-Haryana">[HR]-Haryana</option> <option value="[HP]-Himachal Pradesh">[HP]-Himachal Pradesh</option>
+                                <option value="[JK]-Jammu And Kashmir">[JK]-Jammu And Kashmir</option><option value="[JH]-Jharkand">[JH]-Jharkand</option>
+                                <option value="[KA]-Karnataka">[KA]-Karnataka</option><option value="[KL]-Kerala">[KL]-Kerala</option>
+                                <option value="[LA]-Ladakh">[LA]-Ladakh</option><option value="[LD]-Lakshadweep">[LD]-Lakshadweep</option>
+                                <option value="[MP]-Madhyapradesh">[MP]-Madhyapradesh</option><option value="[MH]-Maharashtra">[MH]-Maharashtra</option>
+                                <option value="[MN]-Manipur">[MN]-Manipur</option>  <option value="[ML]-Meghalaya">[ML]-Meghalaya</option>
+                                <option value="[MZ]-Mizoram">[MZ]-Mizoram</option> <option value="[NL]-Nagaland">[NL]-Nagaland</option> <option value="[NL]-Nagaland">[NL]-Nagaland</option>
+                                <option value="[OD]-Odisha">[OD]-Odisha</option><option value="[PY]-Puducherry">[PY]-Puducherry</option>
+                                <option value="[PB]-Punjab">[PB]-Punjab.</option><option value="[RL]-Rajasthan">[RL]-Rajasthan</option>
+                                <option value="[SK]-Sikkim">[SK]-Sikkim</option><option value="[TN]-Tamilnadu">[TN]-Tamilnadu</option>
+                                <option value="[TS]-Telenghana">[TS]-Telenghana</option><option value="[TR]-Tripura">[TR]-Tripura</option><option value="[UP]-Uttar Pradesh">[UP]-Uttar Pradesh</option>
+                                <option value="[UK]-Utharakhand">[UK]-Utharakhand</option><option value="[WB]-West Bengal">[WB]-West Bengal</option>
+                                <option value="[OT]-Other Territory">[OT]-Other Territory</option>
+                            </select>
                         </div>
                     </div>
+                    <script>
+                        // Get the dropdown menu element
+                        var dropdown = document.getElementById('customerplace');
+                      
+                        // Add event listener for when an option is selected
+                        dropdown.addEventListener('change', function(event) {
+                          // Get the selected option
+                          var selectedOption = event.target.selectedOptions[0];
+                          
+                          // Get the value of the "data-place" attribute of the selected option
+                          var place = selectedOption.dataset.place;
+                          
+                          // Set the value of the element with id "customerplace" to the value of the "data-place" attribute
+                          document.getElementById('customerplace').value = place;
+                        });
+                      </script>
                     <div class="row mt-2">
                         <div class="col-md-4">
                             <p class="text-white">Order number</p>
@@ -208,12 +358,25 @@
                                     <li class="dropdown-item">Option 3</li>
                                 </ul>
                             </div>
-                            <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createitem" href="" role="button">+</a>
+                            <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createitem" onclick="openModal() " href="" role="button">+</a>
                         </div>
                     </div>
                     </td>
                     <td></td>
-                    <td></td>
+                    <td>
+                        <div class="quantity-input-container">
+                          <!-- Quantity input box -->
+                          <input type="number" class="quantity-input" id="quantity" value="1">
+                          <!-- Up arrow -->
+                          <div class="quantity-arrow" onclick="increaseQuantity()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12L12 5 5 12"></path></svg>
+                          </div>
+                          <!-- Down arrow -->
+                          <div class="quantity-arrow" onclick="decreaseQuantity()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"></path></svg>
+                          </div>
+                        </div>
+                    </td>
                     <td></td>
                     
                     <td>
@@ -245,13 +408,29 @@
         <div class="modal-content shadow p-3  rounded" style="background-color: rgb(30,30,30);border: 1px solid rgba(255, 255, 255, 0.3);">
             <div class="modal-header" style="background: rgb(32, 35, 37);">
                 <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #eeeaea;"><b>New Customer</b></h5>
-                <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
+                <span class="close" onclick="closeModal2()">&times;</span>
               </div>
             <div class="modal-body">
               <form action="" method="post">
                 {% csrf_token %}
                 <div class="card-body ">
+                    <div class="col-12 col-md-10">
+                        <label class="col-12 col-md-2 col-form-label pt-3" style="color: aliceblue;">Type  &nbsp;&nbsp;<i
+                          class="fa fa-question-circle"></i></label>
+                          <div class="form-check form-check-inline">
+                              <input required class="form-check-input" type="radio" name="type" id="gridRadios1" value="Mr">
+                              <label class="form-check-label text-white" for="gridRadios1">Mr.</label>
+                          </div> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                          <div class="form-check form-check-inline ml-md-3">
+                              <input required class="form-check-input" type="radio" name="type" id="gridRadios2" value="Ms">
+                              <label class="form-check-label text-white" for="gridRadios2">Ms.</label>
+                          </div>
+                      </div>
+                  </div>
+              </fieldset>
+              <br>
+                    
+                   
                                    
                     <div class="row mt-2">
                         <div class="col-md-4">
@@ -441,8 +620,7 @@
         <div class="modal-content shadow p-3  rounded" style="background-color: rgb(30,30,30);border: 1px solid rgba(255, 255, 255, 0.3);">
             <div class="modal-header" style="background: rgb(32, 35, 37);">
                 <h5 class="m-3 text-uppercase"  style="color: #eeeaea;"><b>New Item</b></h5>
-                <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
+                <span class="close" onclick="closeModal()">&times;</span>
               </div>
             <div class="modal-body">
              <br>
@@ -758,7 +936,26 @@
                
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"></script>
-      
+      <script>
+        function openModal() {
+            document.getElementById("createitem").style.display = "block";
+          }
+        function closeModal() {
+        document.getElementById("createitem").style.display = "none";
+        window.location.href = "http://127.0.0.1:8000/Staff/invoice/create";
+
+      }
+    </script>
+    <script>
+        function openModal2() {
+            document.getElementById("createcustomer").style.display = "block";
+          }
+        function closeModal2() {
+        document.getElementById("createcustomer").style.display = "none";
+        window.location.href = "http://127.0.0.1:8000/Staff/invoice/create";
+
+      }
+    </script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var searchDropdown = document.getElementById("searchDropdown");
