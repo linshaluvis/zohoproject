@@ -627,12 +627,15 @@ def invoice_create(request):
         dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
         allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
         customers=Customer.objects.all()
+        item=Items.objects.all()
+
 
        
         context={
             'details':dash_details,
             'allmodules': allmodules,
-            'customers':customers
+            'customers':customers,
+            'item':item
             
         }
         return render(request,'staff/invoice.html',context)  

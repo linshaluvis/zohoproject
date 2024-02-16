@@ -3,7 +3,6 @@
 {% load static %}
 <style>
     .search-dropdown-container {
-        position: relative;
         display: inline-block;
     }
 
@@ -94,10 +93,10 @@
                             <div class="search-dropdown-container">
                                 <input type="text" id="searchDropdown" class="search-dropdown" placeholder="Search or select...">
                                 
-                                <ul class="dropdown-menu" id="dropdownMenu">
+                                <ul class="dropdown-menu" id="dropdownMenu" >
                                     {% for c in customers %}
 
-			                        <a class="dropdown-item" value="{{ c.id }}" data-name="{{ c.first_name }}" data-email="{{ c.customer_email }}" data-gstno="{{c.GST_number}}" data-place="{{c.place_of_supply}}"  data-billingcountry="{{c.billing_country}}"data-billingstate="{{c.billing_state}}" data-billingcity="{{c.billing_city}}" data-billing="{{c.billing_address}}" data-gst="{{c.GST_treatement}}"data-phone="{{ c.customer_phone }}"href="">{{c.first_name}}</a>
+			                        <a class="dropdown-item" onchange="updatePlace()" value="{{ c.id }}" data-name="{{ c.first_name }}" data-email="{{ c.customer_email }}" data-gstno="{{c.GST_number}}" data-place="{{c.place_of_supply}}"  data-billingcountry="{{c.billing_country}}"data-billingstate="{{c.billing_state}}" data-billingcity="{{c.billing_city}}" data-billing="{{c.billing_address}}" data-gst="{{c.GST_treatement}}"data-phone="{{ c.customer_phone }}"href="">{{c.first_name}}</a>
 
 			                        {% endfor %}
 
@@ -108,7 +107,7 @@
                         </div>
                     </div>
                     
-
+                 
 
 <!-- Other fields can be added here -->
 
@@ -126,45 +125,34 @@
             document.getElementById('customergstno').value = target.dataset.gstno;
             document.getElementById('customerplace').value = target.dataset.place;
 
-            alert("ok")
 
            
 
 
             var combinedValues = target.dataset.billing + '\n' + target.dataset.billingcity + '\n' + target.dataset.billingstate + '\n' + target.dataset.billingcountry;
-            alert('Combined Values:\n' + combinedValues);
 
             document.getElementById('combinedValuesTextarea').value = combinedValues;
 
-            document.addEventListener('DOMContentLoaded', function() {
-                var placeDropdown = document.getElementById('customerplace');
-                var newOptionValue = target.dataset.place;
-            
-                // Check if the new option value already exists in the dropdown
-                var optionExists = false;
-                for (var i = 0; i < placeDropdown.options.length; i++) {
-                    if (placeDropdown.options[i].value === newOptionValue) {
-                        optionExists = true;
-                        // Make the existing option the selected one
-                        placeDropdown.selectedIndex = i;
-                        break;
-                    }
-                }
-            
-                // If the option doesn't exist, add it to the dropdown
-                if (!optionExists) {
-                    var newOption = document.createElement('option');
-                    newOption.value = newOptionValue;
-                    newOption.textContent = newOptionValue;
-                    placeDropdown.appendChild(newOption);
-                    // Make the newly added option the selected one
-                    placeDropdown.selectedIndex = placeDropdown.options.length - 1;
+            var inputValue = target.dataset.place;
+
+            var dropdown = document.getElementById('customerplace');
+
+
+            var option = document.createElement('option');
+
+            option.value = inputValue;
+            option.text = inputValue;
+           
+
+
+            dropdown.appendChild(option);
+
+            option.selected = true;
+                
+                
                 }
             });
-          
-        }
-    });
-});
+        });
 
 
 
@@ -214,19 +202,8 @@
                             <input type="text" id="customergstno" name="customergstno" readonly class="form-control text-white" >
                         </div>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-md-4">
-                            <p class="text-white">Payment method</p>
-
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" id="fname" name="fname" class="form-control text-white" >
-                        </div>
-                    </div>
-                    
-                 
-                </div>
-            </div>
+                </div></div>
+                   
             
             <div class="col-md-6">
                 <div class="card-body ">
@@ -253,13 +230,11 @@
                             <p class="text-white" for="customerplace">place of supply</p>
 
                         </div>
+                       
                         <div class="col-md-6">
                             <select type="text" class="form-select rounded bg-black text-white" id="customerplace" name="customerplace">
-                                <option value=""></option>
-
-                                
-                                <option value="[AN]-Andaman And Nicobar Islands">[AN]-Andaman And Nicobar Islands</option>
-                                 <option value="[AD]-Andhra Pradesh">[AD]-Andhra Pradesh</option>
+                                <option value="" hidden></option>
+                                <option value="[AN]-Andaman And Nicobar Islands">[AN]-Andaman And Nicobar Islands</option> <option value="[AD]-Andhra Pradesh">[AD]-Andhra Pradesh</option>
                                 <option value="[AR]-Arunachal Pradesh">[AR]-Arunachal Pradesh	</option> <option value="volvo">[AS]-Assam</option>
                                 <option value="[BR]-Bihar">[BR]-Bihar</option> <option value="volvo">[CH]-	Chandhigarh</option><option value="[CG]-Chattisgarh">[CG]-Chattisgarh</option>
                                 <option value="[DD]-Daman Diu">[DD]-Daman Diu</option><option value="volvo">[DL]-	Delhi</option><option value="[GA]-Goa">[GA]-Goa</option> <option value="[GJ]-Gujarat">[GJ]-Gujarat</option>
@@ -279,31 +254,6 @@
                             </select>
                         </div>
                     </div>
-                    <script>
-                        // Get the dropdown menu element
-                        var dropdown = document.getElementById('customerplace');
-                      
-                        // Add event listener for when an option is selected
-                        dropdown.addEventListener('change', function(event) {
-                          // Get the selected option
-                          var selectedOption = event.target.selectedOptions[0];
-                          
-                          // Get the value of the "data-place" attribute of the selected option
-                          var place = selectedOption.dataset.place;
-                          
-                          // Set the value of the element with id "customerplace" to the value of the "data-place" attribute
-                          document.getElementById('customerplace').value = place;
-                        });
-                      </script>
-                    <div class="row mt-2">
-                        <div class="col-md-4">
-                            <p class="text-white">Order number</p>
-
-                        </div>
-                        <div class="col-md-8">
-                            <h5 class="text-white">: </h5>
-                        </div>
-                    </div>
                     <div class="row mt-2">
                         <div class="col-md-4">
                             <p class="text-white">invoice date</p>
@@ -313,13 +263,99 @@
                             <h5 class="text-white">: </h5>
                         </div>
                     </div>
-                                                
-                 
+                   
+                    <div class="row mt-2">
+                        <div class="col-md-4">
+                            <p class="text-white">Payment method</p>
+
+                        </div>
+                        <div class="col-md-6">
+                      
+                    <select  id="paymentMethod" onchange="showPaymentDetails()"class="form-select rounded bg-black text-white">
+                        <option class="dropdown-item" value="Cash">Cash</option>
+                        <option class="dropdown-item" value="Cheque">Cheque</option>
+                        <option class="dropdown-item" value="UPI">UPI</option>
+                        <option  class="dropdown-item" value="Bank">Bank</option>
+                    </select>
+                </div>
+            </div>
+            <div id="chequeDetails" style="display:none;">
+                <div class="row mt-2">
+                    <div class="col-md-4">
+                        <label for="chequeNumber" class="text-white">Cheque Number:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" id="chequeNumber" name="chequeNumber" class="form-control text-white">
+                    </div>
+                </div>
+            </div>
+                
+                   
+                    
+                
+                    <div  id="upiDetails" style="display:none;">
+                        <div class="row mt-2">
+
+                        <div class="col-md-4">
+                            
+                            <p class="text-white" for="upiId" >UPI ID:</p>
+
+                        </div>
+
+                        <div class="col-md-6"  style="display: inline;">
+                            <input type="text" id="upiId" name="upiId"  class="form-control text-white" >
+                        </div>
+                    </div>
                 </div>
                 
-            </div>
+                    <div id="bankDetails" style="display:none;">
+                        <div class="row mt-2">
+                            <div class="col-md-4">
+                                <label for="bankAccountNumber" class="text-white">Bank Account Number:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="bankAccountNumber" name="bankAccountNumber" class="form-control text-white">
+                            </div>
+                        </div>
+                    </div>
+                </div></div>
+                
+                    <script>
+                        function showPaymentDetails() {
+                            var paymentMethod = document.getElementById("paymentMethod").value;
+                            var chequeDetails = document.getElementById("chequeDetails");
+                            var upiDetails = document.getElementById("upiDetails");
+                            var bankDetails = document.getElementById("bankDetails");
+                
+                            // Hide all payment details fields initially
+                            chequeDetails.style.display = "none";
+                            upiDetails.style.display = "none";
+                            bankDetails.style.display = "none";
+
+                            
+                
+                            // Show the appropriate payment details field based on the selected payment method
+                            if (paymentMethod === "Cheque") {
+                                chequeDetails.style.display = "block";
+
+                            } else if (paymentMethod === "UPI") {
+                                upiDetails.style.display = "block";
+                            } else if (paymentMethod === "Bank") {
+                                // Here, you would autofill the bank account number based on the selected bank
+                                bankDetails.style.display = "block";
+                            }
+                        }
+                    </script>
+                 
+               
+                   
+                                                
+                
+    
           
         </div>
+       
+
         <div class="row mt-3">
             <div class="container">
                 <h4 class="text-white ms-4"></h4>
@@ -347,21 +383,25 @@
                 </thead>
                 <tbody>
                   <tr class="border-bottom border-dark">
-                    <td></th>
-                    <td>
-                        <div class="col-md-6 d-flex align-items-center">
+                    
+                    <td></td>
+                        <td><div class="col-md-6 d-flex align-items-center">
                             <div class="search-dropdown-container">
-                                <input type="text" id="searchDropdown" class="search-dropdown" placeholder="Search or select...">
-                                <ul class="dropdown-menu" id="dropdownMenu">
-                                    <li class="dropdown-item">Option 1</li>
-                                    <li class="dropdown-item">Option 2</li>
-                                    <li class="dropdown-item">Option 3</li>
+                                <input type="text" id="searchDropdown2" class="search-dropdown" placeholder="Search or select...">
+                                <ul class="dropdown-menu" id="dropdownMenu2">
+                                    {% for items in item %}
+
+			                        <a class="dropdown-item" onclick="selectItem(this)" value="{{ items.id }}"data-price="{{ items.selling_price }}" data-hsn="{{ items.hsn_code }}">{{items.item_name}}</a>
+
+			                        {% endfor %}
                                 </ul>
+                                
                             </div>
                             <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createitem" onclick="openModal() " href="" role="button">+</a>
                         </div>
                     </div>
-                    </td>
+                     
+                    
                     <td></td>
                     <td>
                         <div class="quantity-input-container">
@@ -389,18 +429,32 @@
             </div> 
           </div>
     
-        </div>
-      </div>  
-                 
-                </div>
-                
-            </div>
+         
+     
+</div></div>
+<script>
+    // Function to handle item selection from dropdown
+    function selectItem(clickedItem) {
+        // Retrieve the details of the selected item
+        var itemName = clickedItem.innerText;
+        var hsnCode = clickedItem.getAttribute('data-hsn'); // Assuming 'data-hsn' attribute contains the HSN code
+        var price = clickedItem.getAttribute('data-price');
 
-          
-        </div>
-        
-           
-        
+        // Find the corresponding table row and populate the fields
+        var tableRow = document.querySelector('.table tbody tr');
+        tableRow.cells[2].innerText = hsnCode; // Populate HSN code
+        tableRow.cells[4].innerText = price; // Populate HSN code
+
+    }
+
+    // Example function to simulate item selection
+    function simulateSelection() {
+        var selectedItem = document.querySelector('#dropdownMenu2 .dropdown-item');
+        selectItem(selectedItem);
+    }
+</script>
+
+
         
 <!-- Modal createcustomer -->
 <div class="modal fade bd-example-modal-lg"id="createcustomer" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -981,6 +1035,82 @@
         document.addEventListener("click", function(e) {
             if (!searchDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
                 dropdownMenu.classList.remove("show");
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var searchDropdown = document.getElementById("searchDropdown");
+        var dropdownMenu = document.getElementById("dropdownMenu");
+
+        searchDropdown.addEventListener("input", function() {
+            if (this.value.trim() !== "") {
+                dropdownMenu.classList.add("show");
+            } else {
+                dropdownMenu.classList.remove("show");
+            }
+        });
+
+        dropdownMenu.addEventListener("click", function(e) {
+            var target = e.target;
+            if (target && target.matches(".dropdown-item")) {
+                searchDropdown.value = target.textContent;
+                dropdownMenu.classList.remove("show");
+            }
+        });
+
+        // Close dropdown menu when clicking outside
+        document.addEventListener("click", function(e) {
+            if (!searchDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove("show");
+            }
+        });
+    });
+</script>
+      
+<!-- Include this script after your HTML content -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var dropdownMenu = document.getElementById('dropdownMenu2');
+        var searchDropdown = document.getElementById('searchDropdown2');
+
+        // Event listener for clicking on dropdown items
+        dropdownMenu.addEventListener('click', function(event) {
+            var target = event.target;
+            if (target.classList.contains('dropdown-item')) {
+                // Set the value of the search dropdown input to the selected item
+                searchDropdown.value = target.textContent;
+            }
+        });
+
+        // Event listener for clicking on the search dropdown input
+        searchDropdown.addEventListener('click', function() {
+            // Show the dropdown menu when the search dropdown input is clicked
+            dropdownMenu.style.display = 'block';
+        });
+
+        // Event listener for typing in the search dropdown input
+        searchDropdown.addEventListener('input', function() {
+            var filter = searchDropdown.value.toUpperCase();
+            var items = dropdownMenu.getElementsByTagName('li');
+
+            // Loop through all dropdown items, and hide those that do not match the search input
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (item.textContent.toUpperCase().indexOf(filter) > -1) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        });
+
+        // Close the dropdown menu when clicking outside of it
+        window.addEventListener('click', function(event) {
+            if (!event.target.matches('.search-dropdown')) {
+                dropdownMenu.style.display = 'none';
             }
         });
     });
