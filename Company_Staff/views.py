@@ -648,9 +648,13 @@ def invoice_overview(request):
         log_details= LoginDetails.objects.get(id=log_id)
         dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
         allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        customers=Customer.objects.all()
+        item=Items.objects.all()
         context={
             'details':dash_details,
             'allmodules': allmodules,
+             'customers':customers,
+            'item':item
         }
         return render(request,'staff/overview.html',context)
   
