@@ -628,6 +628,15 @@ def invoice_create(request):
         allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
         customers=Customer.objects.all()
         item=Items.objects.all()
+        payments=Company_Payment_Term.objects.all()
+        i = invoice.objects.all()
+
+        if invoice.objects.all().exists():
+            invoice_count = invoice.objects.last().id
+            count = invoice_count
+        else:
+            count = 1
+
 
 
        
@@ -635,7 +644,12 @@ def invoice_create(request):
             'details':dash_details,
             'allmodules': allmodules,
             'customers':customers,
-            'item':item
+            'item':item,
+            'payments':payments,
+            'count': count,
+            'i':i
+
+
             
         }
         return render(request,'staff/invoice.html',context)  
@@ -650,13 +664,42 @@ def invoice_overview(request):
         allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
         customers=Customer.objects.all()
         item=Items.objects.all()
+        payments=Company_Payment_Term.objects.all()
+
         context={
             'details':dash_details,
             'allmodules': allmodules,
              'customers':customers,
-            'item':item
+            'item':item,
+            'payments':payments,
         }
         return render(request,'staff/overview.html',context)
+def itemdata(request):
+    cur_user = request.user.id
+    user = User.objects.get(id=cur_user)
+    print(user)
+
+    company = CompanyDetails.objects.get(user = user)
+    print(company.state)
+    id = request.GET.get('id')
+    cust = request.GET.get('cust')
+   
+        
+    item = Items.objects.get(item_name=id)
+    cus=Customer.objects.get(first_name=cust)
+    rate = item.selling_price
+    place=company.state
+    gst = item.intrastate_tax
+    igst = item.interstate_tax
+    desc=item.sales_description
+    print(place)
+    mail=cus.customer_email
+    
+    placeof_supply = Customer.objects.get(id=cust).place_of_supply
+    print(placeof_supply)
+    return JsonResponse({"status":" not",'mail':mail,'desc':desc,'place':place,'rate':rate,'pos':placeof_supply,'gst':gst,'igst':igst})
+    return redirect('/')
+
   
        
 def company_gsttype_change(request):

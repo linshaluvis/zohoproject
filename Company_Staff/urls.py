@@ -39,6 +39,8 @@ urlpatterns = [
     path('Staff/invoice_listout',views.invoice_list_out,name='invoice_list_out'),
     path('Staff/invoice/create',views.invoice_create,name='invoice_create'),
     path('Staff/invoice/overview',views.invoice_overview,name='invoice_overview'),
+    path('Staff/invoice/itemdata',views.itemdata,name='itemdata'),
+
 
 
 

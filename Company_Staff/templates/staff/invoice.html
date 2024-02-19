@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+crossorigin="anonymous"></script>
 <style>
     .search-dropdown-container {
         display: inline-block;
@@ -225,9 +236,23 @@ function toggleSecondDropdown() {
     if (selectedValue === 'kerala') {
       gstPercentageDropdown.style.display = 'block';
       otherDropdown.style.display = 'none';
+      $('#cgst').val(parseFloat(gst.toFixed(2)));
+            $('#sgst').val(parseFloat(gst.toFixed(2)));
+            $('#igst').val(parseFloat(d.toFixed(2)));
+            // document.getElementById('tr_cgst').style= ('display: flex');
+            
+            // document.getElementById('tr_sgst').style= ('display: flex');
+            // document.getElementById('tr_igst').style= ('display: none');
+
     } else {
       gstPercentageDropdown.style.display = 'none';
       otherDropdown.style.display = 'block';
+      $('#igst').val(taxamount.toFixed(2));
+      $('#cgst').val(d.toFixed(2));
+      $('#sgst').val(d.toFixed(2));
+      document.getElementById('cgst')= ('display: none');
+      document.getElementById('sgst')= ('display: none');
+      document.getElementById('igst')= ('display: block');
     }
   }
   
@@ -304,7 +329,7 @@ function toggleSecondDropdown() {
                 <div class="card-body ">
                     <div class="row mt-2">
                         <div class="col-md-4">
-                            <p class="text-white">invoice number </p>
+                            <p class="text-white"> number </p>
 
                         </div>
                         <div class="col-md-6">
@@ -354,15 +379,7 @@ function toggleSecondDropdown() {
   
     
   </script>
-                    <div class="row mt-2">
-                        <div class="col-md-4">
-                            <p class="text-white">invoice date</p>
-
-                        </div>
-                        <div class="col-md-8">
-                            <h5 class="text-white">: </h5>
-                        </div>
-                    </div>
+                   
                    
                     <div class="row mt-2">
                         <div class="col-md-4">
@@ -454,6 +471,101 @@ function toggleSecondDropdown() {
     
           
         </div>
+         <div class="row mt-2">
+                        
+                    <div class="row mb-4">
+                      <div class="col-sm-2  text-white"><label for="estimate_number">Invoice number</label></div>
+                      <div class="col-sm-6"><input type="text" class="form-control text-white" id="estimate_number" name="inv_no" value="INV-00{{count}}">
+                         
+                      </div>
+                  </div>
+                  <div class="row mb-4">
+                      <div class="col-sm-2  text-white"><label for="reference">Order Number</label></div>
+                      <div class="col-sm-6 text-white"> <input type="text" class="form-control text-dark" id="ord_no" name="ord_no" class="" required>
+                              </div>
+                  </div>
+                  <div class="row mb-6 ">
+                    <div class="col-sm-6 col-lg-2 col-md-2">
+                      <label class="mr-3  text-white " for="input-1">invoice Date</label>
+                    </div>
+                    <div class="col-sm-6  col-lg-2 col-md-2">
+                      <input type="date" class="form-control text-white"   name="inv_date" id="input-1" >
+                    </div>
+                    
+                        
+                    <div class="col-sm-6 col-md-2 col-lg-2">
+                      <label for="input-2" class="ms-5  text-white">Due Date</label>
+                  </div>
+                  <div class="col-sm-6 col-lg-2 col-md-2">
+                      <input type="date" class="form-control text-white" name="due_date" id="input-2" readonly>
+                  </div>
+                  <div class="row mb-6 border-bottom pb-5">
+                    <div class="col-sm-2  text-white">
+                      <label for="input-2">Terms</label>
+                    
+                    </div>
+      
+      
+                    
+                    <div class="col-sm-6 ">
+                      <select class="my-select form-control text-white" name="term" id="inv_term">
+                    {% for p in payments %}
+                      <option  class="dropdown-item text-dark" value="{{p.days}}">{{ p.term_name }}</option>
+                      {% endfor%}
+                        </select> 
+                       
+                      </div>
+                      <div class="col-sm-4">
+                        <a href="#" data-target="#newpayment" data-toggle="modal">
+                            <i class="fa-solid fa fa-plus p-2 rounded" style="color: white; background-color: rgb(210, 132, 30); height: 37px;"></i>
+                        </a>
+                    </div>
+                    <div class="col-sm-8">
+                      <p id="alertMessage" style="color: red; font-style: italic;"></p> <!-- Element to display the alert -->
+                    </div>
+                    
+                    <script>
+                      function calculateDueDate() {
+                        const invoiceDate = new Date(document.getElementById('input-1').value);
+                        const paymentTerm = document.getElementById('inv_term').value;
+                        const dueDateField = document.getElementById('input-2');
+                        const alertElement = document.getElementById('alertMessage');
+                    
+                        if (paymentTerm === "recpt") {
+                          // Due on receipt, no additional days
+                          dueDateField.value = document.getElementById('input-1').value;
+                          alertElement.textContent = ''; // Clear the alert message
+                        } else if (paymentTerm === "Due end of the month") {
+                          let dueDate;
+                          const nextMonth = new Date(invoiceDate.getFullYear(), invoiceDate.getMonth() + 1, 1);
+                          dueDate = new Date(nextMonth - 1);
+                          const formattedDueDate = dueDate.toISOString().slice(0, 10);
+                          dueDateField.value = formattedDueDate;
+                          alertElement.textContent = ''; // Clear the alert message
+                        } else {
+                          // Get the number of days from the selected payment term
+                          const days = parseInt(paymentTerm);
+                          const dueDate = new Date(invoiceDate);
+                          dueDate.setDate(invoiceDate.getDate() + days);
+                          const formattedDueDate = dueDate.toISOString().slice(0, 10);
+                          dueDateField.value = formattedDueDate;
+                          alertElement.textContent = ''; // Clear the alert message
+                        }
+                      }
+                    
+                      document.getElementById('input-1').addEventListener('change', function() {
+                        calculateDueDate();
+                      });
+                    
+                      document.getElementById('inv_term').addEventListener('change', function() {
+                        calculateDueDate(); // Update the due date
+                        const alertElement = document.getElementById('alertMessage');
+                      });
+                    
+                      calculateDueDate(); // Calculate the initial due date
+                    </script>
+                    
+                </div>
        
 
         <div class="row mt-3">
@@ -462,472 +574,8 @@ function toggleSecondDropdown() {
                 <hr class="text-warning">
             </div>
         </div>
-        
-        <div class="row">
-            <div class="col-sm-12">
-              
-          <table class="table table-bordered text-white"  id="item_table" style="background-color: #b6b3b36b;table-layout: fixed;width: 100%;" onchange="calc()">
-          <thead >
-            <tr >
-                <th style="font-weight: bold;color: rgb(245, 154, 36);">Product<a href="" data-toggle="modal" data-target="#newitem">&nbsp;&nbsp;&nbsp;<i class="fa-solid  fa fa-plus fa-xl rounded p-1"
-                  style="color: white; background-color: rgb(210, 132, 30);height: 25px;width: 25%;"></i></a></th>
-                <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Hsn</th>
-                <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Quantity</th>
-                <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Rate</th>
-                <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Discount</th>
-                <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Tax %</th>
-                <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-          
-            <tr id='row1'>
-                <td>
-                    <div class='form-group'><select
-                            class='form-control bg-transparent  text-light border-0 item_select itm'
-                            name="item[]" id='item1'>
-                            <option class="text-dark" >Select</option>
-                            {% for i in item %}
-                            
-                            <option class="text-dark" value="{{i.item_name}}"   data-Hsn="{{ i.hsn_code }}" data-Rate="{{ i.selling_price }}">{{ i.item_name }}</option>
-                            {% endfor %}
-                        </select></div>
-                </td>
-               
-                <td class='text-right'><input type='text' id='hsn1'
-                  class='form-control bg-transparent border-0 text-light text-right hsn'  placeholder="6 Digit No" pattern="[0-9]{6}" name='hsn[]'
-                  value='' readonly >
-                  <!-- <span class='hsn-validation'></span> -->
-          
-                </td>
-              
-          
-                <td class='text-right'><input type='number' id='qty1'
-                  class='form-control bg-transparent border-0 text-light text-right qty' name='quantity[]'
-                  value='0' onchange="calc()"  >
-                </td>
-          
-                <td class='text-right'><input type='number' id='rate1'
-                        class='form-control bg-transparent border-0 text-light text-right rate' name='rate[]'
-                        value='0.00' readonly >
-                </td>
-          
-                <td class='text-right'><input type='number' id='discount1'
-                  class='form-control bg-transparent border-0 text-light text-right discount' name='discount[]'
-                  value='0.00'>
-                </td>
-          
-                <td class='text-right'> <select name="tax[]" id="tax1" class='form-control bg-transparent border-0 text-light text-right tax'  >
-                  <option>Select Tax</option>
-                    <option value="0" class="text-dark">GST 0%</option>
-                    <option value="3" class="text-dark">GST 3%</option>
-                      <option value="5" class="text-dark">GST 5%</option>
-                      <option value="12" class="text-dark">GST 12%</option>
-                      <option value="18" class="text-dark">GST 18%</option>
-                      <option value="28" class="text-dark">GST 28%</option>
-                    
-              </select>
-              
-          <!-- <script>
-          function validateHSN() {
-          // var hsn = hsnInput.value;
-          // var errorSpan = hsnInput.nextElementSibling;
-          // var valid = true;
-          var hsn=document.getElementById('hsn1')
-          
-          if (hsn.length != 6) {
-          // errorSpan.innerHTML = "HSN must be 6 digits long";
-          // valid = false;
-          hsn.style.color='red';
-          hsn.innerHTML=0
-          } else {
-          errorSpan.innerHTML = "&#x2713;"; // Check mark
-          }
-          
-          // return valid;
-          }
-          
-          </script> -->
-          <style>
-          .hsn-validation {
-          font-size: 1.2em;
-          color: red;
-          }
-          
-          .hsn-validation::before {
-          display: inline-block;
-          content: attr(data-content);
-          
-          
-          width: 1em;
-          height: 1em;
-          margin-right: 0.2em;
-          text-align: center;
-          vertical-align: middle;
-          color: green;
-          }
-          
-          </style>
-              
-              </td>
-                <td style="display: none;">
-                    <input type="text" name='taxamount1[]' id="taxamount1" class="form-control bg-transparent taxamount" />
-                </td>
-                <td class='text-right'><input type='number' id='amount1'
-                        class='form-control bg-transparent border-0 text-light text-right amount' name='amount[]'
-                        value='0.00' readonly></td>
-                <td class='text-center'><button type='button' id='del_btn1'
-                        class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row'
-                        style='width:30px'><i class='fa fa-times'></i></button>
-                        <button type='button' class='btn btn-transparent text-primary btn-sm btn-outline-primary rounded-circle clone-row' data-row=1 style='width:30px'><i class="fa fa-clone"></i>
-                        </button>
-                      </td>
-            </tr>
-          </tbody>
-          
-          </table>
-          
-          
-          <button type="button" class="btn text-white" style="background-color: rgb(210, 132, 30) ;"
-          id="add-row"><i class="fa-solid  fa fa-plus rounded"
-          style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></button>
-            </div>
-          </div>
-                      <div class="row">
-                        <div class="col-sm-12">
-                          
-                  <table class="table table-bordered text-white"  id="item_tablee" style="background-color: #b6b3b36b;table-layout: fixed;width: 100%;display: none;" onchange="calc()">
-                    <thead >
-                        <tr >
-                            <th style="font-weight: bold;color: rgb(245, 154, 36);">Product<a href="" data-toggle="modal" data-target="#newitem">&nbsp;&nbsp;&nbsp;<i class="fa-solid  fa fa-plus fa-xl rounded p-1"
-                              style="color: white; background-color: rgb(210, 132, 30);height: 25px;width: 25%;"></i></a></th>
-                            <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Hsn</th>
-                            <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Quantity</th>
-                            <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Rate</th>
-                            <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Discount</th>
-                            <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Tax %</th>
-                            <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-              
-                        <tr id='row1'>
-                            <td>
-                                <div class='form-group'><select
-                                        class='form-control bg-transparent  text-light border-0 item_selectt itmm'
-                                        name='itemm[]' id='itemm1'>
-                                        <option class="text-dark" value="">Select</option>
-                                        {% for i in p %}
-                                        
-                                        <option class="text-dark" value="{{i.Name}}">{{i.Name}}</option>
-                                        {% endfor %}
-                                    </select></div>
-                            </td>
-                           
-                            <td class='text-right'><input type='text' id='hsnn1'
-                              class='form-control bg-transparent border-0 text-light text-right hsnn' placeholder="6 Digit No" pattern="[0-9]{6}" name='hsnn[]'
-                              value='' readonly >
-          
-                            </td>
-                       <!-- <script>
-                       $(document).on("input", ".hsnn", function() {
-                              var hsn_value = $(this).val();
-                              var hsn_length = hsn_value.length;
-                              if (hsn_length > 6) {
-                                  $(this).val(hsn_value.substring(0, 6));
-                                  alert("HSN should not be more than 6 digits!");
-                              }
-                          });
-                     
-             
-            </script> -->
-            
-            
-                            <td class='text-right'><input type='number' id='qtyy1'
-                              class='form-control bg-transparent border-0 text-light text-right qtyy' name='quantityy[]'
-                              value='0' onchange="calc()">
-                            </td>
-            
-                            <td class='text-right'><input type='number' id='ratee1'
-                                    class='form-control bg-transparent border-0 text-light text-right ratee' name='ratee[]'
-                                    value='0.00' >
-                            </td>
-                            <td class='text-right'><input type='number' id='discountt1'
-                              class='form-control bg-transparent border-0 text-light text-right discountt' name='discountt[]'
-                              value='0.00'>
-                      </td>
-                            <td class='text-right'> <select name="taxx[]" id="taxx1" class='form-control bg-transparent border-0 text-light text-right taxx'  >
-                              <option>Select Tax</option>
-                                
-                                <option value="0" class="text-dark">IGST 0%</option>
-                                <option value="3" class="text-dark">IGST 3%</option>
-                                  <option value="5" class="text-dark">IGST 5%</option>
-                                  <option value="12" class="text-dark">IGST 12%</option>
-                                  <option value="18" class="text-dark">IGST 18%</option>
-                                  <option value="28" class="text-dark">IGST 28%</option>
-                          </select>
-                          
-            <!-- <script>
-              function validateHSNN(hsnInput) {
-                var hsn = hsnInput.value;
-                var errorSpan = hsnInput.nextElementSibling;
-                var valid = true;
-            
-                if (hsn.length != 6) {
-                    errorSpan.innerHTML = "HSN must be 6 digits long";
-                    valid = false;
-                } else {
-                    errorSpan.innerHTML = "&#x2713;"; // Check mark
-                }
-            
-                return valid;
-            }
-            
-            </script> -->
-            <style>
-              .hsn-validation {
-                font-size: 1.2em;
-                color: red;
-            }
-            
-            .hsn-validation::before {
-                display: inline-block;
-                content: attr(data-content);
-                width: 1em;
-                height: 1em;
-                margin-right: 0.2em;
-                text-align: center;
-                vertical-align: middle;
-                color: green;
-            }
-            
-            </style>
-                          
-                          </td>
-                            <td style="display: none;">
-                                <input type="text" name='taxamountt1' id="taxamountt1" class="form-control bg-transparent taxamountt" />
-                            </td>
-                            <td class='text-right'><input type='number' id='amountt1'
-                                    class='form-control bg-transparent border-0 text-light text-right amountt' name='amountt[]'
-                                    value='0.00' readonly></td>
-                            <td class='text-center'><button type='button' id='del_btn1'
-                                    class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-roww'
-                                    style='width:30px'><i class='fa fa-times'></i></button>
-                                    <button type='button' class='btn btn-transparent text-primary btn-sm btn-outline-primary rounded-circle clone-roww' data-row=1 style='width:30px'><i class="fa fa-clone"></i>
-                                    </button>
-                                  </td>
-                        </tr>
-                    </tbody>
-              
-                </table>
-              
-            
-            
-                <button type="button" class="btn text-white" style="background-color: rgb(210, 132, 30) ;display: none;"
-                    id="add-roww"><i class="fa-solid  fa fa-plus rounded"
-                    style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></button>
-                        </div>
-                      </div>
-                      
-                
-                
-                
-                  <div class="row border-bottom pb-5 mt-5">
-                      <div class="col-sm-6 ">
-                
-                          <label for="">Customer Notes</label>
-                          <textarea class="form-control text-dark" style="height: 50%;" name="customer_note" id="" cols="8" rows="8"
-                              placeholder=" Customer information for future Buisness" ></textarea>
-                      </div>
-                      <div class="col-sm-6">
-                          <table class="rounded table table-bordered" id="table_tot" style="background-color: #b6b3b36b;" >
-                              <tr>
-                                  <td class="text-black" style="font-weight: bold;">Sub Total</td>
-                                  <td>
-                                    <center>
-                                    <input type="number" id="subtotal" name="subtotal" value="0.00"
-                                    style="width: 50%;"  class="form-control bg-transparent  text-white border-0 text-right" readonly>
-                                  </center>
-                                </td>
-                              </tr>
-                              <tr style="display: none;font-weight: bold;" id="tr_igst" >
-                                  <td class="text-black" style="font-weight: bold;">IGST</td>
-                                  <td>
-                                    <center>
-                                      <input type="number" id='igst' name="igst" value="0.00"
-                                    style="width: 50%;" class="form-control bg-transparent  text-white border-0 text-right" readonly>
-                                    </center>
-                                  </td>
-                              </tr>
-                              <tr style="display: none;font-weight: bold;" id="tr_cgst">
-                                  <td class="text-black" style="font-weight: bold;">CGST</td>
-                                  <td>
-                                    <center>
-                                      <input type="number" id='cgst' name="cgst" value="0.00"
-                                    style="width: 50%;"  class="form-control bg-transparent  text-white border-0 text-right cgst" readonly>
-                                    </center>
-                                  </td>
-                              </tr>
-                              <tr style="display: none;font-weight: bold;"  id="tr_sgst">
-                                  <td class="text-black" style="font-weight: bold;">SGST</td>
-                                  <td>
-                                    <center>
-                                      <input type="number" id='sgst' name="sgst" value="0.00"
-                                    style="width: 50%;"  class="form-control bg-transparent  text-white border-0 text-right" readonly>
-                                    </center>
-                                  </td>
-                              </tr>
-                              <tr>
-                                  <td class="text-black" style="font-weight: bold;">Tax Amount</td>
-                                  <td>
-                                    <center>
-                                    <input type="number" id="total_taxamount" name="totaltax" value="0.00"
-                                    style="width: 50%;"  class="form-control bg-transparent  text-white border-0 text-right"readonly>
-                                  </center>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td class="text-black" style="font-weight: bold;">Shipping Charges</td>
-                                <!-- <td></td> -->
-                                <!-- <td><input type="number" id="shipping"> <i class="fas fa-question"></i></td> -->
-                                <td><center><input type="number" id="shipping_charge" name="shipping_charge" step="any" onchange="calc_ship()" value="0.00" 
-                                    class="form-control bg-transparent border-0 text-right shipping_charge" style="width: 50%;"></center></td>
-                            </tr>
-                            <tr>
-                                <td class="text-black" style="font-weight: bold;">Adjustmment</td>
-                                <!-- <td></td> -->
-                                <!-- <td><input type="number" id="adjustment"> <i class="fas fa-question"></i></td> -->
-                                <td><center><input type="number" id="adjustment_charge" name="adjustment_charge" step="any" onchange="calc_ship()" value="0.00" 
-                                    class="form-control bg-transparent border-0 text-right adjustment" style="width: 50%;"></center> </td>
-                            </tr>
-                             
-                             
-                              <tr>
-                                  <th class="" style="font-weight: bold;color: rgb(231, 152, 3);">Total (&#x20B9;)</th>
-                                  <th>
-                                    <center>
-                                    <input type="number" id="total_with_tax" name="t_total" value="0.00"
-                                    style="width: 50%;" class="form-control bg-transparent text-warning border-0 text-right" readonly>
-                                  </center>
-                                </th>
-                              </tr>
-          
-                              
-                      
-                         
-                              <tr>
-                                <th class="" style="font-weight: bold;color: rgb(231, 152, 3);">Paid Amount (&#x20B9;)</th>
-                                <th>
-                                    <center>
-                                        <input type="number" id="paid_amount" name="paid_amount" value="0.00"
-                                            style="width: 50%;" class="form-control bg-transparent text-warning border-0 text-right">
-                                    </center>
-                                </th>
-                            </tr>
-                            <tr id="balance-row" style="display: none;">
-                                <th class="" style="font-weight: bold;color: rgb(231, 152, 3);">Balance (&#x20B9;)</th>
-                                <th>
-                                    <center>
-                                        <input type="number" id="balance" name="balance" value="0.00"
-                                            style="width: 50%;" class="form-control bg-transparent text-warning border-0 text-right" readonly>
-                                    </center>
-                                </th>
-                            </tr>
-                            <tr id="warning-message" style="display: none; color: red;">
-                                <th colspan="2">
-                                    <center>
-                                        Paid Amount cannot be greater than Total.
-                                    </center>
-                                </th>
-                            </tr>
-                            
-                            <script>
-                              // Function to calculate the balance based on paid amount and total
-                              function calculateBalance() {
-                                  const totalWithTax = parseFloat(document.getElementById('total_with_tax').value) || 0;
-                                  const paidAmount = parseFloat(document.getElementById('paid_amount').value) || 0;
-                                  const balanceField = document.getElementById('balance');
-                                  const balanceRow = document.getElementById('balance-row');
-                                  const warningMessage = document.getElementById('warning-message');
-                            
-                                  // Calculate the balance
-                                  const balance = totalWithTax - paidAmount;
-                            
-                                  // Display the calculated balance
-                                  balanceField.value = balance.toFixed(2);
-                            
-                                  // Show the balance row only if paidAmount is greater than 0
-                                  if (paidAmount > 0) {
-                                      balanceRow.style.display = 'table-row';
-                                  } else {
-                                      balanceRow.style.display = 'none';
-                                  }
-                            
-                                  // Check if paidAmount is greater than the total
-                                  if (paidAmount > totalWithTax) {
-                                      // Hide the balance row
-                                      balanceRow.style.display = 'none';
-                                      // Show the warning message
-                                      warningMessage.style.display = 'table-row';
-                                  } else {
-                                      // Hide the warning message
-                                      warningMessage.style.display = 'none';
-                                  }
-                              }
-                            
-                              // Add event listener to paid amount input for calculation
-                              document.getElementById('paid_amount').addEventListener('input', calculateBalance);
-                            </script>
-                          </table>
-                      </div>
-                  </div>
-                
-                  <div class="row pb-5 border-bottom">
-                      <div class="col-md-6 d-flex flex-column w-60 m text-black">
-                          <label for="" class="text-light">Terms & Conditions</label>
-                          <textarea name="ter_cond" id="" cols="20" class="form-control text-dark" style="height: 100%;" rows="6"
-                              placeholder=" Enter the terms & conditions..." ></textarea>
-                      </div>
-                      <!-- <div class="col-md-6 col-lg-6 col-sm-12 py-5 text-center rounded mt-4">
-                          <div style="width: 100%;background-color: rgba(153, 152, 152, 0.507);height: 120px;">
-                            <label class="text-black mt-3 pt-3" for="">Attach File(s) to Invoice</label><br>
-                          
-                          <label for="file-upload" class="btn text-white border-0"
-                          style="background-color: rgb(210, 132, 30);"><i class="fas fa-upload text-white"></i>
-                          Upload File</label>
-                          <input class="pb-3"   type="file" name="file" style="display:none;">
-                          </div>
-                          
-                
-                      </div> -->
-                      <div class="col-md-6 col-lg-6 col-sm-12 py-5 text-center rounded mt-4" >
-                        <div  style="width: 100%;background-color: rgba(153, 152, 152, 0.507);height: 120px;">
-                            <label class="text-black mt-3 pt-3" for="">Attach File(s) to Invoice</label><br>
-          
-                        <label for="file-upload" class="btn text-white border-0"
-                            style="background-color: rgb(210, 132, 30);">
-                            <i class="fas fa-upload text-white"></i> Upload File
-                        </label>
-                        <input class="pb-3"  id="file-upload" type="file" name="file" style="display:none;">
-                        </div>
-                    </div>
-                  </div>
-                
-                
-                
-                  <div class="row mt-4">
-                    <div class="col-sm-6 col-lg-6 col-md-6" style="margin-bottom: 20rem;">
-                      <button type="submit" name="sd" class="btn  text-white " 
-                          value="Draft" style="background-color:  rgb(59, 59, 58) ;">Save as Draft</button>
-                      <button type="submit" name="sd" class="btn  text-white" 
-                          value="Send" style="background-color: rgb(210, 132, 30);">Save and Send</button>
-                      <input class="btn  text-white"
-                          type="reset" value="Cancel" style="background-color:  rgb(59, 59, 58) ;">
-                  </div>
-                  <div class="col-sm-6 col-lg-6 col-md-6"></div>
-                  </div>
-                </form>
-                
+       
+    
           
 <div style="overflow-x:auto;"> 
     <div class="table-responsive">
@@ -955,47 +603,59 @@ function toggleSecondDropdown() {
                                 <input type="text" id="searchDropdown2" class="search-dropdown" placeholder="Search or select..."  name='item[]' id='item1'>
                                 <ul class="dropdown-menu" id="dropdownMenu2">
                                     {% for items in item %}
-                                    <a class="dropdown-item" onclick="selectItem(this)" value="{{ items.id }}" data-price="{{ items.selling_price }}" data-hsn="{{ items.hsn_code }}">{{items.item_name}}</a>
+                                    <a class="dropdown-item item_select itm" onclick="selectItem(this)" value="{{ items.id }}" data-price="{{ items.selling_price }}" data-hsn="{{ items.hsn_code }}">{{items.item_name}}</a>
                                     {% endfor %}
                                 </ul>
                             </div>
                             <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createitem" onclick="openModal()" href="#" role="button">+</a>
                         </div>
                     </td>
-                    <td></td>
-                    <td>
-                        <div class="quantity-input-container">
-                            <!-- Quantity input box -->
-                            <input type="number" class="quantity-input" id="quantity" value="1">
-                            <!-- Up arrow -->
-                            <div class="quantity-arrow" onclick="increaseQuantity()">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12L12 5 5 12"></path></svg>
-                            </div>
-                            <!-- Down arrow -->
-                            <div class="quantity-arrow" onclick="decreaseQuantity()">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"></path></svg>
-                            </div>
-                        </div>
+                    <td class='text-right'><input type='text' id='hsn1'
+                      class='form-control border-0 text-white text-right hsn' name='hsn[]'
+                      value=''  >
                     </td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <select id="gstPercentageDropdown" style="display: none;">
-                            <option value="">GST</option>
-                            <option value="5%">5%</option>
-                            <option value="12%">12%</option>
-                            <option value="18%">18%</option>
-                            <option value="28%">28%</option>
-                        </select>
-                        <select id="otherDropdown">
-                            <option value="">IGST</option>
-                            <option value="Option 1">4%</option>
-                            <option value="Option 2">21%</option>
-                        </select>
+                    <td class='text-right text-white '><input type='number' id='qty1'
+                      class='form-control border-0 text-white text-right qty' name='quantity[]'
+                      value='0' onchange="calc()"  >
                     </td>
-                    <td style="display: none;">
-                        <input type="text" name='taxamount1' id="taxamount1" class="form-control taxamount" />
+    
+                    <td class='text-right text-white '><input type='number' id='rate1'
+                            class='form-control border-0 text-white text-right rate ' name='rate[]'
+                            value='0.00' >
                     </td>
+                    <td class='text-right text-white '><input type='text' id='desc1'
+                            class='form-control border-0 text-white text-right desc' name='desc[]'
+                            >
+                    </td>
+                    <td class='text-right'>
+                      <select id="gstPercentageDropdown"  onchange="calculateTotal()" class=' text-right tax ' name='tax[]' style="display: none;">
+                      
+
+                          <option>Select Tax</option>
+                          <option value="0">GST 0%</option>
+
+
+                          <option value="5%">GST 5%</option>
+                          <option value="12%"> GST 12%</option>
+                          <option value="18%">GST 18%</option>
+                          <option value="28%"> GST 28%</option>
+                      </select>
+                      <select id="otherDropdown" class=' text-right tax '>
+                        <option>Select Tax</option>
+                        <option value="0">IGST 0%</option>
+
+
+                        <option value="5">IGST 5%</option>
+                        <option value="12">IGST 12%</option>
+                        <option value="18">IGST 18%</option>
+                        <option value="28">IGST 28%</option>
+                      </select>
+                  </td> 
+
+
+                    <td class="text-right">
+                      <input type="number" class="form-control border-0 text-white text-right amount" id="amount1" name="amount[]" value="0.00" readonly>
+                  </td>
                     <td class='text-right'><input type='number' id='amount1'
                             class='form-control border-0 text-black text-right amount' name='amount[]'
                             value='0.00' readonly></td>
@@ -1060,18 +720,9 @@ function toggleSecondDropdown() {
         </div>
     </div>
   
-    <div class="row ">
-        <div class="col-md-8 d-flex flex-column w-60 m text-black">
-            <label for="">Terms & Conditions</label>
-            
-        </div>
-        <div class="col-md-4 py-5 text-center rounded" style="background-color: rgba(31, 30, 29, 0.8);">
-           
   
-        </div>
-    </div>
-  
-  
+    
+
   
     <div class="" style="margin-bottom: 20rem;">
         <button type="submit" name="sd" class="btn btn-success text-white " 
@@ -1089,136 +740,58 @@ function toggleSecondDropdown() {
 
     </div> 
 </div>
-
-
-
-
 <script>
+
+// Function to handle item selection
+function selectItem(itemElement) {
+    var selectedItemId = itemElement.getAttribute("value");
+    var selectedHSN = itemElement.getAttribute("data-hsn");
+    var selectedRate = itemElement.getAttribute("data-price");
+
+    // Populate fields in the table
+    document.getElementById("hsn1").value = selectedHSN;
+    document.getElementById("rate1").value = selectedRate;
+
+    // Trigger calculation function
+    calculateTotal();
+}
+
+// Function to calculate total
+function calculateTotal() {
+    // Get values from inputs
+    var quantity = parseFloat(document.getElementById("qty1").value);
+    var rate = parseFloat(document.getElementById("rate1").value);
+    var discount = parseFloat(document.getElementById("desc1").value);
+    var taxPercentage = parseFloat(document.getElementById("gstPercentageDropdown").value); // or IGST if applicable
+    alert(taxPercentage)
+
+    // Perform calculations
+    var taxamount = (qty * rate) * (tax / 100);
+    var amount = qty * rate;
+
+    var subtotal = quantity * rate;
+    var discountAmount = subtotal * (discount / 100);
+    var discountedSubtotal = subtotal - discountAmount;
+    var taxAmount = discountedSubtotal * (taxPercentage / 100);
+    var totalAmount = discountedSubtotal + taxAmount;
+
+    // Update fields with calculated values
+    document.getElementById("subtotal").value = subtotal.toFixed(2);
+    document.getElementById("total_taxamount").value = taxAmount.toFixed(2);
+    document.getElementById("total_with_tax").value = totalAmount.toFixed(2);
+}
+
+// Event listeners for input fields
+document.getElementById("qty1").addEventListener("input", calculateTotal);
+document.getElementById("rate1").addEventListener("input", calculateTotal);
+document.getElementById("desc1").addEventListener("input", calculateTotal);
+document.getElementById("gstPercentageDropdown").addEventListener("change", calculateTotal);
+
+// You may need to add event listeners for dynamically added rows as well
+</script>
    
 
-    function removeRow(button) {
-        // Traverse up the DOM to the row element
-        var row = button.parentNode.parentNode;
-        // Remove the row from the table
-        row.remove();
-    }
-    function initializeDropdown() {
-        var dropdowns = document.querySelectorAll('.search-dropdown');
-        dropdowns.forEach(function(dropdown) {
-            dropdown.addEventListener('input', function() {
-                // Your dropdown functionality logic here
-                // For example, filtering options based on input
-            });
-        });
-    }
-    function addItem() {
-        var tableBody = document.querySelector('#invoiceItems'); // Adjusted selector to match your HTML
-        var newRow = document.createElement('tr');
-        
-        // Serial number cell
-        var slnoCell = document.createElement('td');
-        slnoCell.textContent = document.querySelectorAll('#invoiceItems tr').length; // Serial number based on existing rows
-        newRow.appendChild(slnoCell);
-    
-        // Item cell with dropdown
-        var itemCell = document.createElement('td');
-        var dropdownContainer = document.createElement('div');
-        dropdownContainer.classList.add('search-dropdown-container');
-        dropdownContainer.innerHTML = `
-            <input type="text" class="search-dropdown" placeholder="Search or select...">
-            <ul class="dropdown-menu" id="dropdownMenu2">
-                {% for items in item %}
-                <a class="dropdown-item" onclick="selectItem(this)" value="{{ items.id }}" data-price="{{ items.selling_price }}" data-hsn="{{ items.hsn_code }}">{{items.item_name}}</a>
-                {% endfor %}
-            </ul>
-            <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createitem" onclick="openModal()" href="#" role="button">+</a>
-        `;
-        itemCell.appendChild(dropdownContainer);
-        newRow.appendChild(itemCell);
-        var hsnCell = document.createElement('td');
-        newRow.appendChild(hsnCell);
-
-        // Quantity cell
-        var quantityCell = document.createElement('td');
-        var quantityInput = document.createElement('input');
-        quantityInput.type = 'number';
-        quantityInput.value = 1;
-        quantityInput.classList.add('quantity-input');
-        quantityInput.addEventListener('input', updateTotal);
-        quantityCell.appendChild(quantityInput);
-        newRow.appendChild(quantityCell);
-
-        // Price cell
-        var priceCell = document.createElement('td');
-        newRow.appendChild(priceCell);
-
-        // Discount cell
-        var discountCell = document.createElement('td');
-        newRow.appendChild(discountCell);
-
-        // Tax cell
-        var taxCell = document.createElement('td');
-        taxCell.innerHTML = `
-            <select id="gstPercentageDropdown" style="display: none;">
-                <option value="">GST</option>
-                <option value="5%">5%</option>
-                <option value="12%">12%</option>
-                <option value="18%">18%</option>
-                <option value="28%">28%</option>
-            </select>
-            <select id="otherDropdown">
-                <option value="">IGST</option>
-                <option value="Option 1">4%</option>
-                <option value="Option 2">21%</option>
-            </select>
-        `;
-        newRow.appendChild(taxCell);
-
-        // Amount cell
-        var amountCell = document.createElement('td');
-        newRow.appendChild(amountCell);
-
-        // Remove button cell
-        var removeCell = document.createElement('td');
-        var removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove';
-        removeButton.onclick = function() {
-            removeRow(removeButton);
-        };
-        removeCell.appendChild(removeButton);
-        newRow.appendChild(removeCell);
-
-        tableBody.appendChild(newRow); // Append the new row to the table body
-        serialNumber++; // Increment serial number
-    }
-    
-
-    function updateTotal() {
-        var rows = document.querySelectorAll('#invoiceTable tbody tr');
-        var total = 0;
-      
-        rows.forEach(function(row) {
-          var quantity = parseFloat(row.querySelector('.quantity-input').value);
-          var price = parseFloat(row.querySelector('.item-price').value);
-          var rowTotal = quantity * price;
-          row.querySelector('td:last-child').textContent = rowTotal.toFixed(2);
-          total += rowTotal;
-        });
-      
-        document.getElementById('totalAmount').textContent = 'Total: $' + total.toFixed(2);
-    }
-    function selectItem(clickedItem) {
-        // Retrieve the details of the selected item
-        var itemName = clickedItem.innerText;
-        var hsnCode = clickedItem.getAttribute('data-hsn'); // Assuming 'data-hsn' attribute contains the HSN code
-        var price = clickedItem.getAttribute('data-price');
-
-        // Find the corresponding table row and populate the fields
-        var tableRow = clickedItem.closest('tr');
-        tableRow.cells[2].innerText = hsnCode; // Populate HSN code
-        tableRow.cells[4].innerText = price; // Populate rate
-    }
-</script>
+ 
 
 
  
@@ -2306,235 +1879,112 @@ function toggleSecondDropdown() {
         });
     });
 </script>
-
-<script>
-    $(document).ready(function () {
-
-
-
-       $('#add-row').click(function () {
-           var table = document.getElementById("invoiceItems");
-           var RowCount = table.rows.length;
-           console.log(RowCount);
-           var newRow = $(`
-           <tr id='row${RowCount}' >
-               <td>
-                   <div class='form-group'>
-                       <select
-                           class='form-control  text-black border-0 item_select' name='item[]'
-                           id='item${RowCount}'>
-                           {% for i in item %}
-                           <option class="text-dark" value="{{i.item_name}}">{{i.item_name}}</option>
-                           {% endfor %}
-                       </select></div>
-               </td>
-               <td class='text-right'>
-           <input type='text' id='hsn${RowCount}'  class='form-control border-0 text-black text-right hsn' name='hsn[]' value='' onchange="validateHSN(this)">
-           <span class='hsn-validation'></span>
-       </td>
-               <td class='text-right'><input type='number' id='qty${RowCount}'
-                       class='form-control border-0 text-black text-right qty' name='quantity[]' value='0' onchange="calc()">
-               </td>
-               <td class='text-right'><input type='number' id='rate${RowCount}'
-                       class='form-control border-0 text-black text-right rate' name='rate[]' value='0.00'
-                       ></td>
-               <td class='text-right'><input type='text' id='desc${RowCount}'
-                       class='form-control border-0 text-black text-right desc' name='desc[]' >
-               </td>
-               <td class='text-right'> <select name='tax[]' id='tax${RowCount}'
-                       class="form-control  text-black text-right border-0 tax">
-                       <option>Select Tax</option>
-                 <optgroup label="GST">
-                   <option value="0">GST 0%</option>
-                     <option value="5">GST 5%</option>
-                     <option value="12">GST 12%</option>
-                     <option value="18">GST 18%</option>
-                     <option value="28">GST 28%</option>
-                 </optgroup>
-                 <optgroup label="IGST">
-                   <option value="0">GST 0%</option>
-                     <option value="5">IGST 5%</option>
-                     <option value="12">IGST 12%</option>
-                     <option value="18">IGST 18%</option>
-                     <option value="28">GST 28%</option>
-                 </optgroup>
-                      
-                   </select></td>
-               <td style="display: none;">
-                   <input type="text" name='taxamount1' id="taxamount${RowCount}" class="form-control taxamount" />
-                           </td>
-               <td class='text-right'><input type='number' id='amount${RowCount}'
-                       class='form-control border-0 text-black text-right amount' name='amount[]' value='0.00'></td>
-               <td class='text-center'><button type='button' id='del_btn${RowCount}'
-                       class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row'
-                       style='width:30px'><i class='fa fa-times'></i></button></td>
-           </tr>`);
-
-           $(document).on("input", ".hsn", function() {
-   var hsn_value = $(this).val();
-   var hsn_length = hsn_value.length;
-   if (hsn_length > 6) {
-       $(this).val(hsn_value.substring(0, 6));
-       alert("HSN should not be more than 6 digits!");
-   }
-});
-           $('#item_table').append(newRow);
-       });
-
-       $('#item_table').on('click', '.delete-row', function () {
-           $(this).closest('tr').remove();
-       });
-
-   });
-   
-
-</script>
-
-
-
-
-
-<script>
 $(document).ready(function() {
-   // add event listener to trigger calc() function whenever a change is made to input fields
-   $('#item_table').on('input', 'input', calc);
+  // add event listener to trigger calc() function whenever a change is made to input fields
+  $('#invoiceItems').on('input', 'input', calc);
 });
 
 function calc() {
-   // loop through each row in the table
-   $('#item_table tbody tr').each(function() {
-       // get the values of the input fields for this row
-       var qty = $(this).find('.qty').val();
-       var rate = $(this).find('.rate').val();
-       var desc = $(this).find('.desc').val();
-       var tax = $(this).find('.tax').val();
-       
-       // calculate the tax amount and total amount for this row
-       var taxamount = (qty * rate) * (tax / 100);
-       var amount = qty * rate;
-       
-       // update the tax amount and total amount input fields for this row
-       $(this).find('.taxamount').val(taxamount.toFixed(2));
-       $(this).find('.amount').val(amount.toFixed(2));
-   });
-   
-   // calculate the total amount and total tax amount for all rows
-   var total = 0;
-   var taxamount = 0;
-   $('.amount').each(function() {
-       total += parseFloat($(this).val());
-   });
-   $('.taxamount').each(function() {
-       taxamount += parseFloat($(this).val());
-   });
-   
-   // update the subtotal and total tax amount input fields
-   $('#subtotal').val(total.toFixed(2));
-   $('#total_taxamount').val(taxamount.toFixed(2));
+  // loop through each row in the table
+  $('#invoiceItems tbody tr').each(function() {
+      // get the values of the input fields for this row
+      var qty = $(this).find('.qty').val();
+      var rate = $(this).find('.rate').val();
+      var desc = $(this).find('.desc').val();
+      var tax = $(this).find('.tax').val();
+      var quantity = parseFloat(document.getElementById("qty1").value);
+      var rate = parseFloat(document.getElementById("rate1").value);
+      var discount = parseFloat(document.getElementById("desc1").value);
+      var taxPercentage = parseFloat(document.getElementById("gstPercentageDropdown").value);
+      alert("ok")
+      
+      // calculate the tax amount and total amount for this row
+      var taxamount = (qty * rate) * (tax / 100);
+      var amount = qty * rate;
+      
+      // update the tax amount and total amount input fields for this row
+      $(this).find('.taxamount').val(taxamount.toFixed(2));
+      $(this).find('.amount').val(amount.toFixed(2));
+  });
+  
+  // calculate the total amount and total tax amount for all rows
+  var total = 0;
+  var taxamount = 0;
+  $('.amount').each(function() {
+      total += parseFloat($(this).val());
+  });
+  $('.taxamount').each(function() {
+      taxamount += parseFloat($(this).val());
+  });
+  
+  // update the subtotal and total tax amount input fields
+  $('#subtotal').val(total.toFixed(2));
+  $('#total_taxamount').val(taxamount.toFixed(2));
 
-   var total_with_tax = total + taxamount;
-   
-   // display the total amount including tax on the page
-   $('#total_with_tax').val(total_with_tax.toFixed(2));
+  var total_with_tax = total + taxamount;
+  
+  // display the total amount including tax on the page
+  $('#total_with_tax').val(total_with_tax.toFixed(2));
 
- test(taxamount);
+test(taxamount);
 
 }
 
- // Update subtotal when a row is deleted
-   $(document).ready(function dlt () {
-       $('#item_table').on('click', '.delete-row', function () {
-           var tr = $(this).closest('tr');
-           var taxamount= parseFloat(tr.find('input[name^="taxamount"]').val());
-           var amount = parseFloat(tr.find('input[name^="amount"]').val());
-           var subtotal = parseFloat($('#subtotal').val());
+// Update subtotal when a row is deleted
+  $(document).ready(function dlt () {
+      $('#item_table').on('click', '.delete-row', function () {
+          var tr = $(this).closest('tr');
+          var taxamount= parseFloat(tr.find('input[name^="taxamount"]').val());
+          var amount = parseFloat(tr.find('input[name^="amount"]').val());
+          var subtotal = parseFloat($('#subtotal').val());
 
-           var total_taxamount = parseFloat($('#total_taxamount').val());
-           $('#total_taxamount').val((total_taxamount-taxamount).toFixed(2));
+          var total_taxamount = parseFloat($('#total_taxamount').val());
+          $('#total_taxamount').val((total_taxamount-taxamount).toFixed(2));
 
-           $('#subtotal').val((subtotal - amount).toFixed(2));
+          $('#subtotal').val((subtotal - amount).toFixed(2));
 
-           var total_with_tax= parseFloat($('#total_with_tax').val());
-           $('#total_with_tax').val((total_with_tax  - amount - taxamount).toFixed(2));
-           
-           var pos = $("#customer_sel option:selected").data("pos");
-           var state = document.getElementById("state").value;
-           d=0
-           if(pos==state){
-               
-               gst = taxamount / 2;
-           console.log(gst);
-           $('#cgst').val(parseFloat(gst.toFixed(2)));
-           $('#sgst').val(parseFloat(gst.toFixed(2)));
-           $('#igst').val(parseFloat(d.toFixed(2)));
-
-           var cgst= parseFloat($('#cgst').val());
-           $('#cgst').val(( taxamount-cgst ).toFixed(2));
-           var sgst= parseFloat($('#sgst').val());
-           $('#sgst').val(( taxamount-sgst ).toFixed(2));
+          var total_with_tax= parseFloat($('#total_with_tax').val());
+          $('#total_with_tax').val((total_with_tax  - amount - taxamount).toFixed(2));
           
-           }
-           if(pos!=state){
+          var pos = $("#customer_sel option:selected").data("pos");
+          var state = document.getElementById("state").value;
+          d=0
+          if(pos==state){
               
-           console.log(gst);
-           $('#cgst').val(parseFloat(d.toFixed(2)));
-           $('#sgst').val(parseFloat(d.toFixed(2)));
-           $('#igst').val(parseFloat(taxamount.toFixed(2)));
+              gst = taxamount / 2;
+          console.log(gst);
+          $('#cgst').val(parseFloat(gst.toFixed(2)));
+          $('#sgst').val(parseFloat(gst.toFixed(2)));
+          $('#igst').val(parseFloat(d.toFixed(2)));
 
+          var cgst= parseFloat($('#cgst').val());
+          $('#cgst').val(( taxamount-cgst ).toFixed(2));
+          var sgst= parseFloat($('#sgst').val());
+          $('#sgst').val(( taxamount-sgst ).toFixed(2));
+         
+          }
+          if(pos!=state){
+             
+          console.log(gst);
+          $('#cgst').val(parseFloat(d.toFixed(2)));
+          $('#sgst').val(parseFloat(d.toFixed(2)));
+          $('#igst').val(parseFloat(taxamount.toFixed(2)));
+
+         
+          var igst= parseFloat($('#igst').val());
+          $('#igst').val(( total_taxamount-igst ).toFixed(2));
+         
+          }
+         
+         
+
+          tr.remove();
           
-           var igst= parseFloat($('#igst').val());
-           $('#igst').val(( total_taxamount-igst ).toFixed(2));
           
-           }
-          
-          
-
-           tr.remove();
-           
-           
-       });-
-   });
+      });
+  });
 
 
-function test(taxamount) {
-       console.log('test333');
-       console.log(taxamount)
-       d = 0;
-       var pos = $("#customer_sel option:selected").data("pos");
-       var state = document.getElementById("state").value;
-       console.log(pos)
-       console.log('state')
-       console.log(state)
-       console.log('state')
-       console.log('----------')
-       if (pos == state) {
-           console.log(pos);
-           console.log(state);
-           console.log(taxamount);
-           gst = taxamount / 2;
-           console.log(gst);
-           $('#cgst').val(parseFloat(gst.toFixed(2)));
-           $('#sgst').val(parseFloat(gst.toFixed(2)));
-           $('#igst').val(parseFloat(d.toFixed(2)));
-           // document.getElementById('tr_cgst').style= ('display: flex');
-           
-           // document.getElementById('tr_sgst').style= ('display: flex');
-           // document.getElementById('tr_igst').style= ('display: none');
 
-          
-       }
-
-       if (pos != state) {
-           console.log(pos);
-           console.log(state);
-           $('#igst').val(taxamount.toFixed(2));
-           $('#cgst').val(d.toFixed(2));
-           $('#sgst').val(d.toFixed(2));
-           document.getElementById('cgst')= ('display: none');
-           document.getElementById('sgst')= ('display: none');
-           document.getElementById('igst')= ('display: block');
-       }
-   }
-</script>
 
 {% endblock %}
