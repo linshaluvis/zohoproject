@@ -16,6 +16,9 @@ crossorigin="anonymous"></script>
     .search-dropdown-container {
         display: inline-block;
     }
+    .hidden {
+      display: none;
+  }
 
     .search-dropdown {
         width: 200px;
@@ -146,6 +149,7 @@ crossorigin="anonymous"></script>
         <div class="row mt-3">
             <div class="container">
                 <h4 class="text-white ms-4">New Invoice</h4>
+                <input  id="state" type="hidden" value="{{ details.company.state }}">
                 <hr class="text-warning">
             </div>
         </div>
@@ -210,14 +214,12 @@ crossorigin="anonymous"></script>
 
             option.value = inputValue;
             option.text = inputValue;
-            alert(inputValue)
 
 
 
             dropdown.appendChild(option);
 
             option.selected = true;
-            alert("ok")
             
 
                 
@@ -230,29 +232,16 @@ function toggleSecondDropdown() {
 
   
     var selectedValue = customerplaceDropdown.value.toLowerCase();
-    alert(selectedValue)
 
   
     if (selectedValue === 'kerala') {
       gstPercentageDropdown.style.display = 'block';
       otherDropdown.style.display = 'none';
-      $('#cgst').val(parseFloat(gst.toFixed(2)));
-            $('#sgst').val(parseFloat(gst.toFixed(2)));
-            $('#igst').val(parseFloat(d.toFixed(2)));
-            // document.getElementById('tr_cgst').style= ('display: flex');
-            
-            // document.getElementById('tr_sgst').style= ('display: flex');
-            // document.getElementById('tr_igst').style= ('display: none');
-
+      
     } else {
       gstPercentageDropdown.style.display = 'none';
       otherDropdown.style.display = 'block';
-      $('#igst').val(taxamount.toFixed(2));
-      $('#cgst').val(d.toFixed(2));
-      $('#sgst').val(d.toFixed(2));
-      document.getElementById('cgst')= ('display: none');
-      document.getElementById('sgst')= ('display: none');
-      document.getElementById('igst')= ('display: block');
+     
     }
   }
   
@@ -352,25 +341,46 @@ function toggleSecondDropdown() {
                         </div>
                        
                         <div class="col-md-6">
-                            <select type="text" class="form-select rounded bg-black text-white" id="customerplace" name="customerplace">
+                            <select type="text" class="form-select rounded  text-white" id="customerplace" name="customerplace">
                                 <option value="" hidden></option>
-                                <option value="[AN]-Andaman And Nicobar Islands">[AN]-Andaman And Nicobar Islands</option> <option value="[AD]-Andhra Pradesh">[AD]-Andhra Pradesh</option>
-                                <option value="[AR]-Arunachal Pradesh">[AR]-Arunachal Pradesh	</option> <option value="volvo">[AS]-Assam</option>
-                                <option value="[BR]-Bihar">[BR]-Bihar</option> <option value="volvo">[CH]-	Chandhigarh</option><option value="[CG]-Chattisgarh">[CG]-Chattisgarh</option>
-                                <option value="[DD]-Daman Diu">[DD]-Daman Diu</option><option value="volvo">[DL]-	Delhi</option><option value="[GA]-Goa">[GA]-Goa</option> <option value="[GJ]-Gujarat">[GJ]-Gujarat</option>
-                                <option value="[HR]-Haryana">[HR]-Haryana</option> <option value="[HP]-Himachal Pradesh">[HP]-Himachal Pradesh</option>
-                                <option value="[JK]-Jammu And Kashmir">[JK]-Jammu And Kashmir</option><option value="[JH]-Jharkand">[JH]-Jharkand</option>
-                                <option value="[KA]-Karnataka">[KA]-Karnataka</option><option value="[KL]-Kerala">[KL]-Kerala</option>
-                                <option value="[LA]-Ladakh">[LA]-Ladakh</option><option value="[LD]-Lakshadweep">[LD]-Lakshadweep</option>
-                                <option value="[MP]-Madhyapradesh">[MP]-Madhyapradesh</option><option value="[MH]-Maharashtra">[MH]-Maharashtra</option>
-                                <option value="[MN]-Manipur">[MN]-Manipur</option>  <option value="[ML]-Meghalaya">[ML]-Meghalaya</option>
-                                <option value="[MZ]-Mizoram">[MZ]-Mizoram</option> <option value="[NL]-Nagaland">[NL]-Nagaland</option> <option value="[NL]-Nagaland">[NL]-Nagaland</option>
-                                <option value="[OD]-Odisha">[OD]-Odisha</option><option value="[PY]-Puducherry">[PY]-Puducherry</option>
-                                <option value="[PB]-Punjab">[PB]-Punjab.</option><option value="[RL]-Rajasthan">[RL]-Rajasthan</option>
-                                <option value="[SK]-Sikkim">[SK]-Sikkim</option><option value="[TN]-Tamilnadu">[TN]-Tamilnadu</option>
-                                <option value="[TS]-Telenghana">[TS]-Telenghana</option><option value="[TR]-Tripura">[TR]-Tripura</option><option value="[UP]-Uttar Pradesh">[UP]-Uttar Pradesh</option>
-                                <option value="[UK]-Utharakhand">[UK]-Utharakhand</option><option value="[WB]-West Bengal">[WB]-West Bengal</option>
-                                <option value="[OT]-Other Territory">[OT]-Other Territory</option>
+                                <option class="form-select rounded  text-dark" value="[AN]-Andaman And Nicobar Islands">[AN]-Andaman And Nicobar Islands</option>
+                                 <option class="form-select rounded  text-dark" value="[AD]-Andhra Pradesh">[AD]-Andhra Pradesh</option>
+                                <option class="form-select rounded  text-dark" value="[AR]-Arunachal Pradesh">[AR]-Arunachal Pradesh	</option>
+                                 <option class="form-select rounded  text-dark" value="volvo">[AS]-Assam</option>
+                                <option  class="form-select rounded  text-dark" value="[BR]-Bihar">[BR]-Bihar</option> 
+                                <option class="form-select rounded  text-dark" value="volvo">[CH]-	Chandhigarh</option>
+                                <option  class="form-select rounded  text-dark"value="[CG]-Chattisgarh">[CG]-Chattisgarh</option>
+                                <option class="form-select rounded  text-dark" value="[DD]-Daman Diu">[DD]-Daman Diu</option>
+                                <option class="form-select rounded  text-dark" value="volvo">[DL]-	Delhi</option>
+                                <option class="form-select rounded  text-dark" value="[GA]-Goa">[GA]-Goa</option> 
+                                <option class="form-select rounded  text-dark" value="[GJ]-Gujarat">[GJ]-Gujarat</option>
+                                <option class="form-select rounded  text-dark" value="[HR]-Haryana">[HR]-Haryana</option> 
+                                <option class="form-select rounded  text-dark" value="[HP]-Himachal Pradesh">[HP]-Himachal Pradesh</option>
+                                <option class="form-select rounded  text-dark" value="[JK]-Jammu And Kashmir">[JK]-Jammu And Kashmir</option>
+                                <option class="form-select rounded  text-dark" value="[JH]-Jharkand">[JH]-Jharkand</option>
+                                <option class="form-select rounded  text-dark" value="[KA]-Karnataka">[KA]-Karnataka</option>
+                                <option class="form-select rounded  text-dark" value="[KL]-Kerala">[KL]-Kerala</option>
+                                <option class="form-select rounded  text-dark" value="[LA]-Ladakh">[LA]-Ladakh</option>
+                                <option  class="form-select rounded  text-dark" value="[LD]-Lakshadweep">[LD]-Lakshadweep</option>
+                                <option class="form-select rounded  text-dark" value="[MP]-Madhyapradesh">[MP]-Madhyapradesh</option>
+                                <option class="form-select rounded  text-dark" value="[MH]-Maharashtra">[MH]-Maharashtra</option>
+                                <option class="form-select rounded  text-dark" value="[MN]-Manipur">[MN]-Manipur</option> 
+                                 <option class="form-select rounded  text-dark" value="[ML]-Meghalaya">[ML]-Meghalaya</option>
+                                <option class="form-select rounded  text-dark" value="[MZ]-Mizoram">[MZ]-Mizoram</option> 
+                                <option class="form-select rounded  text-dark" value="[NL]-Nagaland">[NL]-Nagaland</option> 
+                                <option class="form-select rounded  text-dark" value="[NL]-Nagaland">[NL]-Nagaland</option>
+                                <option class="form-select rounded  text-dark" value="[OD]-Odisha">[OD]-Odisha</option>
+                                <option class="form-select rounded  text-dark" value="[PY]-Puducherry">[PY]-Puducherry</option>
+                                <option class="form-select rounded  text-dark" value="[PB]-Punjab">[PB]-Punjab.</option>
+                                <option class="form-select rounded  text-dark" value="[RL]-Rajasthan">[RL]-Rajasthan</option>
+                                <option class="form-select rounded  text-dark" value="[SK]-Sikkim">[SK]-Sikkim</option>
+                                <option class="form-select rounded  text-dark" value="[TN]-Tamilnadu">[TN]-Tamilnadu</option>
+                                <option class="form-select rounded  text-dark" value="[TS]-Telenghana">[TS]-Telenghana</option>
+                                <option class="form-select rounded  text-dark" value="[TR]-Tripura">[TR]-Tripura</option>
+                                <option class="form-select rounded  text-dark" value="[UP]-Uttar Pradesh">[UP]-Uttar Pradesh</option>
+                                <option class="form-select rounded  text-dark" value="[UK]-Utharakhand">[UK]-Utharakhand</option>
+                                <option  class="form-select rounded  text-dark"value="[WB]-West Bengal">[WB]-West Bengal</option>
+                                <option  class="form-select rounded  text-dark"value="[OT]-Other Territory">[OT]-Other Territory</option>
                             </select>
                         </div>
                     </div>
@@ -386,13 +396,13 @@ function toggleSecondDropdown() {
                             <p class="text-white">Payment method</p>
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 text-white">
                       
-                    <select  id="paymentMethod" onchange="showPaymentDetails()"class="form-select rounded bg-black text-white">
-                        <option class="dropdown-item" value="Cash">Cash</option>
-                        <option class="dropdown-item" value="Cheque">Cheque</option>
-                        <option class="dropdown-item" value="UPI">UPI</option>
-                        <option  class="dropdown-item" value="Bank">Bank</option>
+                    <select  id="paymentMethod" onchange="showPaymentDetails()"class="form-select rounded  text-white">
+                        <option class="dropdown-item text-black" value="Cash">Cash</option>
+                        <option class="dropdown-item text-black" value="Cheque">Cheque</option>
+                        <option class="dropdown-item text-black" value="UPI">UPI</option>
+                        <option  class="dropdown-item text-black" value="Bank">Bank</option>
                     </select>
                 </div>
             </div>
@@ -579,10 +589,9 @@ function toggleSecondDropdown() {
           
 <div style="overflow-x:auto;"> 
     <div class="table-responsive">
-        <table class="table mt-lg-5 mt-2 rounded" id="invoiceItems" style="background-color: rgb(0, 0, 0);color: white;">
+        <table class="table mt-md-5 mt-2 rounded" id="invoiceItems" style="background-color: rgb(0, 0, 0);color: white;">
             <thead>
                 <tr class="border-bottom border-dark">
-                    <th scope="col"><b>index</b></th>
                     <th scope="col"><b>item</b></th>
                     <th scope="col"><b>HSN</b></th>
                     <th scope="col"><b>Quantity</b></th>
@@ -590,15 +599,15 @@ function toggleSecondDropdown() {
                     <th scope="col"><b>Discount</b></th>
                     <th scope="col"><b>Tax</b></th>
                     <th scope="col"><b>Amount</b></th>
+
                     <th scope="col"><b>remove</b></th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="border-bottom border-dark"  id='row1'>
                     
-                    <td>1</td>
                     <td>
-                        <div class="col-md-6 d-flex align-items-center">
+                        <div class="col-md-8 d-flex align-items-center">
                             <div class="search-dropdown-container">
                                 <input type="text" id="searchDropdown2" class="search-dropdown" placeholder="Search or select..."  name='item[]' id='item1'>
                                 <ul class="dropdown-menu" id="dropdownMenu2">
@@ -610,13 +619,13 @@ function toggleSecondDropdown() {
                             <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createitem" onclick="openModal()" href="#" role="button">+</a>
                         </div>
                     </td>
-                    <td class='text-right'><input type='text' id='hsn1'
+                    <td ><input type='text' id='hsn1'
                       class='form-control border-0 text-white text-right hsn' name='hsn[]'
                       value=''  >
                     </td>
-                    <td class='text-right text-white '><input type='number' id='qty1'
+                    <td class=' text-white '><input type='number' id='qty1'
                       class='form-control border-0 text-white text-right qty' name='quantity[]'
-                      value='0' onchange="calc()"  >
+                      value='0'onchange="calc()"  >
                     </td>
     
                     <td class='text-right text-white '><input type='number' id='rate1'
@@ -624,23 +633,40 @@ function toggleSecondDropdown() {
                             value='0.00' >
                     </td>
                     <td class='text-right text-white '><input type='text' id='desc1'
-                            class='form-control border-0 text-white text-right desc' name='desc[]'
+                            class='form-control text-white text-right desc' name='desc[]'
                             >
                     </td>
-                    <td class='text-right'>
-                      <select id="gstPercentageDropdown"  onchange="calculateTotal()" class=' text-right tax ' name='tax[]' style="display: none;">
+                    <td class='text-right'> <select name="tax[]" id="tax1" onchange="calc()" class='form-control  text-white text-right tax'  >
+                      <option>Tax</option>
+                      <optgroup label="GST">
+                        <option class="text-black" value="0">GST 0%</option>
+                          <option  class="text-black" value="5">GST 5%</option>
+                          <option  class="text-black" value="12">GST 12%</option>
+                          <option   class="text-black" value="18">GST 18%</option>
+                          <option   class="text-black" value="28">GST 28%</option>
+                      </optgroup>
+                      <optgroup label="IGST">
+                        <option  class="text-black" value="0">IGST 0%</option>
+                          <option  class="text-black" value="5">IGST 5%</option>
+                          <option  class="text-black" value="12">IGST 12%</option>
+                          <option  class="text-black" value="18">IGST 18%</option>
+                          <option   class="text-black"value="28">IGST 28%</option>
+                      </optgroup>
+                  </select>
+                    {% comment %} <td class='text-right'>
+                      <select id="gstPercentageDropdown"  onchange="calc()" class=' text-right tax ' name='tax[]' style="display: none;">
                       
 
                           <option>Select Tax</option>
                           <option value="0">GST 0%</option>
 
 
-                          <option value="5%">GST 5%</option>
-                          <option value="12%"> GST 12%</option>
-                          <option value="18%">GST 18%</option>
-                          <option value="28%"> GST 28%</option>
+                          <option value="5">GST 5%</option>
+                          <option value="12"> GST 12%</option>
+                          <option value="18">GST 18%</option>
+                          <option value="28"> GST 28%</option>
                       </select>
-                      <select id="otherDropdown" class=' text-right tax '>
+                      <select id="otherDropdown" class=' text-right tax1 '>
                         <option>Select Tax</option>
                         <option value="0">IGST 0%</option>
 
@@ -650,19 +676,19 @@ function toggleSecondDropdown() {
                         <option value="18">IGST 18%</option>
                         <option value="28">IGST 28%</option>
                       </select>
-                  </td> 
+                  </td>  {% endcomment %}
 
 
-                    <td class="text-right">
-                      <input type="number" class="form-control border-0 text-white text-right amount" id="amount1" name="amount[]" value="0.00" readonly>
-                  </td>
-                    <td class='text-right'><input type='number' id='amount1'
-                            class='form-control border-0 text-black text-right amount' name='amount[]'
-                            value='0.00' readonly></td>
-                    <td class='text-center'><button type='button' id='del_btn1' onclick="removeRow(this)"
-                            class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row'
-                            style='width:30px'><i class='fa fa-times'></i></button></td>                   
-                </tr>
+                  <td style="display: none;">
+                    <input type="text"  name='taxamount1' id="taxamount1" class="form-control taxamount" />
+                </td>
+                <td class='text-right'><input type='number' id='amount1'
+                        class='form-control text-white text-right amount' name='amount[]'
+                        value='0.00' readonly></td>
+                <td class='text-center'><button type='button' id='del_btn1'
+                        class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row'
+                        style='width:30px'><i class='fa fa-times'></i></button></td>
+            </tr>
             </tbody>
         </table>
         
@@ -682,31 +708,31 @@ function toggleSecondDropdown() {
                     <td>Sub Total</td>
                     <td></td>
                     <td><input type="number" id="subtotal" name="subtotal" value="0.00"
-                            class="form-control border-0 text-right" readonly></td>
+                            class="form-control border-0 text-right" ></td>
                 </tr>
                 <tr id="tr_igst" >
                     <td>IGST</td>
                     <td></td>
                     <td><input type="number" id='igst' name="igst" value="0.00"
-                            class="form-control border-0 text-right" readonly></td>
+                            class="form-control border-0 text-right" ></td>
                 </tr>
                 <tr   id="tr_cgst">
                     <td>CGST</td>
                     <td></td>
                     <td><input type="number" id='cgst' name="cgst" value="0.00"
-                            class="form-control border-0 text-right cgst" readonly></td>
+                            class="form-control border-0 text-right cgst" ></td>
                 </tr>
                 <tr  id="tr_sgst">
                     <td>SGST</td>
                     <td></td>
                     <td><input type="number" id='sgst' name="sgst" value="0.00"
-                            class="form-control border-0 text-right" readonly></td>
+                            class="form-control border-0 text-right" ></td>
                 </tr>
                 <tr>
                     <td>Tax Amount</td>
                     <td></td>
                     <td><input type="number" id="total_taxamount" name="totaltax" value="0.00"
-                            class="form-control border-0 text-right"readonly></td>
+                            class="form-control border-0 text-right"></td>
                 </tr>
                
                
@@ -714,7 +740,7 @@ function toggleSecondDropdown() {
                     <th>Total (&#x20B9;)</th>
                     <th></th>
                     <th><input type="number" id="total_with_tax" name="t_total" value="0.00"
-                            class=" form-control border-0 text-right"readonly></b></th>
+                            class=" form-control border-0 text-right"></b></th>
                 </tr>
             </table>
         </div>
@@ -747,48 +773,258 @@ function selectItem(itemElement) {
     var selectedItemId = itemElement.getAttribute("value");
     var selectedHSN = itemElement.getAttribute("data-hsn");
     var selectedRate = itemElement.getAttribute("data-price");
+    var customerState = document.getElementById("customerplace").value;
+    var State = document.getElementById("state").value;
+
+
+document.getElementById("hsn1").value = selectedHSN;
+document.getElementById("rate1").value = selectedRate;
+
+if (customerState === State) {
+  $('.tax optgroup[label="GST"]').show();
+  $('.tax optgroup[label="IGST"]').hide();
+  
+  
+} else {
+  $('.tax optgroup[label="GST"]').hide();
+  $('.tax optgroup[label="IGST"]').show();
+}
 
     // Populate fields in the table
-    document.getElementById("hsn1").value = selectedHSN;
-    document.getElementById("rate1").value = selectedRate;
+   
 
     // Trigger calculation function
-    calculateTotal();
+    calc()
+}
+$(document).ready(function() {
+  // add event listener to trigger calc() function whenever a change is made to input fields
+  $('#invoiceItems').on('input', 'input', calc);
+});
+
+function calc() {
+  // loop through each row in the table
+  $('#invoiceItems tbody tr').each(function() {
+      // get the values of the input fields for this row
+      var qty = $(this).find('.qty').val();
+      var rate = $(this).find('.rate').val();
+      var desc = $(this).find('.desc').val();
+      var tax = $(this).find('.tax').val();
+     
+      
+      
+      // calculate the tax amount and total amount for this row
+      var taxamount = (qty * rate) * (tax / 100);
+      var amount =( qty * rate)-desc;
+      
+      // update the tax amount and total amount input fields for this row
+      $(this).find('.taxamount').val(taxamount.toFixed(2));
+      $(this).find('.amount').val(amount.toFixed(2));
+  });
+  
+  // calculate the total amount and total tax amount for all rows
+  var total = 0;
+  var taxamount = 0;
+  $('.amount').each(function() {
+      total += parseFloat($(this).val());
+  });
+  $('.taxamount').each(function() {
+      taxamount += parseFloat($(this).val());
+  });
+  
+  // update the subtotal and total tax amount input fields
+  $('#subtotal').val(total.toFixed(2));
+  $('#total_taxamount').val(taxamount.toFixed(2));
+
+  var total_with_tax = total + taxamount;
+  
+  // display the total amount including tax on the page
+  $('#total_with_tax').val(total_with_tax.toFixed(2));
+
+test(taxamount);
+
 }
 
-// Function to calculate total
-function calculateTotal() {
-    // Get values from inputs
-    var quantity = parseFloat(document.getElementById("qty1").value);
-    var rate = parseFloat(document.getElementById("rate1").value);
-    var discount = parseFloat(document.getElementById("desc1").value);
-    var taxPercentage = parseFloat(document.getElementById("gstPercentageDropdown").value); // or IGST if applicable
-    alert(taxPercentage)
+  // Update subtotal when a row is deleted
+  $(document).ready(function dlt () {
+    $('#invoiceItems').on('click', '.delete-row', function () {
+        var tr = $(this).closest('tr');
+        var taxamount= parseFloat(tr.find('input[name^="taxamount"]').val());
+        var amount = parseFloat(tr.find('input[name^="amount"]').val());
+        var subtotal = parseFloat($('#subtotal').val());
 
-    // Perform calculations
-    var taxamount = (qty * rate) * (tax / 100);
-    var amount = qty * rate;
+        var total_taxamount = parseFloat($('#total_taxamount').val());
+        $('#total_taxamount').val((total_taxamount-taxamount).toFixed(2));
 
-    var subtotal = quantity * rate;
-    var discountAmount = subtotal * (discount / 100);
-    var discountedSubtotal = subtotal - discountAmount;
-    var taxAmount = discountedSubtotal * (taxPercentage / 100);
-    var totalAmount = discountedSubtotal + taxAmount;
+        $('#subtotal').val((subtotal - amount).toFixed(2));
 
-    // Update fields with calculated values
-    document.getElementById("subtotal").value = subtotal.toFixed(2);
-    document.getElementById("total_taxamount").value = taxAmount.toFixed(2);
-    document.getElementById("total_with_tax").value = totalAmount.toFixed(2);
+        var total_with_tax= parseFloat($('#total_with_tax').val());
+        $('#total_with_tax').val((total_with_tax  - amount - taxamount).toFixed(2));
+        
+        var pos = document.getElementById("customerplace").value;
+        var State = document.getElementById("state").value;
+
+        d=0
+        if(pos==State){
+            
+            gst = taxamount / 2;
+        console.log(gst);
+        $('#cgst').val(parseFloat(gst.toFixed(2)));
+        $('#sgst').val(parseFloat(gst.toFixed(2)));
+        $('#igst').val(parseFloat(d.toFixed(2)));
+
+        var cgst= parseFloat($('#cgst').val());
+        $('#cgst').val(( taxamount-cgst ).toFixed(2));
+        var sgst= parseFloat($('#sgst').val());
+        $('#sgst').val(( taxamount-sgst ).toFixed(2));
+       
+        }
+        if(pos!=state){
+           
+        console.log(gst);
+        $('#cgst').val(parseFloat(d.toFixed(2)));
+        $('#sgst').val(parseFloat(d.toFixed(2)));
+        $('#igst').val(parseFloat(taxamount.toFixed(2)));
+
+       
+        var igst= parseFloat($('#igst').val());
+        $('#igst').val(( total_taxamount-igst ).toFixed(2));
+       
+        }
+       
+       
+
+        tr.remove();
+        
+        
+    });
+});
+
+
+
+function test(taxamount) {
+ 
+  d = 0;
+  var pos = document.getElementById("customerplace").value;
+  var State = document.getElementById("state").value;
+
+  if (pos == State) {
+     
+      gst = taxamount / 2;
+      console.log(gst);
+      $('#cgst').val(parseFloat(gst.toFixed(2)));
+      $('#sgst').val(parseFloat(gst.toFixed(2)));
+      $('#igst').val(parseFloat(d.toFixed(2)));
+      document.getElementById("tr_igst").classList.add("hidden");
+
+
+     
+  }
+
+  if (pos != State) {
+      console.log(pos);
+      console.log(state);
+      $('#igst').val(taxamount.toFixed(2));
+      $('#cgst').val(d.toFixed(2));
+      $('#sgst').val(d.toFixed(2));
+      
+      document.getElementById("tr_cgst").classList.add("hidden");
+      document.getElementById("tr_sgst").classList.add("hidden");
+
+  }
 }
-
-// Event listeners for input fields
-document.getElementById("qty1").addEventListener("input", calculateTotal);
-document.getElementById("rate1").addEventListener("input", calculateTotal);
-document.getElementById("desc1").addEventListener("input", calculateTotal);
-document.getElementById("gstPercentageDropdown").addEventListener("change", calculateTotal);
-
-// You may need to add event listeners for dynamically added rows as well
 </script>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+
+
+</script>
+
+<script>
+  $(document).ready(function () {
+
+
+
+     $('#add-row').click(function () {
+         var table = document.getElementById("invoiceItems");
+         var RowCount = table.rows.length;
+         alert(RowCount)
+         var newRow = $(`
+         <tr id='row${RowCount}' >
+             <td>
+              <div class="col-md-8 d-flex align-items-center">
+                <div class="search-dropdown-container">
+                    <input type="text" id="searchDropdown2" class="search-dropdown" placeholder="Search or select..."  name='item[]'  id='item${RowCount}'>
+                    <ul class="dropdown-menu" id="dropdownMenu2">
+                        {% for items in item %}
+                        <a class="dropdown-item item_select itm" onclick="selectItem(this)" value="{{ items.id }}" data-price="{{ items.selling_price }}" data-hsn="{{ items.hsn_code }}">{{items.item_name}}</a>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <a class="btn btn-outline-warning ml-2" data-bs-toggle="modal" data-bs-target="#createitem" onclick="openModal()" href="#" role="button">+</a>
+            </div>
+                 
+             </td>
+             <td ><input type='text' id='hsn${RowCount}'
+              class='form-control border-0 text-white text-right hsn' name='hsn[]'
+              value=''  >
+            </td>
+            <td class=' text-white '><input type='number' id='qty${RowCount}'
+              class='form-control border-0 text-white text-right qty' name='quantity[]'
+              value='0'onchange="calc()"  >
+            </td>
+
+            <td class='text-right text-white '><input type='number' id='rate${RowCount}'
+                    class='form-control border-0 text-white text-right rate ' name='rate[]'
+                    value='0.00' >
+            </td>
+            <td class='text-right text-white '><input type='text' id='desc${RowCount}'
+                    class='form-control text-white text-right desc' name='desc[]'
+                    >
+            </td>
+            <td class='text-right'> <select name="tax[]" id="tax" onchange="calc()" class='form-control  text-white text-right tax'  >
+              <option>Tax</option>
+              <optgroup label="GST">
+                <option class="text-black" value="0">GST 0%</option>
+                  <option  class="text-black" value="5">GST 5%</option>
+                  <option  class="text-black" value="12">GST 12%</option>
+                  <option   class="text-black" value="18">GST 18%</option>
+                  <option   class="text-black" value="28">GST 28%</option>
+              </optgroup>
+              <optgroup label="IGST">
+                <option  class="text-black" value="0">IGST 0%</option>
+                  <option  class="text-black" value="5">IGST 5%</option>
+                  <option  class="text-black" value="12">IGST 12%</option>
+                  <option  class="text-black" value="18">IGST 18%</option>
+                  <option   class="text-black"value="28">IGST 28%</option>
+              </optgroup>
+          
+                    
+                 </select></td>
+             <td style="display: none;">
+                 <input type="text" name='taxamount1' id="taxamount${RowCount}" class="form-control taxamount" />
+                         </td>
+                         <td class='text-right'><input type='number' id='amount${RowCount}'
+                          class='form-control text-white text-right amount' name='amount[]'
+                          value='0.00' readonly></td>
+                  <td class='text-center'><button type='button' id='del_btn${RowCount}'
+                          class='btn btn-transparent text-danger btn-sm btn-outline-danger rounded-circle delete-row'
+                          style='width:30px'><i class='fa fa-times'></i></button></td>
+         </tr>`);
+
+        
+         $('#invoiceItems').append(newRow);
+     });
+
+     $('#invoiceItems').on('click', '.delete-row', function () {
+         $(this).closest('tr').remove();
+     });
+
+ });
+ 
+
+</script>
+
    
 
  
@@ -1879,6 +2115,7 @@ document.getElementById("gstPercentageDropdown").addEventListener("change", calc
         });
     });
 </script>
+<script>
 $(document).ready(function() {
   // add event listener to trigger calc() function whenever a change is made to input fields
   $('#invoiceItems').on('input', 'input', calc);

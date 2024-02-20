@@ -665,15 +665,45 @@ def invoice_overview(request):
         customers=Customer.objects.all()
         item=Items.objects.all()
         payments=Company_Payment_Term.objects.all()
+    
 
         context={
             'details':dash_details,
             'allmodules': allmodules,
-             'customers':customers,
-            'item':item,
+             'c':customers,
+            'p':item,
             'payments':payments,
         }
         return render(request,'staff/overview.html',context)
+def itemdata_challan(request):
+    cur_user = request.cust
+    user = cur_user.id
+    customer_id = request.GET.get('cust')
+    cust = Customer.objects.get(id=customer_id)
+
+    try:
+        id = request.GET.get('id')
+
+        try:
+            item = Items.objects.get(item_name=id)
+            name = item.item_name
+            rate = item.selling_price
+            hsn = item.hsn_code
+            # Assuming `company_name` is a field in the `company_details` model
+            place = cust.place_of_supply
+            return JsonResponse({"status": "not", 'place': place, 'rate': rate, 'hsn': hsn})
+        except Items.DoesNotExist:
+            return JsonResponse({"status": "error", 'message': "Item not found"})
+    except Exception as e:
+        return JsonResponse({"status": "error", 'message': str(e)})
+def customerdata(request):
+    customer_id = request.GET.get('id')
+    print(customer_id)
+    cust = Customer.objects.get(id=customer_id)
+    data7 = {'email': cust.customer_email,'gst':cust.GST_treatement,'gstin':cust.GST_number}
+    
+    print(data7)
+    return JsonResponse(data7)
 def itemdata(request):
     cur_user = request.user.id
     user = User.objects.get(id=cur_user)
