@@ -665,7 +665,14 @@ def invoice_overview(request):
         customers=Customer.objects.all()
         item=Items.objects.all()
         payments=Company_Payment_Term.objects.all()
-    
+        banks = Banking.objects.all()
+        unit = Unit.objects.all()
+
+        if invoice.objects.all().exists():
+            invoice_count = invoice.objects.last().id
+            count = invoice_count
+        else:
+            count = 1
 
         context={
             'details':dash_details,
@@ -673,11 +680,17 @@ def invoice_overview(request):
              'c':customers,
             'p':item,
             'payments':payments,
+            'banks':banks,
+            'count': count,
+            'units': unit,
+
+
+            
         }
         return render(request,'staff/overview.html',context)
+    
 def itemdata_challan(request):
-    cur_user = request.cust
-    user = cur_user.id
+  
     customer_id = request.GET.get('cust')
     cust = Customer.objects.get(id=customer_id)
 
@@ -689,9 +702,10 @@ def itemdata_challan(request):
             name = item.item_name
             rate = item.selling_price
             hsn = item.hsn_code
+            avl=item.current_stock
             # Assuming `company_name` is a field in the `company_details` model
             place = cust.place_of_supply
-            return JsonResponse({"status": "not", 'place': place, 'rate': rate, 'hsn': hsn})
+            return JsonResponse({"status": "not", 'place': place, 'rate': rate, 'avl':avl ,'hsn': hsn})
         except Items.DoesNotExist:
             return JsonResponse({"status": "error", 'message': "Item not found"})
     except Exception as e:

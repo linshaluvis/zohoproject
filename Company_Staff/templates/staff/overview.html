@@ -2,7 +2,6 @@
 {% load static %}
 {% block content %}
 
-<!-- ...................     RIJIN P........................... -->
 
 
 
@@ -46,6 +45,9 @@ crossorigin="anonymous"></script>
     .hide {
         display: none;
     }
+    .hidden {
+      display: none;
+  }
    
     .popup-0 {
       height: 17rem;
@@ -98,7 +100,7 @@ crossorigin="anonymous"></script>
           </div>
       </div>
 <div class="row mx-3">
-    <div class="col-md-6"><a class="text-white" style="font-size: 1.5rem;"><i class="fa-solid fa-plus"></i> New
+    <div class="col-md-6"><a class="text-white" style="font-size: 1.5rem;"> New
             Invoice</a></div>
             <!-- <input type="hidden" name="hidden_state" id="state" value="{{company.state}}"> -->
 </div>
@@ -118,7 +120,7 @@ crossorigin="anonymous"></script>
                     <option type="hidden" value="vendor">select</option>
     
                     {% for cust in c %}
-                    <option class="text-dark" value="{{cust.id}}" data-email="{{ cust.customer_email }}" data-gsttreatment="{{ cust.GST_treatement }}" data-gstnumber="{{ cust.GST_number }}" data-placeofsupply="{{ cust.place_of_supply }}"   >{{cust.first_name}}</option>
+                    <option class="text-dark" value="{{cust.id}}" data-email="{{ cust.customer_email }}"  data-billingcountry="{{cust.billing_country}}"data-billingstate="{{cust.billing_state}}" data-billingcity="{{cust.billing_city}}" data-billing="{{cust.billing_address}}"  data-gsttreatment="{{ cust.GST_treatement }}" data-gstnumber="{{ cust.GST_number }}" data-placeofsupply="{{ cust.place_of_supply }}"   >{{cust.first_name}}</option>
                     {% endfor %}
                     <!-- <option value="customer">Register as a customer</option> -->
     
@@ -134,28 +136,74 @@ crossorigin="anonymous"></script>
         <div class="row mb-4">
           <div class="col-sm-2"><label for="customer_email">Customer Email</label></div>
           <div class="col-sm-6">
-              <input type="text" class="form-control text-black" id="customer_email" name="customer_email" readonly>
+              <input type="text" class="form-control text-white" id="customer_email" name="customer_email" readonly>
           </div>
       </div>
+      <div class="row mb-4">
+        <div class="col-sm-2"><label for="customer_email">Billing address</label></div>
+        <div class="col-sm-6">
+          <textarea class="form-control text-white" id="combinedValuesTextarea" rows="6" cols="40"></textarea>
+        </div>
+    </div>
       
       <div class="row mb-4">
         <div class="col-sm-2"><label for="gst_treatment">GST Treatment</label></div>
         <div class="col-sm-6">
-            <input type="text" class="form-control text-black" id="gst_treatment" name="gst_treatment" readonly>
+            <input type="text" class="form-control text-white" id="gst_treatment" name="gst_treatment" readonly>
         </div>
     </div>
     
     <div class="row mb-4" id="gst_number_container">
         <div class="col-sm-2"><label for="gst_number">GST Number</label></div>
         <div class="col-sm-6">
-            <input type="text" class="form-control text-black" id="gst_number" name="gst_number" readonly>
+            <input type="text" class="form-control text-white" id="gst_number" name="gst_number" readonly>
         </div>
     </div>
     
     <div class="row mb-4">
         <div class="col-sm-2"><label for="place_of_supply">Place of Supply</label></div>
         <div class="col-sm-6">
-            <input type="text" class="form-control text-black" id="place_of_supply" name="place_of_supply" readonly>
+            <select type="text" class="form-select rounded  text-white" id="place_of_supply" name="place_of_supply">
+              <option value="" hidden></option>
+              <option class="form-select rounded  text-dark" value="[AN]-Andaman And Nicobar Islands">[AN]-Andaman And Nicobar Islands</option>
+               <option class="form-select rounded  text-dark" value="[AD]-Andhra Pradesh">[AD]-Andhra Pradesh</option>
+              <option class="form-select rounded  text-dark" value="[AR]-Arunachal Pradesh">[AR]-Arunachal Pradesh	</option>
+               <option class="form-select rounded  text-dark" value="volvo">[AS]-Assam</option>
+              <option  class="form-select rounded  text-dark" value="[BR]-Bihar">[BR]-Bihar</option> 
+              <option class="form-select rounded  text-dark" value="volvo">[CH]-	Chandhigarh</option>
+              <option  class="form-select rounded  text-dark"value="[CG]-Chattisgarh">[CG]-Chattisgarh</option>
+              <option class="form-select rounded  text-dark" value="[DD]-Daman Diu">[DD]-Daman Diu</option>
+              <option class="form-select rounded  text-dark" value="volvo">[DL]-	Delhi</option>
+              <option class="form-select rounded  text-dark" value="[GA]-Goa">[GA]-Goa</option> 
+              <option class="form-select rounded  text-dark" value="[GJ]-Gujarat">[GJ]-Gujarat</option>
+              <option class="form-select rounded  text-dark" value="[HR]-Haryana">[HR]-Haryana</option> 
+              <option class="form-select rounded  text-dark" value="[HP]-Himachal Pradesh">[HP]-Himachal Pradesh</option>
+              <option class="form-select rounded  text-dark" value="[JK]-Jammu And Kashmir">[JK]-Jammu And Kashmir</option>
+              <option class="form-select rounded  text-dark" value="[JH]-Jharkand">[JH]-Jharkand</option>
+              <option class="form-select rounded  text-dark" value="[KA]-Karnataka">[KA]-Karnataka</option>
+              <option class="form-select rounded  text-dark" value="[KL]-Kerala">[KL]-Kerala</option>
+              <option class="form-select rounded  text-dark" value="[LA]-Ladakh">[LA]-Ladakh</option>
+              <option  class="form-select rounded  text-dark" value="[LD]-Lakshadweep">[LD]-Lakshadweep</option>
+              <option class="form-select rounded  text-dark" value="[MP]-Madhyapradesh">[MP]-Madhyapradesh</option>
+              <option class="form-select rounded  text-dark" value="[MH]-Maharashtra">[MH]-Maharashtra</option>
+              <option class="form-select rounded  text-dark" value="[MN]-Manipur">[MN]-Manipur</option> 
+               <option class="form-select rounded  text-dark" value="[ML]-Meghalaya">[ML]-Meghalaya</option>
+              <option class="form-select rounded  text-dark" value="[MZ]-Mizoram">[MZ]-Mizoram</option> 
+              <option class="form-select rounded  text-dark" value="[NL]-Nagaland">[NL]-Nagaland</option> 
+              <option class="form-select rounded  text-dark" value="[NL]-Nagaland">[NL]-Nagaland</option>
+              <option class="form-select rounded  text-dark" value="[OD]-Odisha">[OD]-Odisha</option>
+              <option class="form-select rounded  text-dark" value="[PY]-Puducherry">[PY]-Puducherry</option>
+              <option class="form-select rounded  text-dark" value="[PB]-Punjab">[PB]-Punjab.</option>
+              <option class="form-select rounded  text-dark" value="[RL]-Rajasthan">[RL]-Rajasthan</option>
+              <option class="form-select rounded  text-dark" value="[SK]-Sikkim">[SK]-Sikkim</option>
+              <option class="form-select rounded  text-dark" value="[TN]-Tamilnadu">[TN]-Tamilnadu</option>
+              <option class="form-select rounded  text-dark" value="[TS]-Telenghana">[TS]-Telenghana</option>
+              <option class="form-select rounded  text-dark" value="[TR]-Tripura">[TR]-Tripura</option>
+              <option class="form-select rounded  text-dark" value="[UP]-Uttar Pradesh">[UP]-Uttar Pradesh</option>
+              <option class="form-select rounded  text-dark" value="[UK]-Utharakhand">[UK]-Utharakhand</option>
+              <option  class="form-select rounded  text-dark"value="[WB]-West Bengal">[WB]-West Bengal</option>
+              <option  class="form-select rounded  text-dark"value="[OT]-Other Territory">[OT]-Other Territory</option>
+          </select>
         </div>
     </div>
     
@@ -166,16 +214,26 @@ crossorigin="anonymous"></script>
         }
     </style>
     
+    
     <script>
         // Add an event listener to the customer selection dropdown
         document.getElementById('customer_sel').addEventListener('change', function () {
             // Get the selected option
             var selectedOption = this.options[this.selectedIndex];
+            var billingCountry = selectedOption.getAttribute('data-billingcountry');
+            var billingState = selectedOption.getAttribute('data-billingstate');
+            var billingCity = selectedOption.getAttribute('data-billingcity');
+            var billingAddress = selectedOption.getAttribute('data-billing');
+            var combinedValues =  billingAddress + "\n"  + billingState + "\n" + billingCity + "\n" + billingCountry;
+                            
             
             // Update the input fields with customer information
             document.getElementById('customer_email').value = selectedOption.getAttribute('data-email');
             document.getElementById('gst_treatment').value = selectedOption.getAttribute('data-gsttreatment');
             document.getElementById('place_of_supply').value = selectedOption.getAttribute('data-placeofsupply');
+            document.getElementById('combinedValuesTextarea').value = combinedValues;
+
+
     
             // Check the GST treatment to determine whether to show or hide the GST number
             var gstTreatment = selectedOption.getAttribute('data-gsttreatment');
@@ -191,7 +249,6 @@ crossorigin="anonymous"></script>
         });
     </script>
     
-      </script>
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -211,14 +268,14 @@ crossorigin="anonymous"></script>
    
 </div>
         <div class="row mb-4">
-            <div class="col-sm-2"><label for="estimate_number">Invoice#*</label></div>
-            <div class="col-sm-6"><input type="text" class="form-control text-dark" id="estimate_number" name="inv_no" value="INV-{{count}}">
+            <div class="col-sm-2"><label for="estimate_number">Invoice Number</label></div>
+            <div class="col-sm-6"><input type="text" class="form-control text-white" id="estimate_number" name="inv_no" value="INV-{{count}}">
                
             </div>
         </div>
         <div class="row mb-4">
             <div class="col-sm-2"><label for="reference">Order Number</label></div>
-            <div class="col-sm-6"> <input type="text" class="form-control text-dark" id="ord_no" name="ord_no" class="" required>
+            <div class="col-sm-6"> <input type="text" class="form-control text-white" id="ord_no" name="ord_no" class="" required>
                     </div>
         </div>
     
@@ -229,7 +286,7 @@ crossorigin="anonymous"></script>
             <label class="mr-3 " for="input-1">invoice Date</label>
           </div>
           <div class="col-sm-6 col-lg-2 col-md-2">
-            <input type="date" class="form-control text-dark"   name="inv_date" id="input-1" >
+            <input type="date" class="form-control text-white"   name="inv_date" id="input-1" >
           </div>
           
               
@@ -237,7 +294,7 @@ crossorigin="anonymous"></script>
             <label for="input-2" class="ms-5">Due Date</label>
         </div>
         <div class="col-sm-6 col-lg-2 col-md-2">
-            <input type="date" class="form-control text-dark" name="due_date" id="input-2" readonly>
+            <input type="date" class="form-control text-white" name="due_date" id="input-2" readonly>
         </div>
 
               
@@ -262,23 +319,11 @@ crossorigin="anonymous"></script>
 
               
               <div class="col-sm-6 ">
-                <select class="my-select form-control text-dark" name="term" id="inv_term">
-                  <!-- {% for p in pay %}
-                    <option value="{{p.Terms}}">{{p.Terms}}</option>
-                  {% endfor %} -->
-                  <option value="15">NET 15</option>
-                        <option value="30">NET 30</option>
-                        <option value="45">NET 45</option>
-                        <option value="60">NET 60</option>
-                        <option value="90">NET 90</option>
-                        <option value="Due end of the month">Due end of the month</option>
-                        <option value="recpt">Due on receipt</option>
-
-                   
-
-                        {% for p in payments%}
-                <option value="{{p.Days}}">{{ p.Terms }}</option>
-                {% endfor%}
+                <select class="my-select form-control text-white" name="term" id="inv_term">
+                 
+                  {% for p in payments %}
+                  <option  class="dropdown-item text-dark" value="{{p.days}}">{{ p.term_name }}</option>
+                  {% endfor%}
                   </select> 
                  
                 </div>
@@ -289,7 +334,7 @@ crossorigin="anonymous"></script>
                     </a>
                 </div>
                 <div class="col-sm-8">
-                  <p id="alertMessage" style="color: red; font-style: italic;"></p> <!-- Element to display the alert -->
+                  <p id="alertMessage" style="color: rgb(68, 27, 182); font-style: italic;"></p> <!-- Element to display the alert -->
                 </div>
                 
                 <script>
@@ -348,12 +393,12 @@ crossorigin="anonymous"></script>
       <label for="payment_method" >Payment Method</label>
   </div>
   <div class="col-sm-6">
-      <select class="form-control text-black" name="payment_method" id="payment_method">
-          <option value="cash">Cash</option>
-          <option value="cheque">Cheque</option>
-          <option value="upi">UPI</option>
+      <select class="form-control text-white" name="payment_method" id="payment_method">
+          <option class="form-control text-black" value="cash">Cash</option>
+          <option  class="form-control text-black" value="cheque">Cheque</option>
+          <option class="form-control text-black"  value="upi">UPI</option>
           {% for bank in banks %}
-        <option style="color: black;" value="{{ bank.name }}">{{ bank.name }}</option>
+        <option style="color: black;" value="{{ bank.bnk_name }}">{{ bank.bnk_name }}</option>
       {% endfor %}
       </select>
   </div>
@@ -427,24 +472,28 @@ crossorigin="anonymous"></script>
 <div class="row">
   <div class="col-sm-12">
     
-<table class="table table-bordered text-white"  id="item_table" style="background-color: #b6b3b36b;table-layout: fixed;width: 100%;" onchange="calc()">
+<table class="table table-bordered text-white"  id="item_table" style="table-layout: fixed;width: 100%;" onchange="calc()">
 <thead >
   <tr >
-      <th style="font-weight: bold;color: rgb(245, 154, 36);">Product<a href="" data-toggle="modal" data-target="#newitem">&nbsp;&nbsp;&nbsp;<i class="fa-solid  fa fa-plus fa-xl rounded p-1"
-        style="color: white; background-color: rgb(210, 132, 30);height: 25px;width: 25%;"></i></a></th>
+      <th style="font-weight: bold;color: rgb(245, 154, 36);">Product</th>
       <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Hsn</th>
       <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Quantity</th>
       <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Rate</th>
       <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Discount</th>
       <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Tax %</th>
       <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Total</th>
+      <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Remove</th>
+
   </tr>
 </thead>
 <tbody>
 
   <tr id='row1'>
       <td>
-          <div class='form-group'><select
+          <div class='form-group'>
+            <div class="col-md-12 d-flex align-items-center">
+
+            <select
                   class='form-control bg-transparent  text-light border-0 item_select itm'
                   name="item[]" id='item1'>
                   <option class="text-dark" >Select</option>
@@ -452,7 +501,12 @@ crossorigin="anonymous"></script>
                   
                   <option class="text-dark" value="{{i.item_name}}"   data-Hsn="{{ i.hsn_code }}" data-Rate="{{ i.selling_price }}">{{ i.item_name }}</option>
                   {% endfor %}
-              </select></div>
+              </select>
+
+              <a href="" data-toggle="modal" data-target="#newitem"><i class="fa-solid  fa fa-plus  rounded p-1"
+                style="color: white; background-color: rgb(210, 132, 30);height: 25px;width: 100%;"></i></a>
+              </div>
+              
       </td>
      
       <td class='text-right'><input type='text' id='hsn1'
@@ -466,6 +520,10 @@ crossorigin="anonymous"></script>
       <td class='text-right'><input type='number' id='qty1'
         class='form-control bg-transparent border-0 text-light text-right qty' name='quantity[]'
         value='0' onchange="calc()"  >
+        <input type="text" id="avl1" style="display: none;" value="0" >
+
+        <div class="d-flex"><span>Available Qty :</span><span id="qtyspan1" class=''></span></div>
+
       </td>
 
       <td class='text-right'><input type='number' id='rate1'
@@ -489,26 +547,7 @@ crossorigin="anonymous"></script>
           
     </select>
     
-<!-- <script>
-function validateHSN() {
-// var hsn = hsnInput.value;
-// var errorSpan = hsnInput.nextElementSibling;
-// var valid = true;
-var hsn=document.getElementById('hsn1')
 
-if (hsn.length != 6) {
-// errorSpan.innerHTML = "HSN must be 6 digits long";
-// valid = false;
-hsn.style.color='red';
-hsn.innerHTML=0
-} else {
-errorSpan.innerHTML = "&#x2713;"; // Check mark
-}
-
-// return valid;
-}
-
-</script> -->
 <style>
 .hsn-validation {
 font-size: 1.2em;
@@ -557,24 +596,27 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
             <div class="row">
               <div class="col-sm-12">
                 
-        <table class="table table-bordered text-white"  id="item_tablee" style="background-color: #b6b3b36b;table-layout: fixed;width: 100%;display: none;" onchange="calc()">
+        <table class="table table-bordered text-white"  id="item_tablee" style="table-layout: fixed;width: 100%;display: none;" onchange="calc()">
           <thead >
               <tr >
-                  <th style="font-weight: bold;color: rgb(245, 154, 36);">Product<a href="" data-toggle="modal" data-target="#newitem">&nbsp;&nbsp;&nbsp;<i class="fa-solid  fa fa-plus fa-xl rounded p-1"
-                    style="color: white; background-color: rgb(210, 132, 30);height: 25px;width: 25%;"></i></a></th>
+                  <th style="font-weight: bold;color: rgb(245, 154, 36);">Product</th>
                   <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Hsn</th>
                   <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Quantity</th>
                   <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Rate</th>
                   <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Discount</th>
                   <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Tax %</th>
                   <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Total</th>
+                  <th class="text-right" style="font-weight: bold;color: rgb(245, 154, 36);">Remove</th>
+
               </tr>
           </thead>
           <tbody>
     
               <tr id='row1'>
                   <td>
-                      <div class='form-group'><select
+                      <div class='form-group'>
+                        <div class="col-md-12 d-flex align-items-center">
+                          <select
                               class='form-control bg-transparent  text-light border-0 item_selectt itmm'
                               name='itemm[]' id='itemm1'>
                               <option class="text-dark" value="">Select</option>
@@ -582,7 +624,11 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                               
                               <option class="text-dark" value="{{i.item_name}}">{{i.item_name}}</option>
                               {% endfor %}
-                          </select></div>
+                          </select>
+                          <a href="" data-toggle="modal" data-target="#newitem"><i class="fa-solid  fa fa-plus  rounded p-1"
+                            style="color: white; background-color: rgb(210, 132, 30);height: 25px;width: 100%;"></i></a>
+                          </div>
+                          </div>
                   </td>
                  
                   <td class='text-right'><input type='text' id='hsnn1'
@@ -590,18 +636,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                     value='' readonly >
 
                   </td>
-             <!-- <script>
-             $(document).on("input", ".hsnn", function() {
-                    var hsn_value = $(this).val();
-                    var hsn_length = hsn_value.length;
-                    if (hsn_length > 6) {
-                        $(this).val(hsn_value.substring(0, 6));
-                        alert("HSN should not be more than 6 digits!");
-                    }
-                });
-           
-   
-  </script> -->
+    
   
   
                   <td class='text-right'><input type='number' id='qtyy1'
@@ -628,23 +663,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                         <option value="28" class="text-dark">IGST 28%</option>
                 </select>
                 
-  <!-- <script>
-    function validateHSNN(hsnInput) {
-      var hsn = hsnInput.value;
-      var errorSpan = hsnInput.nextElementSibling;
-      var valid = true;
-  
-      if (hsn.length != 6) {
-          errorSpan.innerHTML = "HSN must be 6 digits long";
-          valid = false;
-      } else {
-          errorSpan.innerHTML = "&#x2713;"; // Check mark
-      }
-  
-      return valid;
-  }
-  
-  </script> -->
+
   <style>
     .hsn-validation {
       font-size: 1.2em;
@@ -701,9 +720,9 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                     placeholder=" Customer information for future Buisness" ></textarea>
             </div>
             <div class="col-sm-6">
-                <table class="rounded table table-bordered" id="table_tot" style="background-color: #b6b3b36b;" >
+                <table class="rounded table table-bordered" id="table_tot"  >
                     <tr>
-                        <td class="text-black" style="font-weight: bold;">Sub Total</td>
+                        <td class="text-white" style="font-weight: bold;">Sub Total</td>
                         <td>
                           <center>
                           <input type="number" id="subtotal" name="subtotal" value="0.00"
@@ -712,7 +731,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                       </td>
                     </tr>
                     <tr style="display: none;font-weight: bold;" id="tr_igst" >
-                        <td class="text-black" style="font-weight: bold;">IGST</td>
+                        <td class="text-white" style="font-weight: bold;">IGST</td>
                         <td>
                           <center>
                             <input type="number" id='igst' name="igst" value="0.00"
@@ -721,7 +740,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                         </td>
                     </tr>
                     <tr style="display: none;font-weight: bold;" id="tr_cgst">
-                        <td class="text-black" style="font-weight: bold;">CGST</td>
+                        <td class="text-white" style="font-weight: bold;">CGST</td>
                         <td>
                           <center>
                             <input type="number" id='cgst' name="cgst" value="0.00"
@@ -730,7 +749,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                         </td>
                     </tr>
                     <tr style="display: none;font-weight: bold;"  id="tr_sgst">
-                        <td class="text-black" style="font-weight: bold;">SGST</td>
+                        <td class="text-white" style="font-weight: bold;">SGST</td>
                         <td>
                           <center>
                             <input type="number" id='sgst' name="sgst" value="0.00"
@@ -739,7 +758,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-black" style="font-weight: bold;">Tax Amount</td>
+                        <td class="text-white" style="font-weight: bold;">Tax Amount</td>
                         <td>
                           <center>
                           <input type="number" id="total_taxamount" name="totaltax" value="0.00"
@@ -748,14 +767,14 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                       </td>
                     </tr>
                     <tr>
-                      <td class="text-black" style="font-weight: bold;">Shipping Charges</td>
+                      <td class="text-white" style="font-weight: bold;">Shipping Charges</td>
                       <!-- <td></td> -->
                       <!-- <td><input type="number" id="shipping"> <i class="fas fa-question"></i></td> -->
                       <td><center><input type="number" id="shipping_charge" name="shipping_charge" step="any" onchange="calc_ship()" value="0.00" 
                           class="form-control bg-transparent border-0 text-right shipping_charge" style="width: 50%;"></center></td>
                   </tr>
                   <tr>
-                      <td class="text-black" style="font-weight: bold;">Adjustmment</td>
+                      <td class="text-white" style="font-weight: bold;">Adjustmment</td>
                       <!-- <td></td> -->
                       <!-- <td><input type="number" id="adjustment"> <i class="fas fa-question"></i></td> -->
                       <td><center><input type="number" id="adjustment_charge" name="adjustment_charge" step="any" onchange="calc_ship()" value="0.00" 
@@ -764,7 +783,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                    
                    
                     <tr>
-                        <th class="" style="font-weight: bold;color: rgb(231, 152, 3);">Total (&#x20B9;)</th>
+                        <th class="" style="font-weight: bold;color: rgb(231, 152, 3);"> Grand Total (&#x20B9;)</th>
                         <th>
                           <center>
                           <input type="number" id="total_with_tax" name="t_total" value="0.00"
@@ -794,13 +813,14 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                           </center>
                       </th>
                   </tr>
-                  <tr id="warning-message" style="display: none; color: red;">
+                  <tr id="warning-message" style="display: none; color: rgb(236, 191, 25);">
                       <th colspan="2">
                           <center>
                               Paid Amount cannot be greater than Total.
                           </center>
                       </th>
                   </tr>
+                  
                   
                   <script>
                     // Function to calculate the balance based on paid amount and total
@@ -842,13 +862,21 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                 </table>
             </div>
         </div>
+        <div class="row">
+          <div class="col-md-7 mt-3">
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="agreeTerms" required style="background-color: #43596c;">
+                  <label for="agreeTerms">Agree to terms and conditions</label>
+                  <div class="invalid-feedback">You must agree before submitting.</div>
+              </div>
+          </div>
+          <div class="col-md-5 mt-3 d-flex">
+              <input type="submit" class="btn btn-outline-success w-50 text-light" name="Draft" value="Draft">
+              <input type="submit" class="btn btn-outline-warning w-50 ml-1 text-light" name="Save" value="Save">
+          </div>
+      </div>
       
-        <div class="row pb-5 border-bottom">
-            <div class="col-md-6 d-flex flex-column w-60 m text-black">
-                <label for="" class="text-light">Terms & Conditions</label>
-                <textarea name="ter_cond" id="" cols="20" class="form-control text-dark" style="height: 100%;" rows="6"
-                    placeholder=" Enter the terms & conditions..." ></textarea>
-            </div>
+        
             <!-- <div class="col-md-6 col-lg-6 col-sm-12 py-5 text-center rounded mt-4">
                 <div style="width: 100%;background-color: rgba(153, 152, 152, 0.507);height: 120px;">
                   <label class="text-black mt-3 pt-3" for="">Attach File(s) to Invoice</label><br>
@@ -862,8 +890,8 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
       
             </div> -->
             <div class="col-md-6 col-lg-6 col-sm-12 py-5 text-center rounded mt-4" >
-              <div  style="width: 100%;background-color: rgba(153, 152, 152, 0.507);height: 120px;">
-                  <label class="text-black mt-3 pt-3" for="">Attach File(s) to Invoice</label><br>
+              <div  style="width: 100%;background-color: rgba(60, 59, 59, 0.507);height: 120px;">
+                  <label class="text-white mt-3 pt-3" for="">Attach File(s) to Invoice</label><br>
 
               <label for="file-upload" class="btn text-white border-0"
                   style="background-color: rgb(210, 132, 30);">
@@ -876,7 +904,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
       
       
       
-        <div class="row mt-4">
+        <!-- <div class="row mt-4">
           <div class="col-sm-6 col-lg-6 col-md-6" style="margin-bottom: 20rem;">
             <button type="submit" name="sd" class="btn  text-white " 
                 value="Draft" style="background-color:  rgb(59, 59, 58) ;">Save as Draft</button>
@@ -886,7 +914,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                 type="reset" value="Cancel" style="background-color:  rgb(59, 59, 58) ;">
         </div>
         <div class="col-sm-6 col-lg-6 col-md-6"></div>
-        </div>
+        </div> -->
       </form>
 
 
@@ -896,7 +924,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
 
     <div class="modal fade" id="newcustomer">
       <div class="modal-dialog modal-xl">
-        <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
+        <div class="modal-content" style="background: rgb(14, 18, 21);border-radius: 20px;">
           <div class="modal-header " style="background: rgb(32, 35, 37);">
               <h3 class="m-3 text-uppercase">New Customer</h3>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1729,7 +1757,7 @@ style="color: white; background-color: rgb(210, 132, 30);height: 20px;"></i></bu
                   <select class="form-control text-dark bg-light" id="item_units" name="item_units" required>
                     <option value="">Select Unit</option>
                     {% for u in units %}
-                    <option value="{{u.id}}">{{u.unit}}</option>
+                    <option value="{{u.id}}">{{u.unit_name}}</option>
                     {% endfor %}
                   </select>                
                   <a href="#" class="btn btn-outline-secondary py-2 my-1" data-target="#newunit" data-toggle="modal">+</a>  
@@ -2620,7 +2648,7 @@ $(document).ready(function() {
               var extractedWord = parts[1];  
               var extractedWord1= extractedWord.trim();
               var x=extractedWord1.toLowerCase();  
-              $('#cus_place').val(x);
+              $('#place_of_supply').val(x);
               $('#state').val(y);
                                 if ( x == y )
                                 {
@@ -2844,15 +2872,20 @@ modalEl.addEventListener('click', (event) => {
             <tr id='row${RowCount}' >
                 <td>
                     <div class='form-group'>
+                      <div class="col-md-12 d-flex align-items-center">
+
                         <select
-                            class='form-control  bg-transparent  text-white border-0 item_select itm' name="item[]"
+                            class='form-control    text-white border-0 item_select itm' name="item[]"
                             id='item${RowCount}'>
                             <option class="text-dark" value="">Select</option>
                             {% for i in p %}
-                            <option class="text-dark" value="{{i.Name}}">{{i.Name}}</option>
+                            <option class="text-dark" value="{{i.item_name}}">{{i.item_name}}</option>
                            
                             {% endfor %}
-                        </select></div>
+                        </select><a href="" data-toggle="modal" data-target="#newitem"><i class="fa-solid  fa fa-plus  rounded p-1"
+                          style="color: white; background-color: rgb(210, 132, 30);height: 25px;width: 100%;"></i></a>
+                        </div>
+                      </div>
                 </td>
                 <td class='text-right'>
             <input type='text' id='hsn${RowCount}'  class='form-control bg-transparent  text-white border-0  text-right hsn' name="hsn[]" placeholder="6 Digit No" pattern="[0-9]{6}" value='' readonly required>
@@ -2913,6 +2946,8 @@ modalEl.addEventListener('click', (event) => {
     
 
 </script>
+  
+
 
 <script>
   $(document).ready(function () {
@@ -2924,15 +2959,21 @@ modalEl.addEventListener('click', (event) => {
          <tr id='row${RowCountt}' >
              <td>
                  <div class='form-group'>
+                  <div class="col-md-12 d-flex align-items-center">
+
                      <select
                          class='form-control  bg-transparent  text-white border-0 item_selectt itmm' name='itemm[]'
                          id='itemm${RowCountt}'>
                          <option class="text-dark" value="">Select</option>
                          {% for i in p %}
                          
-                         <option class="text-dark" value="{{i.Name}}">{{i.Name}}</option>
+                         <option class="text-dark" value="{{i.item_name}}">{{i.item_name}}</option>
                          {% endfor %}
-                     </select></div>
+                     </select>
+                     <a href="" data-toggle="modal" data-target="#newitem"><i class="fa-solid  fa fa-plus  rounded p-1"
+                      style="color: white; background-color: rgb(210, 132, 30);height: 25px;width: 100%;"></i></a>
+                    </div>
+                  </div>
              </td>
              <td class='text-right'>
          <input type='text' id='hsnn${RowCountt}'  class='form-control bg-transparent  text-white border-0  text-right hsnn' name='hsnn[]' value='' placeholder="6 Digit No" pattern="[0-9]{6}" readonly required>
@@ -3003,13 +3044,19 @@ $(document).ready(function() {
 
 function calc() {
     // loop through each row in the table
-    var x=document.getElementById("place_of_supply").value
+    var x=document.getElementById("state1").value
+
+
     var y=document.getElementById("place_of_supply").value
-    alert(y)
 
 
 if( x == y )
-{
+{ document.getElementById("item_table").style.display="block"
+document.getElementById("item_tablee").style.display="none"
+//  document.getElementById("label_tab1").style.display="block"
+//  document.getElementById("label_tab2").style.display="none"
+document.getElementById("add-row").style.display="block"
+document.getElementById("add-roww").style.display="none"
   
   $('#item_table tbody tr').each(function() {
         // get the values of the input fields for this row
@@ -3059,6 +3106,12 @@ if( x == y )
 
 if( x != y )
 {
+  document.getElementById("item_table").style.display="none"
+  document.getElementById("item_tablee").style.display="block"
+ //  document.getElementById("label_tab1").style.display="none"
+ //  document.getElementById("label_tab2").style.display="block"
+  document.getElementById("add-row").style.display="none"
+  document.getElementById("add-roww").style.display="block"
   
   $('#item_tablee tbody tr').each(function() {
         // get the values of the input fields for this row
@@ -3203,7 +3256,7 @@ function test(taxamount) {
         console.log('test333');
         console.log(taxamount)
         d = 0;
-        var pos = document.getElementById("place_of_supply").value;
+        var pos = document.getElementById("state1").value;
         var state = document.getElementById("place_of_supply").value;
         console.log(pos)
         console.log('state')
@@ -3294,7 +3347,6 @@ function test(taxamount) {
             console.log(response)
             data7 = response.email
             console.log(data7)
-            alert(data7)
             document.getElementById('cx_mail').value = data7
         }
     });
@@ -3314,9 +3366,7 @@ function test(taxamount) {
             select = $('#item1').val();
             customer = $('#customer_sel').val();
             console.log(select);
-            alert(select)
             console.log(customer);
-            alert(customer)
 
             $.ajax({
                 type: "GET",
@@ -3327,7 +3377,6 @@ function test(taxamount) {
                   },
                 success: function (response) {
                     console.log(response)
-                    alert(response)
 
                     dataRate = response.rate; // Fetch rate from the server response
                     dataHSN = response.hsn;
@@ -3337,9 +3386,9 @@ function test(taxamount) {
                     data5 = response.place
                     data4 = response.desc
                     data6 = response.mail
-                    alert(dataRate)
-                    alert(dataHSN)
-                    alert(data3)
+                    data7 = response.avl
+
+                    alert(data7)
 
 
                     var customerState = data3;
@@ -3360,6 +3409,8 @@ function test(taxamount) {
                     document.getElementById('rate1').value = dataRate;
                     document.getElementById('hsn1').value = dataHSN;
                     document.getElementById('desc1').value = data4
+                    document.getElementById('avl1').value = data7
+
                     // document.getElementById('state').value = data5
                     // document.getElementById('cx_mail').value = data6
                     if (data3 == '{{ company.state }}') {

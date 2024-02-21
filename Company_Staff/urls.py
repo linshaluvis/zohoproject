@@ -40,7 +40,7 @@ urlpatterns = [
     path('Staff/invoice/create',views.invoice_create,name='invoice_create'),
     path('Staff/invoice/overview',views.invoice_overview,name='invoice_overview'),
     path('Staff/invoice/itemdata',views.itemdata,name='itemdata'),
-        path('Staff/invoice/itemdata',views.itemdata_challan,name='itemdata_challan'),
+        path('Staff/invoice/itemdata_challan',views.itemdata_challan,name='itemdata_challan'),
                 path('Staff/invoice/customerdata',views.customerdata,name='customerdata'),
 
 
