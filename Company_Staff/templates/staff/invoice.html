@@ -3,16 +3,45 @@
 {% block content %}
 
 <style>
-
+  input {
+    background-color: #2f516f;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+  }
+  .selectize-input.full {
+    background-color: #43596c !important;
+    color: white !important;
+    border: 1px solid rgb(255 255 255 / 35%) !important;
+   }
+   .dropdown-menu.items-available {
+    border-radius: 5px;
+   }
    #createNewAccount {
     overflow-y:auto;
     }
 </style>
 
+<div class="body-wrapper">
+    <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">sales</a></li>
+              <li class="breadcrumb-item" aria-current="page">invoice</li>
+            </ol>
+        </nav>
+  
+        <div class="row mt-3">
+            <div class="container">
+                
+            </div>
+        </div>
+
 <form action="" method="post" class="needs-validation" enctype="multipart/form-data" onsubmit="return validateForm()">
   {% csrf_token %}
   <div class="page-content">
-    <span class="d-flex justify-content-end p-2" style="cursor: pointer;" onclick="window.location.href=`"><i class="fa fa-times-circle text-white" style="font-size: 1.2rem;"></i></span>
+    <span class="d-flex justify-content-end p-2" style="cursor: pointer;" onclick="window.location.href=``"><i class="fa fa-times-circle text-white" style="font-size: 1.2rem;"></i></span>
     <div class="card radius-15">
       <div class="card-body">
         <div class="card-title">
@@ -179,7 +208,7 @@
                 </div>
             </div>
 
-            <div class="row clearfix ">
+            <div class="row  ">
                 <div class="col-md-12 table-responsive-md mt-3">
                     <table class="table table-bordered table-hover mt-3" id="invoiceItemsTable">
                         <thead>
@@ -202,9 +231,9 @@
                                         <div class="w-100">
                                             <div class="p-0 border-0 bg-none position-relative drop-box" style="display: block;">
                                                 <input required type="text" id="item1" value="" name="item_name[]" class="dropdown-toggle form-control item-display" onkeyup="filterFunction($(this).attr('id'))"  data-toggle="dropdown" aria-expanded="false" placeholder="Items.." autocomplete="off">
-                                                <ul class="dropdown-menu w-100 items-available position-absolute" id="menu1"  style="overflow-y: auto; height: fit-content;max-height: 40vh;"> 
-                                                    {% for i in items %}
-                                                    <li class="dropdown-item items-options" onclick="getItemDetails($(this).parent().prev().attr('id'),`{{i.name}}`)">{{i.name}}</li>
+                                                <ul class=" position-absolute" id="menu1"  style="overflow-y: auto; height: fit-content;max-height: 40vh;"> 
+                                                    {% for i in item %}
+                                                    <li class="dropdown-item items-options" onclick="getItemDetails($(this).parent().prev().attr('id'),`{{i.item_name}}`)">{{i.item_name}}</li>
                                                     {% endfor %}
                                                 </ul>
                                                 
@@ -1169,7 +1198,7 @@
             $('#custErr').text('');
             $.ajax({
                 type : 'POST',
-                url: "{% url 'customerdata' %}",
+                url: "{% url 'getInvoiceCustomerData' %}",
                 data: {
                     id: $('#customer').val(),
                     csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -1339,7 +1368,7 @@
                 if(plc != ""){
                     var n = itemId.slice(4);
                     $.ajax({
-                    url: "{% url 'itemdata_challan' %}",
+                    url: "{% url 'getInvItemDetails' %}",
                     type : 'GET',
                     data:{
                         item : itemName,
@@ -1380,7 +1409,7 @@
             console.log(inv_num);
             $.ajax({
                 type: "GET",
-                url: "{% url 'itemdata_challan' %}",
+                url: "",
                 data: {
                     invNum : inv_num,
                 },
@@ -1485,11 +1514,10 @@
             if(plc != ""){
                 var n = inpId.slice(4);
                 $.ajax({
-                url: "{% url 'itemdata_challan' %}",
+                url: "{% url 'getInvItemDetails' %}",
                 type : 'GET',
                 data:{
                     item : value,
-                    listId : PLId,
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                     },
                 
@@ -1738,9 +1766,9 @@ $(document).ready(function(){
                     <div class="w-100">
                         <div class="p-0 border-0 bg-none position-relative drop-box" style="display: block;">
                             <input required type="text" id="item${roinc}" value="" name="item_name[]" class="dropdown-toggle form-control item-display" onkeyup="filterFunction($(this).attr('id'))"  data-toggle="dropdown" aria-expanded="false" placeholder="Items.." autocomplete="off">
-                            <ul class="dropdown-menu w-100 items-available position-absolute" id="menu${roinc}"  style="overflow-y: auto; height: fit-content;max-height: 40vh;"> 
-                                {% for i in items %}
-                                <li class="dropdown-item items-options" onclick="getItemDetails($(this).parent().prev().attr('id'),$(this).html())">{{i.name}}</li>
+                            <ul class=" w-100 items-available position-absolute" id="menu${roinc}"  style="overflow-y: auto; height: fit-content;max-height: 40vh;"> 
+                                {% for i in item %}
+                                <li class="dropdown-item items-options" onclick="getItemDetails($(this).parent().prev().attr('id'),$(this).html())">{{i.item_name}}</li>
                                 {% endfor %}
                             </ul>
                             
@@ -2413,7 +2441,7 @@ $(document).ready(function(){
 
             $.ajax({
                 type : 'GET',
-                url:"}",
+                url:"",
                 data:{
                     type : selectedValue,
                 },

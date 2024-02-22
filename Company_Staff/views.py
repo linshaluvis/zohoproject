@@ -718,6 +718,73 @@ def customerdata(request):
     
     print(data7)
     return JsonResponse(data7)
+def getInvItemDetails(request):
+  
+       
+        
+        itemName = request.GET['item']
+        item = Items.objects.get( item_name = itemName)
+
+        # if priceListId != "":
+        #     # priceList = PRIC.objects.get(id = int(priceListId))
+
+        #     # if priceList.item_rate == 'Customized individual rate':
+        #         try:
+        #             priceListPrice = float(Fin_PriceList_Items.objects.get(Company = com, list = priceList, item = item).custom_rate)
+        #         except:
+        #             priceListPrice = item.selling_price
+        #     else:
+        #         mark = priceList.up_or_down
+        #         percentage = float(priceList.percentage)
+        #         roundOff = priceList.round_off
+
+        #         if mark == 'Markup':
+        #             price = float(item.selling_price) + float((item.selling_price) * (percentage/100))
+        #         else:
+        #             price = float(item.selling_price) - float((item.selling_price) * (percentage/100))
+
+        #         if priceList.round_off != 'Never mind':
+        #             if roundOff == 'Nearest whole number':
+        #                 finalPrice = round(price)
+        #             else:
+        #                 finalPrice = int(price) + float(roundOff)
+        #         else:
+        #             finalPrice = price
+
+        #         priceListPrice = finalPrice
+        # else:
+        #     priceListPrice = None
+
+        context = {
+            'status':True,
+            'hsn':item.hsn_code,
+            'sales_rate':item.selling_price,
+            'avl':item.current_stock,
+            'tax': True if item.tax_reference == 'taxable' else False,
+            'gst':item.intrastate_tax,
+            'igst':item.interstate_tax,
+
+        }
+        return JsonResponse(context)
+   
+
+def getInvoiceCustomerData(request):
+   
+        
+        custId = request.POST['id']
+        cust = Customer.objects.get(id = custId)
+
+        if cust:
+            
+                list = False
+                listId = None
+                listName = None
+                context = {
+                'status':True, 'id':cust.id, 'email':cust.customer_email, 'gstType':cust.GST_treatement,'shipState':cust.place_of_supply,'gstin':False if cust.GST_number == "" or cust.GST_number == None else True, 'gstNo':cust.GST_number, 'priceList':list, 'ListId':listId, 'ListName':listName,
+                'street':cust.billing_address, 'city':cust.billing_city, 'state':cust.billing_state, 'country':cust.billing_country, 'pincode':cust.billing_pincode
+                }
+                return JsonResponse(context)
+       
 def itemdata(request):
     cur_user = request.user.id
     user = User.objects.get(id=cur_user)
