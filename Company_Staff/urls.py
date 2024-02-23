@@ -44,6 +44,8 @@ urlpatterns = [
     path('Staff/invoice/customerdata',views.customerdata,name='customerdata'),
     path('Staff/invoice/getInvoiceCustomerData',views.getInvoiceCustomerData,name='getInvoiceCustomerData'),
     path('Staff/invoice/getInvItemDetails',views.getInvItemDetails,name='getInvItemDetails'),
+    path('Staff/invoice/getBankAccount',views.getBankAccount,name='getBankAccount'),
+
 
 
 

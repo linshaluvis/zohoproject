@@ -766,6 +766,19 @@ def getInvItemDetails(request):
 
         }
         return JsonResponse(context)
+def getBankAccount(request):
+  
+        
+        bankId = request.GET['id']
+        print(bankId)
+        bnk = Banking.objects.get(id = bankId)
+        print(bnk)
+
+        if bnk:
+            return JsonResponse({'status':True, 'account':bnk.bnk_acno})
+        else:
+            return JsonResponse({'status':False, 'message':'Something went wrong..!'})
+  
    
 
 def getInvoiceCustomerData(request):
