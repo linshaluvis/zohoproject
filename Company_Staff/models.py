@@ -352,7 +352,11 @@ class invoice(models.Model):
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True,blank=True)
     payment_terms = models.ForeignKey(Company_Payment_Term,on_delete=models.CASCADE,null=True,blank=True)
 
-    
+    customer_email=models.EmailField(max_length=220,null=True,blank=True)
+    customer_billingaddress=models.CharField(max_length=220,null=True,blank=True)
+    customer_GSTtype=models.CharField(max_length=220,null=True,blank=True)
+    customer_GSTnumber=models.CharField(max_length=220,null=True,blank=True)
+    customer_place_of_supply=models.CharField(max_length=220,null=True,blank=True)
     date = models.DateField(auto_now_add=True, null=True, blank=True) 
     expiration_date = models.DateField(auto_now_add=True, null=True, blank=True) 
     reference_number=models.IntegerField(blank=True,null=True,)

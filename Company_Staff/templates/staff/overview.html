@@ -52,6 +52,11 @@ crossorigin="anonymous"></script>
     .hidden {
       display: none;
   }
+  .selectize-input.full {
+    background-color:rgb(45, 44, 44) !important;
+    color: white !important;
+    border: 1px solid rgba(246, 241, 241, 0.35) !important;
+   }
    
     .popup-0 {
       height: 17rem;
@@ -115,21 +120,19 @@ input[type="date"] {
               
           </div>
       </div>
-<div class="row mx-3">
-   
-            <!-- <input type="hidden" name="hidden_state" id="state" value="{{company.state}}"> -->
-</div>
-<div>
-  <div >
-    <div >
-      <center><h3 class="mb-0 text-white">New
-        Invoice</h3></center>
-    </div>
-    <hr />
-  </div>
-</div>
-<div >
-  <div >
+      <form action="{% url 'createInvoice' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="page-content">
+          <div class=" radius-15">
+            <div >
+              <div >
+                <center><h3 class="mb-0">INVOICE</h3></center>
+              </div>
+              <hr />
+            </div>
+          </div>
+          <div class=" radius-15">
+            <div>
     <div id="invoice">
         <div class="row">
             <div class="col-md-4 mt-3">
@@ -177,7 +180,7 @@ input[type="date"] {
             <div class="col-md-4 mt-3">
                 <label class="text-white">Place of supply</label>
                 
-                <select type="text" class="form-control bg-black text-white" id="placeOfSupply" name="placeOfSupply" required>
+                <select type="text" class="form-control  text-white"  style=" background-color:rgb(45, 44, 44);" id="placeOfSupply" name="place_of_supply" required>
                     <option value="" selected>--Choose--</option>
                     <option  value="[AN]-Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
                     <option value="[AD]-Andhra Predhesh">[AD] Andhra Predhesh</option>
@@ -1495,18 +1498,20 @@ input[type="date"] {
 
                 $.ajax({
                     type: "GET",
-                    url: "",
+                    url: "{% url 'getBankAccount' %}",
+                    
                     data: {
                         id: $('#paymentMethod').find(':selected').attr('text'),
                     },
                     
                     success: function (response) {
+                        alert(response.account)
                         if (response.status){
                             document.getElementById('cheque_id').value="";
                             document.getElementById('upi_id').value="";
                             document.getElementById("bnk_id").value = response.account;
                         }else{
-                           // alert(response.message);
+                            alert(response.message);
                         }
                     }
                 });

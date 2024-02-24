@@ -662,17 +662,60 @@ def invoice_overview(request):
         log_details= LoginDetails.objects.get(id=log_id)
         dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
         allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        customers=Customer.objects.all()
-        item=Items.objects.all()
-        payments=Company_Payment_Term.objects.all()
-        banks = Banking.objects.all()
-        unit = Unit.objects.all()
+        cmp =dash_details.company
 
-        if invoice.objects.all().exists():
-            invoice_count = invoice.objects.last().id
-            count = invoice_count
-        else:
-            count = 1
+        print(allmodules)
+        print(cmp)
+
+        customers=Customer.objects.filter(company_id = cmp)
+        item=Items.objects.filter(company_id = cmp)
+        payments=Company_Payment_Term.objects.filter(company_id = cmp)
+        banks = Banking.objects.filter(company_id = cmp)
+        unit = Unit.objects.filter(company_id = cmp)
+        latest_inv = invoice.objects.filter(company_id = cmp).order_by('-id').first()
+
+        new_number = int(latest_inv.reference_number) + 1 if latest_inv else 1
+
+        if invoiceReference.objects.filter(company_id = cmp).exists():
+            deleted = invoiceReference.objects.get(company_id = cmp)
+            
+            if deleted:
+                while int(deleted.reference_number) >= new_number:
+                    new_number+=1
+
+        # Finding next invoice number w r t last invoic number if exists.
+        nxtInv = ""
+        lastInv = invoice.objects.filter(company_id = cmp).last()
+        if lastInv:
+            inv_no = str(lastInv.invoice_number)
+            numbers = []
+            stri = []
+            for word in inv_no:
+                if word.isdigit():
+                    numbers.append(word)
+                else:
+                    stri.append(word)
+            
+            num=''
+            for i in numbers:
+                num +=i
+            
+            st = ''
+            for j in stri:
+                st = st+j
+
+            inv_num = int(num)+1
+
+            if num[0] == '0':
+                if inv_num <10:
+                    nxtInv = st+'0'+ str(inv_num)
+                else:
+                    nxtInv = st+ str(inv_num)
+            else:
+                nxtInv = st+ str(inv_num)
+
+
+       
 
         context={
             'details':dash_details,
@@ -681,8 +724,9 @@ def invoice_overview(request):
             'p':item,
             'payments':payments,
             'banks':banks,
-            'count': count,
             'units': unit,
+            'ref_no':new_number,
+            'invNo':nxtInv,
 
 
             
@@ -769,17 +813,134 @@ def getInvItemDetails(request):
 def getBankAccount(request):
   
         
-        bankId = request.GET['id']
-        print(bankId)
-        bnk = Banking.objects.get(id = bankId)
-        print(bnk)
+       bankId = request.GET['id']
+       bnk = Banking.objects.get(id = bankId)
 
-        if bnk:
+       if bnk:
             return JsonResponse({'status':True, 'account':bnk.bnk_acno})
-        else:
+            print("ok")
+       else:
             return JsonResponse({'status':False, 'message':'Something went wrong..!'})
-  
-   
+def createInvoice(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company
+
+        print(allmodules)
+        print(cmp)
+
+        customers=Customer.objects.filter(company_id = cmp)
+        item=Items.objects.filter(company_id = cmp)
+        payments=Company_Payment_Term.objects.filter(company_id = cmp)
+        banks = Banking.objects.filter(company_id = cmp)
+        unit = Unit.objects.filter(company_id = cmp)
+        if log_details.user_type == "Company":
+            com = CompanyDetails.objects.get(Login_Id = log_id)
+        else:
+            com = StaffDetails.objects.get(login_details=log_details,company_approval=1).company_id
+        if request.method == 'POST':
+            invNum = request.POST['invoice_no']
+            # if invoice.objects.filter( invoice_number__iexact = invNum).exists():
+            #     res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
+            #     return HttpResponse(res)
+
+            inv = invoice(
+                company = cmp,
+                login_details = log_details,
+                customer = Customer.objects.get(id = request.POST['customer']),
+                customer_email = request.POST['customerEmail'],
+                customer_billingaddress = request.POST['bill_address'],
+                customer_GSTtype = request.POST['gst_type'],
+                customer_GSTnumber = request.POST['gstin'],
+                customer_place_of_supply = request.POST['place_of_supply'],
+                reference_number= request.POST['reference_number'],
+                 invoice_number = invNum,
+                payment_terms =Company_Payment_Term.objects.get(id = request.POST['payment_term']),
+                date = request.POST['invoice_date'],
+                expiration_date = datetime.strptime(request.POST['due_date'], '%d-%m-%Y').date(),
+               
+                payment_method = None if request.POST['payment_method'] == "" else request.POST['payment_method'],
+                 cheque_number = None if request.POST['cheque_id'] == "" else request.POST['cheque_id'],
+                UPI_number = None if request.POST['upi_id'] == "" else request.POST['upi_id'],
+                bank_account_number = None if request.POST['bnk_id'] == "" else request.POST['bnk_id'],
+                 sub_total = 0.0 if request.POST['subtotal'] == "" else float(request.POST['subtotal']),
+                 CGST = 0.0 if request.POST['cgst'] == "" else float(request.POST['cgst']),
+                 SGST = 0.0 if request.POST['sgst'] == "" else float(request.POST['sgst']),
+                tax_amount_or_IGST = 0.0 if request.POST['taxamount'] == "" else float(request.POST['taxamount']),
+                adjustment = 0.0 if request.POST['adj'] == "" else float(request.POST['adj']),
+                 shipping_charge = 0.0 if request.POST['ship'] == "" else float(request.POST['ship']),
+                grand_total = 0.0 if request.POST['grandtotal'] == "" else float(request.POST['grandtotal']),
+                advanced_paid = 0.0 if request.POST['advance'] == "" else float(request.POST['advance']),
+                balance = request.POST['grandtotal'] if request.POST['balance'] == "" else float(request.POST['balance']),
+                description = request.POST['note']
+            )
+
+            inv.save()
+
+            if len(request.FILES) != 0:
+                inv.file=request.FILES.get('file')
+            inv.save()
+
+            if 'Draft' in request.POST:
+                inv.status = "Draft"
+            elif "Save" in request.POST:
+                inv.status = "Saved" 
+            inv.save()
+
+            # Save invoice items.
+
+            id = request.POST.getlist("item_id[]")
+            item_name = request.POST.getlist("item_name[]")
+            hsn  = request.POST.getlist("hsn[]")
+            quantity = request.POST.getlist("qty[]")
+            price = request.POST.getlist("priceListPrice[]") if 'priceList' in request.POST else request.POST.getlist("price[]")
+            tax_rate = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == cmp.state else request.POST.getlist("taxIGST[]")
+            discount = request.POST.getlist("discount[]")
+            total = request.POST.getlist("total[]")
+            print("itemId:", id)
+            print("itemName:", item_name)
+            print("hsn:", hsn)
+            print("quantity:", quantity)
+            print("price:", price)
+            print("tax_rate:", tax_rate)
+            print("discount:", discount)
+            print("total:", total)
+
+            if len(id)==len(item_name)==len(hsn)==len(quantity)==len(price)==len( tax_rate)==len(discount)==len(total) and id and item_name and hsn and quantity and price and tax_rate and discount and total:
+                mapped = zip(id,item_name,hsn,quantity,price, tax_rate,discount,total)
+                mapped = list(mapped)
+                for ele in mapped:
+                    print("Element:", ele)
+                    try:
+                        itm = Items.objects.get(item_name=ele[1])
+                        print(itm)
+                        invoiceitems.objects.create(invoice=inv,company = cmp,logindetails = log_details,  Items=itm,hsn=ele[2], quantity=int(ele[3]), price=float(ele[4]), tax_rate=ele[5], discount=float(ele[6]), total=float(ele[7]))
+
+                        itm.save()
+                        
+                    except ValueError as e:
+                        print("Error converting to int:", e)
+            # Save transaction
+                    
+            invoiceHistory.objects.create(
+               company = cmp,
+                login_details = log_details,
+                invoice = inv,
+                date = request.POST['invoice_date'],
+
+                action = 'Created'
+            )
+
+            return redirect(invoice_overview)
+        else:
+            return redirect(invoice_overview)
+    else:
+       return redirect('/')  
 
 def getInvoiceCustomerData(request):
    
