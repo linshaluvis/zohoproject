@@ -38,14 +38,16 @@ urlpatterns = [
         # -------------------------------Staff section invoice--------------------------------
     path('Staff/invoice_listout',views.invoice_list_out,name='invoice_list_out'),
     path('Staff/invoice/create',views.invoice_create,name='invoice_create'),
-    path('Staff/invoice/overview',views.invoice_overview,name='invoice_overview'),
+    path('Staff/invoice/invoice_createpage',views.invoice_createpage,name='invoice_createpage'),
     path('Staff/invoice/itemdata',views.itemdata,name='itemdata'),
-    path('Staff/invoice/itemdata_challan',views.itemdata_challan,name='itemdata_challan'),
+    path('Staff/invoice/viewInvoice',views.viewInvoice,name='viewInvoice'),
     path('Staff/invoice/customerdata',views.customerdata,name='customerdata'),
     path('Staff/invoice/getInvoiceCustomerData',views.getInvoiceCustomerData,name='getInvoiceCustomerData'),
     path('Staff/invoice/getInvItemDetails',views.getInvItemDetails,name='getInvItemDetails'),
     path('Staff/invoice/getBankAccount',views.getBankAccount,name='getBankAccount'),
     path('Staff/invoice/createInvoice',views.createInvoice,name='createInvoice'),
+    path('Staff/invoice/checkInvoiceNumber',views.checkInvoiceNumber,name='checkInvoiceNumber'),
+
 
 
 

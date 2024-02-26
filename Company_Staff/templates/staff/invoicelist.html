@@ -1,154 +1,191 @@
 {% extends 'base.html' %}
-{% block content %}
 {% load static %}
+{% block content %}
+<div class="body-wrapper">
+  <div class="container-fluid">
+      <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">sales</a></li>
+            <li class="breadcrumb-item" aria-current="page">invoice</li>
+          </ol>
+      </nav>
 
-<style>
-    table tr td:hover {
-    cursor: pointer;
-  }
-  .header {
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Styles for the search bar */
-.search-bar {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-/* Styles for buttons */
-.button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.button-primary {
-    background-color: #007bff;
-    color: #fff;
-    margin-right: 10px;
-}
-.button-secondary {
-    background-color: #28a745;
-    color: #fff;
-    margin-right: 10px;
-}
-.button-warning {
-    background-color: #ffc107;
-    color: #000;
-    margin-right: 10px;
-}
-/* Responsive styles */
-        @media only screen and (max-width: 600px) {
-            .header {
-                flex-direction: column;
-            }
-            .search-bar {
-                margin-bottom: 10px;
-                width: 75%; /* Full width for mobile */
-            }
-            .dropdown {
-                margin-top: 10px;
-            }
-        }
-  </style>
-  <body>
-    
-    
-    <div class="body-wrapper">
-      <div class="container-fluid">
-          <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'staff_dashboard' %}" class="text-warning-emphasis">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">sales</a></li>
-                <li class="breadcrumb-item" aria-current="page">invoice</li>
-              </ol>
-          </nav>
-       
-          <div class="row mt-3">
-            <div class="container">
-                
-            </div>
-        </div>
-        <div class="row mt-3">
+      <div class="row mt-3">
           <div class="container">
-              <h4 class="text-white ms-4">All invoices</h4>
-              <hr class="text-warning">
+              
           </div>
       </div>
-<div class="header">
-    <div>
-        <input type="text" class="search-bar" placeholder="Search...">
-        
-    </div>
-    <div>
-      <select name="status-select" id="status-select" class="form-select bg-black text-white" style="border: 1px solid rgba(255, 255, 255, 0.3);">
-        <option value="" hidden>All</option>
-        <option value="Active">Draft</option>
-        <option value="Expired">Saved</option>
-      </select>
-    </div>
-    <div>
-      <select name="status-select" id="status-select" class="form-select bg-black text-white" style="border: 1px solid rgba(255, 255, 255, 0.3);">
-        <option value="" hidden>sort</option>
-        <option value="Active">All</option>
-        <option value="Expired">Name</option>
-        <option value="Expired">INV No</option>
-
-      </select>
-    </div>
-    <div>
-      <a class="btn btn-outline-warning" href="#" role="button">Import</a>
-      <a class="btn btn-outline-warning" href="{% url 'invoice_overview' %}" role="button">export</a>
-        
-        
-        <a class="btn btn-outline-warning" href="{% url 'invoice_create' %}" role="button">New</a>
-
-
-    </div>
-</div>
-        <div style="overflow-x:auto;"> 
-          <div class="table-responsive">
-            <table class="table mt-lg-5 mt-2 rounded" style="background-color: rgb(0, 0, 0);color: white;">
-              <thead>
-                <tr class="border-bottom border-dark">
-                  <th scope="col" ><b>Sl no</b></th>
-                  <th scope="col" ><b>Date</b></th>
-                  <th scope="col" ><b>Invoice number</b></th>
-                  <th scope="col" ><b>Customer name</b></th>
-                  <th scope="col" ><b>Customer Mail ID</b></th>
-                  <th scope="col" ><b>Amount</b></th>
-                  <th scope="col" ><b>status</b></th>
-                  <th scope="col" ><b>balence</b></th>
-
-    
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="border-bottom border-dark">
-                  <td></th>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  
-                  <td>
-                    
-                  </td>
-                </tr>
-              </tbody>
-            </table> 
-    
-          </div> 
-        </div>
-  
+<div class="page-content">
+  <div class="radius-15 h-20">
+    <div class="row">
+      <div class="col-md-12">
+        <center><h2 class="mt-3">INVOICE</h2></center>
+        <hr/>
       </div>
     </div>
-  </body>
+  </div>
+
+  <div class=" radius-15">
+    <div >
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="d-flex">
+              <input type="text" id="search" class="form-control" placeholder="Search.." autocomplete="off"/>
+              <div class="dropdown ml-1" style="justify-content: left">
+                <button type="button" class="btn btn-outline-warning dropdown-toggle text-grey" data-toggle="dropdown"><i class="fa fa-sort"></i> Sort by</button>
+                <div class="dropdown-menu" style="background-color: black">
+                  <a class="dropdown-item" href="" style="height: 40px; font-size: 15px; color: white">All</a>
+                  <a class="dropdown-item" style="height: 40px; font-size: 15px; color: white;cursor: pointer;" onclick="sortTable(3)">Customer Name</a>
+                  <a class="dropdown-item" style="height: 40px; font-size: 15px; color: white;cursor: pointer;" onclick="sortTable(2)">Invoice Number</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+          </div>
+          <div class="col-md-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-warning text-grey" id="exportBtn"><i class="fa fa-table"></i> Export </button>
+            <button type="button" class="btn btn-outline-warning text-grey" id="exportBtn"><i class="fa fa-table"></i> Import</button>
+
+            <div class="dropdown ml-1">
+              <button type="button" class="btn btn-outline-warning dropdown-toggle text-grey" data-toggle="dropdown"><i class="fa fa-filter"></i> filter by</button>
+              <div class="dropdown-menu" style="background-color: black">
+                <a class="dropdown-item" style="height: 40px; font-size: 15px; color: white;cursor: pointer;" onclick="filterTable(6,'all')">All</a>
+                <a class="dropdown-item" style="height: 40px; font-size: 15px; color: white;cursor: pointer;" onclick="filterTable(6,'draft')">Draft</a>
+                <a class="dropdown-item" style="height: 40px; font-size: 15px; color: white;cursor: pointer;" onclick="filterTable(6,'saved')">Saved</a>
+              </div>
+            </div>
+            <a href="{% url 'invoice_createpage' %}" class="ml-1"></i><button type="button" class="btn btn-outline-warning text-grey"><i class="fa fa-plus font-weight-light"></i> Invoice</button></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-responsive-md  mt-4" id="invoiceTable" style="text-align: center">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>DATE</th>
+            <th>INVOICE NO.</th>
+            <th>NAME</th>
+            <th>MAIL ID</th>
+            <th>AMOUNT</th>
+            <th>STATUS</th>
+            <th>BALANCE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in invoices %}
+          <tr class="clickable-row" data-href="" style="cursor: pointer;">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ a.date }}</td>
+            <td>{{ a.invoice_number }}</td>
+            <td>{{ a.customer.first_name }} {{ a.customer.last_name }}</td>
+            <td>{{ a.customer_email}}</td>
+            <td>{{ a.grand_total }}</td>
+            <td>{{ a.status }}</td>
+            <td>{{ a.balance }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script>
+  var $rows = $('#invoiceTable tbody tr');
+  $('#search').keyup(function() {
+    var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+    
+    $rows.show().filter(function() {
+      var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+      return !~text.indexOf(val);
+    }).hide();
+  });
   
-  {% endblock %}
+  document.getElementById("exportBtn").addEventListener("click", function () {
+    const Table = document.getElementById("invoiceTable");
+    const ws = XLSX.utils.table_to_sheet(Table);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    XLSX.writeFile(wb, "Invoices.xlsx");
+  });
+
+  jQuery(document).ready(function ($) {
+    $(".clickable-row").click(function () {
+      window.location = $(this).data("href");
+    });
+  });
+
+  function sortTable(columnIndex) {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("invoiceTable");
+    switching = true;
+
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        x = rows[i].getElementsByTagName("td")[columnIndex].textContent.toLowerCase();
+        y = rows[i + 1].getElementsByTagName("td")[columnIndex].textContent.toLowerCase();
+
+        if (x > y) {
+            shouldSwitch = true;
+            break;
+        }
+      }
+
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
+  }
+
+  function filterTable(row,filterValue) {
+    var table = document.getElementById("invoiceTable");
+    var rows = table.getElementsByTagName("tr");
+
+    for (var i = 1; i < rows.length; i++) {
+      var statusCell = rows[i].getElementsByTagName("td")[row];
+
+      if (filterValue == "all" || statusCell.textContent.toLowerCase() == filterValue) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
+
+  function sortBalAsc() {
+    var table = document.getElementById("invoiceTable");
+    var rows = Array.from(table.rows).slice(1);
+
+    rows.sort(function (a, b) {
+      var balA = parseFloat(a.cells[7].textContent);
+      var balB = parseFloat(b.cells[7].textContent);
+      return balA - balB;
+    });
+
+    // Remove existing rows from the table
+    for (var i = table.rows.length - 1; i > 0; i--) {
+        table.deleteRow(i);
+    }
+
+    // Append the sorted rows back to the table
+    rows.forEach(function (row) {
+        table.tBodies[0].appendChild(row);
+    });
+  }
+</script>
+
+{% endblock %}

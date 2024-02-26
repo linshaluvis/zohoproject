@@ -604,18 +604,30 @@ def staff_password_change(request):
     
 # staff invoice section
 def invoice_list_out(request):
-     if 'login_id' in request.session:
+    if 'login_id' in request.session:
         log_id = request.session['login_id']
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
         dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
         allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        context={
-            'details':dash_details,
-            'allmodules': allmodules,
-        }
-        return render(request,'staff/invoicelist.html',context)
+        cmp =dash_details.company
+
+        if log_details.user_type == "Company":
+            com = CompanyDetails.objects.get(login_details_id = log_id)
+            inv = invoice.objects.filter(Company = cmp)
+            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+
+            return render(request,'company/invoicelist.html',{'allmodules':allmodules,'com':com,'data':log_details,'invoices':inv})
+        else:
+            com = StaffDetails.objects.get(login_details_id = log_id)
+            inv = invoice.objects.filter(company = cmp)
+            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+
+            return render(request,'staff/invoicelist.html',{'allmodules':allmodules,'com':com,'data':log_details,'details': dash_details,'invoices':inv})
+    else:
+       return redirect('/')
+ 
 
 
 def invoice_create(request):
@@ -654,7 +666,7 @@ def invoice_create(request):
         }
         return render(request,'staff/invoice.html',context)  
     
-def invoice_overview(request):
+def invoice_createpage(request):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
         if 'login_id' not in request.session:
@@ -664,10 +676,7 @@ def invoice_overview(request):
         allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
         cmp =dash_details.company
 
-        print(allmodules)
-        print(cmp)
-
-        customers=Customer.objects.filter(company_id = cmp)
+        customers=Customer.objects.filter(company_id = cmp, customer_status = 'Active')
         item=Items.objects.filter(company_id = cmp)
         payments=Company_Payment_Term.objects.filter(company_id = cmp)
         banks = Banking.objects.filter(company_id = cmp)
@@ -731,9 +740,9 @@ def invoice_overview(request):
 
             
         }
-        return render(request,'staff/overview.html',context)
+        return render(request,'staff/createinvoice.html',context)
     
-def itemdata_challan(request):
+def viewInvoice(request):
   
     customer_id = request.GET.get('cust')
     cust = Customer.objects.get(id=customer_id)
@@ -845,9 +854,9 @@ def createInvoice(request):
             com = StaffDetails.objects.get(login_details=log_details,company_approval=1).company_id
         if request.method == 'POST':
             invNum = request.POST['invoice_no']
-            # if invoice.objects.filter( invoice_number__iexact = invNum).exists():
-            #     res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
-            #     return HttpResponse(res)
+            if invoice.objects.filter(company = cmp, invoice_number__iexact = invNum).exists():
+               res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
+               return HttpResponse(res)
 
             inv = invoice(
                 company = cmp,
@@ -883,12 +892,13 @@ def createInvoice(request):
             inv.save()
 
             if len(request.FILES) != 0:
-                inv.file=request.FILES.get('file')
+                inv.document=request.FILES.get('file')
             inv.save()
 
             if 'Draft' in request.POST:
                 inv.status = "Draft"
             elif "Save" in request.POST:
+
                 inv.status = "Saved" 
             inv.save()
 
@@ -915,11 +925,10 @@ def createInvoice(request):
                 mapped = zip(id,item_name,hsn,quantity,price, tax_rate,discount,total)
                 mapped = list(mapped)
                 for ele in mapped:
-                    print("Element:", ele)
                     try:
                         itm = Items.objects.get(item_name=ele[1])
-                        print(itm)
                         invoiceitems.objects.create(invoice=inv,company = cmp,logindetails = log_details,  Items=itm,hsn=ele[2], quantity=int(ele[3]), price=float(ele[4]), tax_rate=ele[5], discount=float(ele[6]), total=float(ele[7]))
+                        itm.current_stock -= int(ele[3])
 
                         itm.save()
                         
@@ -941,6 +950,56 @@ def createInvoice(request):
             return redirect(invoice_overview)
     else:
        return redirect('/')  
+def checkInvoiceNumber(request):
+     if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company
+        
+        invNo = request.GET['invNum']
+
+        nxtInv = ""
+        lastInv = invoice.objects.filter(company = cmp).last()
+        if lastInv:
+            inv_no = str(lastInv.invoice_number)
+
+            numbers = []
+            stri = []
+            for word in inv_no:
+                if word.isdigit():
+                    numbers.append(word)
+                else:
+                    stri.append(word)
+            
+            num=''
+            for i in numbers:
+                num +=i
+            
+            st = ''
+            for j in stri:
+                st = st+j
+
+            inv_num = int(num)+1
+
+            if num[0] == '0':
+                if inv_num <10:
+                    nxtInv = st+'0'+ str(inv_num)
+                else:
+                    nxtInv = st+ str(inv_num)
+            else:
+                nxtInv = st+ str(inv_num)
+        if invoice.objects.filter(company = cmp, invoice_number__iexact = invNo).exists():
+            return JsonResponse({'status':False, 'message':'Invoice No already Exists.!'})
+        elif nxtInv != "" and invNo != nxtInv:
+            return JsonResponse({'status':False, 'message':'Invoice No is not continuous.!'})
+        else:
+            return JsonResponse({'status':True, 'message':'Number is okay.!'})
+   
+    
 
 def getInvoiceCustomerData(request):
    
