@@ -945,9 +945,9 @@ def createInvoice(request):
                 action = 'Created'
             )
 
-            return redirect(invoice_overview)
+            return redirect(invoice_list_out)
         else:
-            return redirect(invoice_overview)
+            return redirect(invoice_list_out)
     else:
        return redirect('/')  
 def checkInvoiceNumber(request):
