@@ -47,6 +47,8 @@ urlpatterns = [
     path('Staff/invoice/getBankAccount',views.getBankAccount,name='getBankAccount'),
     path('Staff/invoice/createInvoice',views.createInvoice,name='createInvoice'),
     path('Staff/invoice/checkInvoiceNumber',views.checkInvoiceNumber,name='checkInvoiceNumber'),
+    path('Staff/invoice/invoice_import',views.invoice_import,name='invoice_import'),
+
 
 
 

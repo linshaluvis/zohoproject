@@ -912,14 +912,7 @@ def createInvoice(request):
             tax_rate = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == cmp.state else request.POST.getlist("taxIGST[]")
             discount = request.POST.getlist("discount[]")
             total = request.POST.getlist("total[]")
-            print("itemId:", id)
-            print("itemName:", item_name)
-            print("hsn:", hsn)
-            print("quantity:", quantity)
-            print("price:", price)
-            print("tax_rate:", tax_rate)
-            print("discount:", discount)
-            print("total:", total)
+          
 
             if len(id)==len(item_name)==len(hsn)==len(quantity)==len(price)==len( tax_rate)==len(discount)==len(total) and id and item_name and hsn and quantity and price and tax_rate and discount and total:
                 mapped = zip(id,item_name,hsn,quantity,price, tax_rate,discount,total)
@@ -950,6 +943,105 @@ def createInvoice(request):
             return redirect(invoice_list_out)
     else:
        return redirect('/')  
+   
+def invoice_import(request):
+    if request.method == 'POST' and 'file' in request.FILES:
+        if 'login_id' in request.session:
+            log_id = request.session['login_id']
+            if 'login_id' not in request.session:
+                return redirect('/')
+            log_details = LoginDetails.objects.get(id=log_id)
+
+            if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                    
+            elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+
+            excel_file = request.FILES['file']
+            workbook = load_workbook(excel_file)
+        # Assuming user authentication and session handling code is already present
+        
+       
+            # Assuming the Excel file contains two sheets: 'Sheet1' for invoice data and 'Sheet2' for invoice items data
+            sheet1 = workbook['Sheet1']
+            sheet2 = workbook['Sheet2']
+            
+            # Process data from Sheet1 (Invoice data)
+            for row in sheet1.iter_rows(min_row=2, values_only=True):
+                # Extract data from the row
+                invoice_data = {
+                    'company': company,
+                    'login_details': log_details,
+                    'customer_email': row[3],
+                    'customer_billingaddress': row[4],
+                    'customer_GSTtype': row[5],
+                    'customer_GSTnumber': row[6],
+                    'customer_place_of_supply': row[7],
+                    'reference_number': row[12],
+                    'invoice_number': row[0],
+                    'date': row[9],
+                    'expiration_date': row[11],
+                    'payment_method': row[13],
+                    'cheque_number': row[14],
+                    'bank_account_number': row[16],
+                    'sub_total': row[20],
+                    'CGST': row[21],
+                    'SGST': row[22],
+                    'tax_amount_or_IGST': row[23],
+                    'shipping_charge': row[24],
+                    'grand_total': row[26],
+                    'advanced_paid': row[25],
+                    'balance': row[27],
+                    'description': row[17],
+
+
+
+
+                    # Add more fields as needed
+                }
+                print(invoice_data)
+                # Create and save the invoice object
+                Invoice =invoice.objects.create(**invoice_data)
+                
+                # Save invoice history
+                invoiceHistory.objects.create(
+                    company=company,
+                    login_details=log_details,
+                    invoice=invoice,
+                    date=datetime.now(),
+                    action='Created'
+                )
+        
+        # Process data from Sheet2 (Invoice items data)
+        for row in sheet2.iter_rows(min_row=2, values_only=True):
+            # Extract data from the row
+            items_data = {
+                'invoice': Invoice,
+                'company': company,
+                'logindetails': log_details,
+                'Items': row[1],
+                'hsn': row[2],
+                'quantity': row[3],
+                'price': row[4],
+                'tax_rate': row[5],
+                'discount': row[6],
+                'total': row[7],
+                # Add more fields as needed
+            }
+            # Create and save the invoice item object
+            invoice_item = Items.objects.create(**items_data)
+            
+            # Update current stock for the item
+            item = Items.objects.get(item_name=row[1])
+            item.current_stock -= int(row[3])
+            item.save()
+
+        return redirect('invoice_list_out')
+
+    return HttpResponse("No file uploaded or invalid request method")
+
 def checkInvoiceNumber(request):
      if 'login_id' in request.session:
         log_id = request.session['login_id']
