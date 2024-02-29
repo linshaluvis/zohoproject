@@ -24,6 +24,8 @@ from io import BytesIO
 from django.db.models import Max
 from django.db.models import Q
 from django.http import JsonResponse,HttpResponse,HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
+
 
 # Create your views here.
 
@@ -961,84 +963,109 @@ def invoice_import(request):
 
             excel_file = request.FILES['file']
             workbook = load_workbook(excel_file)
-        # Assuming user authentication and session handling code is already present
-        
-       
-            # Assuming the Excel file contains two sheets: 'Sheet1' for invoice data and 'Sheet2' for invoice items data
+            
             sheet1 = workbook['Sheet1']
             sheet2 = workbook['Sheet2']
             
-            # Process data from Sheet1 (Invoice data)
+            invoices = []  # List to store created invoices
+
             for row in sheet1.iter_rows(min_row=2, values_only=True):
-                # Extract data from the row
-                invoice_data = {
-                    'company': company,
-                    'login_details': log_details,
-                    'customer_email': row[3],
-                    'customer_billingaddress': row[4],
-                    'customer_GSTtype': row[5],
-                    'customer_GSTnumber': row[6],
-                    'customer_place_of_supply': row[7],
-                    'reference_number': row[12],
-                    'invoice_number': row[0],
-                    'date': row[9],
-                    'expiration_date': row[11],
-                    'payment_method': row[13],
-                    'cheque_number': row[14],
-                    'bank_account_number': row[16],
-                    'sub_total': row[20],
-                    'CGST': row[21],
-                    'SGST': row[22],
-                    'tax_amount_or_IGST': row[23],
-                    'shipping_charge': row[24],
-                    'grand_total': row[26],
-                    'advanced_paid': row[25],
-                    'balance': row[27],
-                    'description': row[17],
-
-
-
-
-                    # Add more fields as needed
-                }
-                print(invoice_data)
+                try:
+                    customer = Customer.objects.get(first_name=row[1],customer_email=row[2],company=company)
+                    payment_terms1 = Company_Payment_Term.objects.get(term_name=row[9], company=company)
+                    print(payment_terms1)
+                except ObjectDoesNotExist:
+                    print(f"Customer with name or email '{row[1]}' or Payment term with term name '{row[9]}' does not exist in the database.")
+                    continue
+                
                 # Create and save the invoice object
-                Invoice =invoice.objects.create(**invoice_data)
+                created_invoice = invoice(
+                    company=company,
+                    login_details=log_details,
+                    customer=customer,
+                    payment_terms=payment_terms1,
+                    customer_email=row[2],
+                    customer_billingaddress=row[3],
+                    customer_GSTtype=row[4],
+                    customer_GSTnumber=row[5],
+                    customer_place_of_supply=row[6],
+                    invoice_number=row[0],
+                    date=row[8],
+                    expiration_date=row[10],
+                    payment_method=row[12],
+                    cheque_number=row[13],
+                    UPI_number=row[14],
+                    bank_account_number=row[15],
+                    sub_total=row[19],
+                    CGST=row[20],
+                    SGST=row[21],
+                    tax_amount_or_IGST=row[22],
+                    shipping_charge=row[23],
+                    grand_total=row[25],
+                    advanced_paid=row[26],
+                    balance=row[27],
+                    description=row[16],
+                    status=row[28]
+                )
+                latest_inv = invoice.objects.filter(company_id = company).order_by('-id').first()
+
+                new_number = int(latest_inv.reference_number) + 1 if latest_inv else 1
+
+                if invoiceReference.objects.filter(company_id = company).exists():
+                    deleted = invoiceReference.objects.get(company_id = company)
+                    
+                    if deleted:
+                        while int(deleted.reference_number) >= new_number:
+                            new_number+=1
+
+                created_invoice.save()
+                print(created_invoice)
+                invoices.append(created_invoice)
                 
                 # Save invoice history
                 invoiceHistory.objects.create(
                     company=company,
                     login_details=log_details,
-                    invoice=invoice,
+                    invoice=created_invoice,
                     date=datetime.now(),
                     action='Created'
                 )
         
-        # Process data from Sheet2 (Invoice items data)
-        for row in sheet2.iter_rows(min_row=2, values_only=True):
-            # Extract data from the row
-            items_data = {
-                'invoice': Invoice,
-                'company': company,
-                'logindetails': log_details,
-                'Items': row[1],
-                'hsn': row[2],
-                'quantity': row[3],
-                'price': row[4],
-                'tax_rate': row[5],
-                'discount': row[6],
-                'total': row[7],
-                # Add more fields as needed
-            }
-            # Create and save the invoice item object
-            invoice_item = Items.objects.create(**items_data)
-            
-            # Update current stock for the item
-            item = Items.objects.get(item_name=row[1])
-            item.current_stock -= int(row[3])
-            item.save()
+            for row in sheet2.iter_rows(min_row=2, values_only=True):
+                try:
+                    item = Items.objects.get(item_name=row[1])
+                except ObjectDoesNotExist:
+                    print(f"Item with name '{row[1]}' does not exist in the database.")
+                    continue
+                
+                matching_invoices = [inv for inv in invoices if inv.invoice_number == row[0]]
+                if not matching_invoices:
+                    print(f"No invoice found for row with invoice number '{row[0]}'")
+                    continue
 
-        return redirect('invoice_list_out')
+                # Assuming there's only one matching invoice
+                invoice1 = matching_invoices[0]
+
+                # Create and save the invoice item object
+                invoice_item = invoiceitems(
+                    invoice=invoice1,
+                    company=company,
+                    Items=item,
+                    logindetails=log_details,
+                    hsn=row[2],
+                    quantity=row[3],
+                    price=row[4],
+                    tax_rate=row[5],
+                    discount=row[6],
+                    total=row[7],
+                )
+                invoice_item.save()
+                
+                # Update current stock for the item
+                item.current_stock -= int(row[3])
+                item.save()
+
+            return redirect('invoice_list_out')
 
     return HttpResponse("No file uploaded or invalid request method")
 
