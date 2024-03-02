@@ -629,9 +629,118 @@ def invoice_list_out(request):
             return render(request,'staff/invoicelist.html',{'allmodules':allmodules,'com':com,'data':log_details,'details': dash_details,'invoices':inv})
     else:
        return redirect('/')
- 
+def view(request,pk):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company
+        invoices = invoice.objects.filter(company = cmp)
 
+   
+        inv = invoice.objects.get(id = pk)
+        # cmt = invoice_Comments.objects.filter(Invoice = inv)
+        hist =invoiceHistory.objects.filter( invoice = inv).last()
+        invItems = invoiceitems.objects.filter( invoice = inv)
+        created = invoiceHistory.objects.filter( invoice = inv,  action = 'Created')
 
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+        
+        return render(request,'staff/invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'history':hist,  'created':created})
+    else:
+       return redirect('/')
+def filter_invoice_name(request, pk):
+    if 'login_id' not in request.session:
+        return redirect('/')
+    
+    log_id = request.session['login_id']
+    log_details = LoginDetails.objects.get(id=log_id)
+
+    if log_details.user_type == 'Staff':
+        staff = StaffDetails.objects.get(login_details=log_details)
+        company = staff.company
+    elif log_details.user_type == 'Company':
+        company = CompanyDetails.objects.get(login_details=log_details)
+    
+    try:
+        invoic = invoice.objects.get(id=pk)
+        item = invoiceitems.objects.filter(invoice=pk)
+        customers = Customer.objects.filter(company_id=company, customer_status='Active')
+
+        for r in customers:
+            vn = r.first_name.split()[1:]
+            r.cust_name = " ".join(vn)
+
+        sorted_customers = sorted(customers, key=lambda r: r.cust_name)
+
+        context = {
+            'invoices': sorted_customers,
+            'invoice': invoic,
+            'item': item,
+            'company': company,
+        }
+        return render(request, 'staff/invoice.html', context)
+    
+    except invoice.DoesNotExist:
+        return redirect('/')
+def filter_invoice_number(request, pk):
+    if 'login_id' not in request.session:
+        return redirect('/')
+    
+    log_id = request.session['login_id']
+    log_details = LoginDetails.objects.get(id=log_id)
+
+    if log_details.user_type == 'Staff':
+        staff = StaffDetails.objects.get(login_details=log_details)
+        company = staff.company
+    elif log_details.user_type == 'Company':
+        company = CompanyDetails.objects.get(login_details=log_details)
+    
+    try:
+        invoic = invoice.objects.get(id=pk)
+        item = invoiceitems.objects.filter(invoice=pk)
+        invoices = invoice.objects.filter(company=company)
+        
+        for r in invoices:
+            vn = r.invoice_number.split()[1:]  # accessing attributes using dot notation
+            r.cust_no = " ".join(vn)
+
+        sorted_invoices = sorted(invoices, key=lambda r: r.cust_no)
+
+        context = {
+            'invoices': sorted_invoices,
+            'invoice': invoic,
+            'item': item,
+            'company': company,
+        }
+        return render(request, 'staff/invoice.html', context)
+    
+    except invoice.DoesNotExist:
+        return redirect('/') 
+def filter_invoice_draft(request,pk):
+    invo=invoice.objects.filter(status='draft')
+    invoic=invoice.objects.get(id=pk)
+    item=invoiceitems.objects.filter(invoice=pk)
+
+    context={'invoices':invo,'invoice':invoic,'item':item}
+    return render(request,'staff/invoice.html',context)
+    
+    
+def filter_invoice_sent(request,pk):
+    invo=invoice.objects.filter(status='saved')
+    invoic=invoice.objects.get(id=pk)
+    item=invoiceitems.objects.filter(invoice=pk)
+
+    context={'invoices':invo,'invoice':invoic,'item':item}
+    return render(request,'staff/invoice.html',context)    
 def invoice_create(request):
  if 'login_id' in request.session:
         log_id = request.session['login_id']
@@ -979,6 +1088,16 @@ def invoice_import(request):
                     continue
                 
                 # Create and save the invoice object
+                latest_inv = invoice.objects.filter(company_id = company).order_by('-id').first()
+
+                new_number = int(latest_inv.reference_number) + 1 if latest_inv else 1
+
+                if invoiceReference.objects.filter(company_id = company).exists():
+                    deleted = invoiceReference.objects.get(company_id = company)
+                    
+                    if deleted:
+                        while int(deleted.reference_number) >= new_number:
+                            new_number+=1
                 created_invoice = invoice(
                     company=company,
                     login_details=log_details,
@@ -1005,21 +1124,12 @@ def invoice_import(request):
                     advanced_paid=row[26],
                     balance=row[27],
                     description=row[16],
-                    status=row[28]
+                    status=row[28],
+                    reference_number=new_number
+
                 )
-                latest_inv = invoice.objects.filter(company_id = company).order_by('-id').first()
-
-                new_number = int(latest_inv.reference_number) + 1 if latest_inv else 1
-
-                if invoiceReference.objects.filter(company_id = company).exists():
-                    deleted = invoiceReference.objects.get(company_id = company)
-                    
-                    if deleted:
-                        while int(deleted.reference_number) >= new_number:
-                            new_number+=1
-
+               
                 created_invoice.save()
-                print(created_invoice)
                 invoices.append(created_invoice)
                 
                 # Save invoice history
@@ -1136,6 +1246,46 @@ def getInvoiceCustomerData(request):
                 'street':cust.billing_address, 'city':cust.billing_city, 'state':cust.billing_state, 'country':cust.billing_country, 'pincode':cust.billing_pincode
                 }
                 return JsonResponse(context)
+def invoiceoverview(request):
+    if request.method == 'POST' and 'file' in request.FILES:
+        if 'login_id' in request.session:
+            log_id = request.session['login_id']
+            if 'login_id' not in request.session:
+                return redirect('/')
+            log_details = LoginDetails.objects.get(id=log_id)
+
+            if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                    
+            elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+            log_details= LoginDetails.objects.get(id=log_id)
+            dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+            customers=Customer.objects.all()
+            item=Items.objects.all()
+            payments=Company_Payment_Term.objects.all()
+            i = invoice.objects.all()
+
+            
+
+
+
+        
+            context={
+                'details':dash_details,
+                'allmodules': allmodules,
+                'customers':customers,
+                'item':item,
+                'payments':payments,
+                'i':i
+
+
+                
+            }
+        return render(request,'staff/invoice.html',context) 
+
        
 def itemdata(request):
     cur_user = request.user.id

@@ -48,6 +48,14 @@ urlpatterns = [
     path('Staff/invoice/createInvoice',views.createInvoice,name='createInvoice'),
     path('Staff/invoice/checkInvoiceNumber',views.checkInvoiceNumber,name='checkInvoiceNumber'),
     path('Staff/invoice/invoice_import',views.invoice_import,name='invoice_import'),
+    path('Staff/invoice/view/<int:pk>',views.view,name='view'),
+    path('Staff/invoice/filter_invoice_draft/<int:pk>',views.filter_invoice_draft,name='filter_invoice_draft'),
+    path('Staff/invoice/filter_invoice_sent/<int:pk>',views.filter_invoice_sent,name='filter_invoice_sent'),
+    path('Staff/invoice/filter_invoice_name/<int:pk>',views.filter_invoice_name,name='filter_invoice_name'),
+    path('Staff/invoice/filter_invoice_number/<int:pk>',views.filter_invoice_number,name='filter_invoice_number'),
+
+
+
 
 
 

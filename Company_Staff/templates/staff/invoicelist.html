@@ -106,7 +106,7 @@ crossorigin="anonymous"></script>
         </thead>
         <tbody>
           {% for a in invoices %}
-          <tr class="clickable-row" data-href="" style="cursor: pointer;">
+          <tr class="clickable-row" data-href="{% url 'view' a.id %} " style="cursor: pointer;">
             <td>{{ forloop.counter }}</td>
             <td>{{ a.date }}</td>
             <td>{{ a.invoice_number }}</td>
@@ -232,6 +232,8 @@ crossorigin="anonymous"></script>
         <td></td>
     </tr>
 </tbody></table>
+
+
 
 
 <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
