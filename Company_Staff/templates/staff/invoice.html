@@ -333,15 +333,15 @@
                        <!-- <b ><a class="text-white"  href="">{{i.item_name}} </a></b>
                        <br>
                        <a class="text-white"  href="">{{i.hsn_code}}</a><br> -->
-                       <label class="text-left d-block"><a class="text-white"  href=""> {{ forloop.counter }}
+                       <label class="text-left d-block"><a class="text-white"  href=""> {{ i.invoice_number }}
                        </a></label>
                        <br>
-                       <label class="text-left d-block"><a class="text-white"  href="">{{ i.customer.first_name }} {{ i.customer.last_name }}</a></label>
+                       <label class="text-left d-block"><a class="text-white"  href="">{{ i.date}} </a></label>
                   
                      </td>
                      
                      <td>
-                       <label class="text-end d-block"><a class="text-white"  href="">{{ i.grand_total }}</a></label>
+                       <label class="text-end d-block"><a class="text-white"  href="">{{ i.balance }}</a></label>
                        <br>
                        <label class="text-end d-block"><a class="text-white"  href="">{{ i.status }}</a></label>
                      </td>
@@ -415,7 +415,9 @@
           <a class="btn" style="background-color: chocolate; margin-right: 2vh;color: aliceblue;"><i class="fas fa-eye"></i>
             Overview</a>
             <a class="btn" style="background-color: chocolate; margin-right: 2vh;color: aliceblue;" onclick="totemplate()"><i class="fas fa-eye"></i>
-              Transaction</a>
+              Templates</a>
+              <a class="btn" style="background-color: chocolate; margin-right: 2vh;color: aliceblue;" onclick="totemplate()"><i class="fas fa-eye"></i>
+                Slip</a>
               <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     // Get the elements by ID
@@ -460,13 +462,13 @@
           <div class="col-md-6 d-flex justify-content-between align-items-center">
       
               <!-- Edit Button -->
-              <a href="" class="btn btn-outline-warning py-2 text-warning" title="Save this draft">
+              <a href="" class="btn btn-outline-warning py-2 text-warning" title="edit">
                   <i class="fas fa-pencil-alt"></i>
               </a>
       
               <!-- Item Status Edit Button -->
               <a href="" class="btn btn-outline-warning py-2" title="Save this draft" style="margin-left: 4px;">
-                  {{selitem.activation_tag}}
+                  {{invoice.status}}
               </a>
       
               <!-- Delete Button -->
@@ -518,6 +520,8 @@
           </div>
       </div><br>
       </div><br>
+      
+      
   
       <div class="row" id="div-to-pdf"
         style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right: 1rem; width: 75%;  ">
@@ -526,77 +530,184 @@
           <h2 style="color: #000000;"><br>INVOICE DETAILS  
             <hr>
           </h2>
-        </div>    
+        </div> 
+         <div class="row text-center">
+                       
+                        <h6 class="text-dark" style="font-weight: bold;">Invoice Number : {{invoice.invoice_number}}</h6>
+                    </div>
+                    <hr>
+                    <div class="row " style="padding-top: 3%;">
+                      <div class="col-md-12  col-lg-12">
+                          <h6 class="text-dark">Bill To</h6>
+                          
+                          <h6 style="color: rgb(218, 142, 3);">{{invoice.customer.first_name}} {{invoice.customer.last_name}} <br><span class="text-dark">{{ invoice.customer.customer_email }}</span><br>
+                            
+                              <span class="text-dark">{{invoice.customer.customer_billingaddress}}</span> 
+                              {% if invoice.customer.GST_number %}
+                              <h6 class="text-dark ">GSTIN : {{ invoice.customer.GST_number }}</h6>
+                              {% endif %}
+                          </h6>
+                          <br>
+
+                          <h6 class="text-dark " style="margin-left: 60%;margin-top: -10%;">  Invoice Date : {{invoice.date}}</h6>
+
+                          <br>
+                          <h6 class="text-dark " style="margin-left: 60%;margin-top: -10%;">  Place of Supply: : {{invoice.customer_place_of_supply}}</h6>
+                          <br>
+                          <br>
+                          <hr>
+
+                          <br>
+                          <br>
+
+
+
+                     
+                      </div>
+                  </div>
+                    
+                   
+                        <table class="table  " style="border-color: black;">
+                            <thead >
+                                <tr>
+                                    <th style="color: black;font-weight: bold;">#</th>
+                                    <th style="width: 10rem;color: black;font-weight: bold;">Product</th>
+                                    <!-- <th class="text-right;" style="color: black;font-weight: bold;">Hsn</th> -->
+                                    <!-- <th class="text-right;" style="color: black;font-weight: bold;">Description</th> -->
+                                    <th class="text-right;" style="color: black;font-weight: bold;">HSN</th>
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Quantity</th>
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Price</th>
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Discount</th>
+                    
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Tax%</th>
+                                    <th class="text-right;" style="color: black;font-weight: bold;">Total</th>
+                                </tr>
+                                
+                            </thead>
+                            <tbody>
+                                {% for item in invItems %}
+                                <tr>
+                                    <td style="color: black;font-weight: bold;">{{ forloop.counter }}</td>
+                                    <td style="color: black;font-weight: bold;">{{ item.Items.item_name }}</td>
+                                    <!-- <td class="text-right">{{ item.hsn }}</td> -->
+                                    <!-- <td class="text-right">{{ item.desc }}</td> -->
+
+
+                                    <td class="text-right" style="color: black;font-weight: bold;">{{ item.hsn }}</td>
+                                    <td class="text-right" style="color: black;font-weight: bold;">{{ item.quantity }}</td>
+                                    <td class="text-right" style="color: black;font-weight: bold;">{{ item.tax_rate|floatformat:1 }}</td>
+                                    <td class="text-right" style="color: black;font-weight: bold;">{{ item.discount|floatformat:1 }}</td>
+                    
+                                    <td class="text-right" style="color: black;font-weight: bold;">{{ item.tax_rate }}</td>
+                                    <td class="text-right" style="color: black;font-weight: bold;">{{ item.total|floatformat:1 }}</td>
+                                </tr>
+                                {% endfor %}
+                                
+                            </tbody>
+                        </table>   
         <div class="row" id="div-to-pdf"
         style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right: 1rem;width: 100%; ">
+        
   
         
-        <div class="gen-info col-6 " style="padding-left: 3rem; ">
-          <div class="row mt-1">
-            <div class="col-5"><label class="text-black" for="">Invoice Number:</label></div>
-            <div class="col-7">
-              <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;"> :&nbsp;{{invoice.invoice_number}}</p>
-              <h6 class="text-dark " style="margin-left: 60%;margin-top: -10%;">  Invoice<br> Date : {{invoice.date}}</h6>
+        <div class="gen-info col-6 " style="padding-left: 3rem;">
+          <table class="table ">
+              <tr>
+                  <td class="text-dark" style="font-weight: bold;">Sub-Total:</td>
+                  <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.sub_total|floatformat:1 }}</td>
+              </tr>
+              {% if invoice.CGST|floatformat:1 != 0|floatformat:1 %}
+              <tr>
+                  <td class=" text-dark"  style="color: black;font-weight: bold;" >CGST:</td>
+                  <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.CGST|floatformat:1 }}</td>
+              </tr>
+              {% endif %}
 
-            </div>
-          </div>
-          <div class="row " style="padding-top: 3%;">
-            <div class="col-md-12  col-lg-12">
-                <h6 class="text-dark">Bill To</h6>
-                <h6 style="color: rgb(218, 142, 3);">{{invoice.customer.first_name}} <br><span class="text-dark">{{ invoice.customer.customer_email }}</span><br>
-                    <span class="text-dark">{{invoice.customer.customer_billingaddress}}</span> 
-                    {% if invoice.customer.GST_number %}
-                    <h6 class="text-dark ">GSTIN : {{ invoice.customer.GST_number }}</h6>
-                    {% endif %}
-                </h6>
+              {% if invoice.SGST|floatformat:1 != 0|floatformat:1 %}
+              <tr>
+                  <td class="text-dark"  style="color: black;font-weight: bold;" >SGST:</td>
+                  <td class="text-right"  style="color: black;font-weight: bold; text-align: end;" >{{ invoice.SGST|floatformat:1 }}</td>
+              </tr>
+              {% endif %}
 
-           
-            </div>
-        </div>
-        <br>
-        <table class="table mt-2 " style="border-color: black;">
-            <thead >
-                <tr style="border-bottom: 1px solid black;border-left: 1px solid black;border-right: 1px solid black;border-top: 1px solid black;">
-                    <th style="color: black;">#</th>
-                    <th style="width: 30rem;color: black;text-align: center;">Description</th>
-                    <th class="text-right;" style="color: black;">Amount</th>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                {% for i in item %}
-                <tr style="border-bottom: 1px solid black;border-left: 1px solid black;border-right: 1px solid black;border-top: 1px solid black;">
-                    <td style="border-bottom: 1px solid black;">{{ forloop.counter }}</td>
-                    <td style="text-align: center;border-bottom: 1px solid black;">
-                        <textarea name="" id="" cols="30" rows="3" style="background-color: transparent;border: none;" class="text-dark">{{i.Items.item_name}}</textarea>
-                    </td>
-                    <td  style="border-bottom: 1px solid black;">{{i.hsn_code }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+              {% if invoice.tax_amount_or_IGST|floatformat:1 != 0|floatformat:1 %}
+              <tr>
+                  <td class="text-dark" style="color: black;font-weight: bold;" >Tax Amount/IGST:</td>
+                  <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.tax_amount_or_IGST|floatformat:1 }}</td>
+              </tr>
+              {% endif %}
+              <tr>
+                <td class="text-dark"  style="color: black;font-weight: bold;" >TAX:</td>
+                <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.tax_amount_or_IGST}}</td>
+            </tr>
+            {% if invoice.shipping_charge != 0 %}
+              <tr>
+                  <td class="text-dark"  style="color: black;font-weight: bold;" >Shipping Charge:</td>
+                  <td class="text-right"  style="color: black;font-weight: bold; text-align: end;" >{{ invoice.shipping_charge }}</td>
+              </tr>
+              {% endif %}
+              {% if invoice.adjustment != 0 %}
+              <tr>
+                  <td class="text-dark"  style="color: black;font-weight: bold;" >Adjustment Charge:</td>
+                  <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.adjustment|floatformat:1}}</td>
+              </tr>
+              {% endif %}
+              
+              
+              <tr>
+
+                  <td class="text-right"  style="color: black;font-weight: bold;" >Total:</td>
+                  
+                  <td class="text-right " style="color: black;font-weight: bold; text-align: end;" >{{ invoice.grand_total|floatformat:1}}</td>
+              </tr>
+             
+              {% if invoice.advanced_paid != 0 %}
+              <tr>
+
+                  <td class="text-right"  style="color: black;font-weight: bold;" >Paid Amount:</td>
+                  
+                  <td class="text-right " style="color: black;font-weight: bold; text-align: end;" >{{ invoice.advanced_paid|floatformat:1}}</td>
+              </tr>
+              {% endif %}
+              {% if invoice.balance != 0 %}
+              <tr>
+
+                  <td class="text-right"  style="color: black;font-weight: bold;" >Balance:</td>
+                  
+                  <td class="text-right " style="color: black;font-weight: bold; text-align: end;" >{{ invoice.balance|floatformat:1}}</td>
+              </tr>
+              {% endif %}
+
+             
+          </table>
+          
+          
+         
+       
         
           <div class="row mt-3">
-            <div class="col-5"><label class="text-black" for="">HSN Code:</label></div>
+            <div class="col-5"><label class="text-black" for="">Customer Note:</label></div>
             <div class="col-7">
-              <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">   {{selitem.hsn_code}}</p>
+              <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">   {{invoice.description}}</p>
+              <label> <p class="m-0 font-weight-bold" style="color:black "> </p></label>
+
             </div>
           </div>
           <div class="row mt-3">
-            <div class="col-5"><label class="text-black" for="">Unit :</label></div>
+            <div class="col-5"><label class="text-black" for="">Terms & Conditions:</label></div>
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">
-                {{selitem.unit.unit_name}}</p>
+                {{invoice.terms_condition}}</p>
             </div>
           </div>
           <div class="row mt-3">
             <div class="col-5"><label class="text-black" for="">Tax Preference :</label></div>
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">
-                {{selitem.tax_reference}}</p>
+                {{invoice.customer.tax_preference}}</p>
             </div>
           </div>
-          {% if selitem.tax_reference == "taxable" %}
+          {% if invoice.customer.tax_preference == "taxable" %}
           <div class="row mt-3">
             <div class="col-5"><label class="text-black" for="">Intrastate Tax :</label></div>
             <div class="col-7">
@@ -615,30 +726,31 @@
           <div class="row mt-3">
             <div class="col-5"><label class="text-black" for="">Status :</label></div>
             <div class="col-7">
-              <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">         {{selitem.activation_tag}}</p>
+              <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">                        {{invoice.status}}</p>
+
             </div>
           </div>
           <div class="row mt-3">
-            <div class="col-5"><label class="text-black" for=""> Minimum Stock To Maintain :</label></div>
+            <div class="col-5"><label class="text-black" for=""> </label></div>
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">        {{selitem.minimum_stock_to_maintain}}</p>
             </div>
           </div>
           <div class="row mt-3">
-            <div class="col-5"><label class="text-black" for="">Inventory Account : </label></div>
+            <div class="col-5"><label class="text-black" for=""> </label></div>
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">{{selitem.inventory_account}}</p>
             </div>
           </div>
           <div class="row mt-3">
-            <div class="col-5"><label class="text-black" for="">Opening stock :</label></div>
+            <div class="col-5"><label class="text-black" for=""></label></div>
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">{{selitem.opening_stock}}</p>
             </div>
           </div>
         
           <div class="row mt-3">
-            <div class="col-5"><label class="text-black" for="">Current Stock :</label></div>
+            <div class="col-5"><label class="text-black" for=""></label></div>
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">  {{selitem.current_stock}}</p>
             </div>
@@ -649,22 +761,22 @@
         <div class="p-info col-6 text-white" style="height: 100%; margin-bottom: 1vh;">
           <div class="card text-white" style="background-color: rgb(30, 30, 30); padding-left: 2rem; padding-top: 1rem;">
             <div class="row text-center">
-              <h2 class="text-white">PURCHASE DETAILS {{latest_item_id.action}}
+              <h2 class="text-white">INVOICE DETAILS {{latest_item_id.action}}
                 <hr>
               </h2>
             </div>
   
   
             <div class="row mt-2 text-white" >
-              <div class="col-5"><label class="text-white" for="">Purchase Price </label></div>
+              <div class="col-5"><label class="text-white" for="">Invoice Date: </label></div>
               <div class="col-7">
-                <p class="bold text-white"> : &nbsp;{{selitem.purchase_price}}</p>
+                <p class="bold text-white"> : &nbsp;{{invoice.date|date:"d/m/Y" }}</p>
               </div>
             </div>
             <div class="row mt-2">
-              <div class="col-5"><label class="text-white" for="">Purchase Account </label></div>
+              <div class="col-5"><label class="text-white" for="">Due Date: </label></div>
               <div class="col-7">
-                <p class="bold text-white" >  : &nbsp;{{selitem.purchase_account}}  </p>
+                <p class="bold text-white" >  : &nbsp;{{invoice.expiration_date|date:"d/m/Y" }}  </p>
               </div>
             </div>
             <div class="row mt-2">
@@ -680,7 +792,7 @@
   
      
       <div class="row text-center">
-        <h2 class="text-white">SELLING DETAILS
+        <h2 class="text-white">PAYMENT DETAILS
           <hr>
         </h2>
       </div>
@@ -688,25 +800,56 @@
   
   
         <div class="row mt-2">
-          <div class="col-5"><label class="text-white" for=""> Selling Price </label></div>
+          <div class="col-5"><label class="text-white" for=""> Payment Method: </label></div>
           <div class="col-7">
-            <p class="bold text-white">  : &nbsp;{{selitem.selling_price}} </p>
+            <p class="bold text-white">  : &nbsp;{{ invoice.payment_method}} </p>
           </div>
         </div>
-        <div class="row mt-2">
-          <div class="col-5"><label class="text-white" for=""> Sales Account </label></div>
-          <div class="col-7">
-            <p class="bold text-white">  : &nbsp;{{selitem.sales_account}} </p>
-          </div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-5"><label class="text-white" for=""> Sales Description </label></div>
-          <div class="col-7">
-            <p class="bold text-white">  : &nbsp;{{selitem.sales_description}} </p>
-          </div>
-        </div>
-  </div>
-  </div>
+        
+                                   
+{% if invoice.payment_method|lower == 'cash' %}
+<div></div>
+{% elif invoice.payment_method|lower == 'upi' %}
+                                    <div class="row">
+                                        
+                                        <div class="col-6"><label for="">UPI ID:</label></div>
+                                        <div class="col-6 " >
+                                        <label>  <p >{{ invoice.UPI_number }}</p></label>
+
+                                        </div>
+                                    </div>
+
+                                    {% elif invoice.payment_method|lower == 'cheque' %}
+                                    
+                                    <div class="row">
+                                        
+                                        <div class="col-3"><label for="">Cheque No:</label></div>
+                                        <div class="col-9">
+                                        <label>  <p>{{ invoice.cheque_number }}</p></label>
+                                        </div>
+                                    </div>
+
+                                    
+                                    {% else %}
+                                    
+                                    <div class="row">
+                                        
+                                       
+                                    <div class="col-6"><label for="">Account Number:</label></div>
+                                    <div class="col-6">
+                                       
+                                        <label for="">  <p>{{ invoice.bank_account_number }}</p></label>
+                                       
+                                    </div>
+                                </div>
+                                    {% endif %}
+                                  
+                                
+                                           
+
+                                </div>     
+                            </div>
+       
   </div>
   </div>
   </div>
@@ -725,7 +868,10 @@
             <a class="btn" style="background-color: chocolate; margin-right: 2vh;color: aliceblue;" onclick="totemplate2()"><i class="fas fa-eye"></i>
               Overview</a>
               <a class="btn" style="background-color: chocolate; margin-right: 2vh;color: aliceblue;" onclick="totemplate()"><i class="fas fa-eye"></i>
-                Transaction</a>
+                Templates</a>
+                <a class="btn" style="background-color: chocolate; margin-right: 2vh;color: aliceblue;" onclick="totemplate()"><i class="fas fa-eye"></i>
+                  slip</a>
+       
      
     
     
@@ -790,7 +936,7 @@
           style="background-color: #c4c1c1fd;  height: auto; margin-left:20px; margin-right: 1rem; width: 75%; ">
     
           <div class="row text-center">
-            <h2 style="color: #000000;"><br>{{selitem.item_name}}
+            <h2 style="color: #000000;"><br>{{invoice.invoice_number}}
               <hr>
             </h2>
           </div>    
@@ -798,34 +944,34 @@
           style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right: 1rem;width: 100%; ">
           <div class="row mt-3">
             <div class="col-md-6">
-                <label class="text-dark bold" for="">Item Name:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{selitem.item_name}}</p>
+                <label class="text-dark bold" for="">Customer Name:</label>
+                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.customer.first_name}} {{invoice.customer.last_name}}</p>
             </div>
             <div class="col-md-6">
-                <label class="text-dark bold text-dark" for="">Selling Price:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{selitem.selling_price}}</p>
+                <label class="text-dark bold text-dark" for="">Customer Email:</label>
+                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.customer.customer_email}}</p>
             </div>
         </div>
         
         <div class="row mt-3" >
             <div class="col-md-6">
-                <label class="text-dark" for="">Purchase Price:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{selitem.purchase_price}}</p>
+                <label class="text-dark" for="">Customer GST:</label>
+                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.customer.GST_number}}</p>
             </div>
             <div class="col-md-6" id="mini">
-                <label class="text-dark" for="">Minimum Stock To Maintain:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{selitem.minimum_stock_to_maintain}}</p>
+                <label class="text-dark" for="">Customer place of supply:</label>
+                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.customer_place_of_supply}}</p>
             </div>
         </div>
         
         <div class="row mt-3" id="stock">
             <div class="col-md-6">
-                <label class="text-dark" for="">Stock Quantity:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{selitem.opening_stock}}</p>
+                <label class="text-dark" for="">Invoice Date:</label>
+                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.date}}</p>
             </div>
             <div class="col-md-6" id="value">
-                <label class="text-dark" for="">Stock Value:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{stock_value}}</p>
+                <label class="text-dark" for="">Due Date:</label>
+                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.expiration_date}}</p>
             </div>
         </div>
         
@@ -845,7 +991,7 @@
     <table class="table table-hover table-bordered" id="table1" style="border-color: #000000;color: rgb(0, 0, 0);">
       <thead>
         <tr>
-          <th id="th" style="text-align: center;">Transactions     
+          <th id="th" style="text-align: center;">#    
              <a class="extra text-white" id="fil" style="display: block;" onclick="toggleDropdown(0)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
             <div class="dropdown-content" id="dropdownContent0">
                 <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
@@ -854,7 +1000,7 @@
                 &nbsp;<a class="btn btn-info" onclick="filterTable(0)">Apply</a>
             </div>
           </th>
-          <th id="th" style="text-align: center;">Type
+          <th id="th" style="text-align: center;">Product
             <a class="extra text-white" id="fil2" style="display: block;"  onclick="toggleDropdown(1)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
             <div class="dropdown-content" id="dropdownContent1">
                 <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
@@ -863,7 +1009,7 @@
                 &nbsp;<a class="btn btn-info" onclick="filterTable(1)">Apply</a>
             </div>
           </th>
-          <th id="th" style="text-align: center;">Name 
+          <th id="th" style="text-align: center;">HSN
             <a class="extra text-white"  id="fil3" style="display: block;"  onclick="toggleDropdown(2)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
             <div class="dropdown-content" id="dropdownContent2">
                 <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
@@ -871,7 +1017,7 @@
                 <a class="btn btn-info" onclick="cleardropdown(2)">Clear</a> 
                 &nbsp;<a class="btn btn-info" onclick="filterTable(2)">Apply</a>
             </div></th>
-          <th id="th" style="text-align: center;">Date 
+          <th id="th" style="text-align: center;">TAX 
             <a class="extra text-white" id="fil4" style="display: block;"  onclick="toggleDropdown(3)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
             <div class="dropdown-content" id="dropdownContent3">
                 <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
@@ -911,24 +1057,29 @@
         </tr>
       </thead>
       <tbody>
+        {% for item in invItems %}
+
   
         <tr style="color: black;">  
-          <td style="text-align: center;">{{forloop.counter}}1</td>
-          <td style="text-align: center;">{{selitem.type}}</td>
-          <td style="text-align: center;"></td>
-          <td style="text-align: center;">{{ selitem.date|date:"Y-m-d" }}</td>
+          <td style="text-align: center;">{{forloop.counter}}</td>
+          <td style="text-align: center;">{{item.Items.item_name}}</td>
+          <td style="text-align: center;">{{ item.hsn }}</td>
+          <td style="text-align: center;">{{ item.tax_rate }}</td>
   
-          <td style="text-align: center;">{{selitem.opening_stock}}</td>
-          <td style="text-align: center;">{{selitem.opening_stock_per_unit}}</td>
-          <td style="text-align: center;"></td>
+          <td style="text-align: center;">{{item.quantity}}</td>
+          <td style="text-align: center;">{{ item.total|floatformat:1}}</td>
+          <td style="text-align: center;">{{item.invoice.status}}</td>
         </tr>
   
+       
         
+    </tbody>
         <!-- Add more rows as needed -->
-      </tbody>
+        {% endfor  %}
     </table>
     
     </div>
+    
     </div>
     </div>
     </div>
