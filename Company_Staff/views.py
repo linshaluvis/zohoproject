@@ -657,6 +657,168 @@ def view(request,pk):
         return render(request,'staff/invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'history':hist,  'created':created})
     else:
        return redirect('/')
+def editInvoice(request,id):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company
+        invoices = invoice.objects.filter(company = cmp)       
+        data = LoginDetails.objects.get(id = log_id)
+        if data.user_type == "Company":
+            com = CompanyDetails.objects.get(login_details=log_details)
+            allmodules = ZohoModules.objects.get(Login_Id = log_id,status = 'New')
+            cmp = com
+        else:
+            com = StaffDetails.objects.get(login_details=log_details)
+            allmodules = ZohoModules.objects.get(company_id = com.company_id,status = 'New')
+            cmp = com.company_id
+
+        inv = invoice.objects.get(id = id)
+        invItms = invoiceitems.objects.filter(invoice = inv)
+        cust = Customer.objects.filter(company = cmp, customer_status='Active')
+        itms = Items.objects.filter(company = cmp)
+        trms = Company_Payment_Term.objects.filter(company = cmp)
+        bnk = Banking.objects.filter(company = cmp)
+        # lst = pric.objects.filter(Company = cmp, status = 'Active')
+        units = Unit.objects.filter(company = cmp)
+        acc = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense') | Q(account_type='Cost Of Goods Sold'), company=cmp).order_by('account_name')
+
+        context = {
+            'allmodules':allmodules, 'com':com, 'cmp':cmp, 'data':data,'invoice':inv, 'invItems':invItms, 'customers':cust, 'items':itms, 'pTerms':trms,
+            'banks':bnk,'units':units, 'accounts':acc
+        }
+        return render(request,'staff/edit_Invoice.html',context)
+    else:
+       return redirect('/')
+def updateInvoice(request, id):
+    if 's_id' in request.session:
+        s_id = request.session['s_id']
+        data = LoginDetails.objects.get(id = s_id)
+        if data.User_Type == "Company":
+            com =CompanyDetails.objects.get(Login_Id = s_id)
+        else:
+            com = StaffDetails.objects.get(Login_Id = s_id).company_id
+        inv = invoice.objects.get(id = id)
+        if request.method == 'POST':
+            invNum = request.POST['invoice_no']
+            if inv.invoice_no != invNum and invoice.objects.filter(Company = com, invoice_no__iexact = invNum).exists():
+                res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
+                return HttpResponse(res)
+
+            inv.customer = Customer.objects.get(id = request.POST['customer'])
+            inv.customer_email = request.POST['customerEmail']
+            inv.customer_billingaddress = request.POST['bill_address']
+            inv.customer_GSTtype = request.POST['gst_type']
+            inv.customer_GSTnumber = request.POST['gstin']
+            inv.customer_place_of_supply = request.POST['place_of_supply']
+            inv.invoice_number = invNum
+            inv.payment_terms = Company_Payment_Term.objects.get(id = request.POST['payment_term'])
+            inv.date = request.POST['invoice_date']
+            inv.expiration_date = datetime.strptime(request.POST['due_date'], '%d-%m-%Y').date()
+            inv.salesOrder_no = request.POST['order_number']
+            inv.exp_ship_date = None
+            inv.price_list_applied = True if 'priceList' in request.POST else False
+            inv.payment_method = None if request.POST['payment_method'] == "" else request.POST['payment_method']
+            inv.cheque_number = None if request.POST['cheque_id'] == "" else request.POST['cheque_id']
+            inv.UPI_number = None if request.POST['upi_id'] == "" else request.POST['upi_id']
+            inv.bank_account_number = None if request.POST['bnk_id'] == "" else request.POST['bnk_id']
+            inv.sub_total = 0.0 if request.POST['subtotal'] == "" else float(request.POST['subtotal'])
+            inv.tax_amount_or_IGST = 0.0 if request.POST['igst'] == "" else float(request.POST['igst'])
+            inv.CGST = 0.0 if request.POST['cgst'] == "" else float(request.POST['cgst'])
+            inv.SGST = 0.0 if request.POST['sgst'] == "" else float(request.POST['sgst'])
+            inv.tax_amount_or_IGST = 0.0 if request.POST['taxamount'] == "" else float(request.POST['taxamount'])
+            inv.adjustment = 0.0 if request.POST['adj'] == "" else float(request.POST['adj'])
+            inv.shipping_charge = 0.0 if request.POST['ship'] == "" else float(request.POST['ship'])
+            inv.grand_total = 0.0 if request.POST['grandtotal'] == "" else float(request.POST['grandtotal'])
+            inv.advanced_paid = 0.0 if request.POST['advance'] == "" else float(request.POST['advance'])
+            inv.balance = request.POST['grandtotal'] if request.POST['balance'] == "" else float(request.POST['balance'])
+            inv.description = request.POST['note']
+
+            if len(request.FILES) != 0:
+                inv.document=request.FILES.get('file')
+
+            inv.save()
+
+            # Save invoice items.
+
+            itemId = request.POST.getlist("item_id[]")
+            itemName = request.POST.getlist("item_name[]")
+            hsn  = request.POST.getlist("hsn[]")
+            qty = request.POST.getlist("qty[]")
+            price = request.POST.getlist("priceListPrice[]") if 'priceList' in request.POST else request.POST.getlist("price[]")
+            tax = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == com.State else request.POST.getlist("taxIGST[]")
+            discount = request.POST.getlist("discount[]")
+            total = request.POST.getlist("total[]")
+            inv_item_ids = request.POST.getlist("id[]")
+            invItem_ids = [int(id) for id in inv_item_ids]
+
+            inv_items = invoiceitems.objects.filter(Invoice = inv)
+            object_ids = [obj.id for obj in inv_items]
+
+            ids_to_delete = [obj_id for obj_id in object_ids if obj_id not in invItem_ids]
+            for itmId in ids_to_delete:
+                invItem = invoiceitems.objects.get(id = itmId)
+                item = Items.objects.get(id = invItem.Item.id)
+                item.current_stock += invItem.quantity
+                item.save()
+
+            invoiceitems.objects.filter(id__in=ids_to_delete).delete()
+            
+            count = invoiceitems.objects.filter(Invoice = inv).count()
+
+            if len(itemId)==len(itemName)==len(hsn)==len(qty)==len(price)==len(tax)==len(discount)==len(total)==len(invItem_ids) and invItem_ids and itemId and itemName and hsn and qty and price and tax and discount and total:
+                mapped = zip(itemId,itemName,hsn,qty,price,tax,discount,total,invItem_ids)
+                mapped = list(mapped)
+                for ele in mapped:
+                    if int(len(itemId))>int(count):
+                        if ele[8] == 0:
+                            itm = Items.objects.get(id = int(ele[0]))
+                            invoiceitems.objects.create(Invoice = inv, Item = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                            itm.current_stock -= int(ele[3])
+                            itm.save()
+                        else:
+                            itm = Items.objects.get(id = int(ele[0]))
+                            inItm = invoiceitems.objects.get(id = int(ele[8]))
+                            crQty = int(inItm.quantity)
+                            
+                            invoiceitems.objects.filter( id = int(ele[8])).update(Invoice = inv, Item = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                            
+                            if crQty < int(ele[3]):
+                                itm.current_stock -=  abs(crQty - int(ele[3]))
+                            elif crQty > int(ele[3]):
+                                itm.current_stock += abs(crQty - int(ele[3]))
+                            itm.save()
+                    else:
+                        itm = Items.objects.get(id = int(ele[0]))
+                        inItm = invoiceitems.objects.get(id = int(ele[8]))
+                        crQty = int(inItm.quantity)
+
+                        invoiceitems.objects.filter( id = int(ele[8])).update(Invoice = inv, Item = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax = ele[5], discount = float(ele[6]), total = float(ele[7]))
+
+                        if crQty < int(ele[3]):
+                            itm.current_stock -=  abs(crQty - int(ele[3]))
+                        elif crQty > int(ele[3]):
+                            itm.current_stock += abs(crQty - int(ele[3]))
+                        itm.save()
+            
+            # Save transaction
+                    
+            invoiceHistory.objects.create(
+                Company = com,
+                LoginDetails = data,
+                Invoice = inv,
+                action = 'Edited'
+            )
+
+            return redirect(view, id)
+        else:
+            return redirect(editInvoice, id)
+    else:
+       return redirect('/')
 def filter_invoice_name(request, pk):
     if 'login_id' not in request.session:
         return redirect('/')
