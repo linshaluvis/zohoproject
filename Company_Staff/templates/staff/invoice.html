@@ -533,32 +533,58 @@
         </div> 
          <div class="row text-center">
                        
-                        <h6 class="text-dark" style="font-weight: bold;">Invoice Number : {{invoice.invoice_number}}</h6>
+                        <h4 class="text-dark" style="font-weight: bold;"> {{invoice.company.company_name}}</h4>
+                        <h6 class="text-dark" style="font-weight: bold;"> {{invoice.company.address}}</h6>
+                        <h6 class="text-dark" style="font-weight: bold;"> {{invoice.company.state}}</h6>
+                        <h6 class="text-dark" style="font-weight: bold;"> {{invoice.company.login_details.email}}</h6>
+
+
+
                     </div>
                     <hr>
                     <div class="row " style="padding-top: 3%;">
                       <div class="col-md-12  col-lg-12">
                           <h6 class="text-dark">Bill To</h6>
                           
-                          <h6 style="color: rgb(218, 142, 3);">{{invoice.customer.first_name}} {{invoice.customer.last_name}} <br><span class="text-dark">{{ invoice.customer.customer_email }}</span><br>
+                          <h6 style="color: rgb(17, 11, 2);">{{invoice.customer.first_name}} {{invoice.customer.last_name}} <br><span class="text-dark">{{ invoice.customer.customer_billingaddress }}</span><br>
                             
-                              <span class="text-dark">{{invoice.customer.customer_billingaddress}}</span> 
+                              <span class="text-dark">{{invoice.customer.billing_city}}</span><br>                              <span class="text-dark">{{invoice.customer.customer_phone}}</span> 
+                              <br>                              <span class="text-dark">{{invoice.customer.customer_email}}</span> 
+ 
                               {% if invoice.customer.GST_number %}
                               <h6 class="text-dark ">GSTIN : {{ invoice.customer.GST_number }}</h6>
                               {% endif %}
                           </h6>
                           <br>
 
+                          <h6 class="text-dark " style="margin-left: 60%;margin-top: -10%;">  order number : {{invoice.reference_number}}</h6>
+
+                          <br>
+
+                          <h6 class="text-dark " style="margin-left: 60%;margin-top: -10%;">  Place of Supply: : {{invoice.customer_place_of_supply}}</h6>
+                          <br>
                           <h6 class="text-dark " style="margin-left: 60%;margin-top: -10%;">  Invoice Date : {{invoice.date}}</h6>
 
                           <br>
-                          <h6 class="text-dark " style="margin-left: 60%;margin-top: -10%;">  Place of Supply: : {{invoice.customer_place_of_supply}}</h6>
-                          <br>
-                          <br>
-                          <hr>
+                          <h6 class="text-dark " style="margin-left: 60%;margin-top: -10%;">  shipment Date : {{invoice.expiration_date}}</h6>
+                          <!-- <div class="row mt-2 text-white" >
+                            <div class="col-5"><label class="text-white" for="">Invoice Date: </label></div>
+                            <div class="col-7">
+                              <p class="bold text-white"> : &nbsp;{{invoice.date|date:"d/m/Y" }}</p>
+                            </div>
+                          </div>
+                          <div class="row mt-2">
+                            <div class="col-5"><label class="text-white" for="">Due Date: </label></div>
+                            <div class="col-7">
+                              <p class="bold text-white" >  : &nbsp;{{invoice.expiration_date|date:"d/m/Y" }}  </p>
+                            </div>
+                          </div> -->
 
                           <br>
                           <br>
+                          <br>
+                          <br>
+
 
 
 
@@ -611,95 +637,27 @@
   
         
         <div class="gen-info col-6 " style="padding-left: 3rem;">
-          <table class="table ">
-              <tr>
-                  <td class="text-dark" style="font-weight: bold;">Sub-Total:</td>
-                  <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.sub_total|floatformat:1 }}</td>
-              </tr>
-              {% if invoice.CGST|floatformat:1 != 0|floatformat:1 %}
-              <tr>
-                  <td class=" text-dark"  style="color: black;font-weight: bold;" >CGST:</td>
-                  <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.CGST|floatformat:1 }}</td>
-              </tr>
-              {% endif %}
-
-              {% if invoice.SGST|floatformat:1 != 0|floatformat:1 %}
-              <tr>
-                  <td class="text-dark"  style="color: black;font-weight: bold;" >SGST:</td>
-                  <td class="text-right"  style="color: black;font-weight: bold; text-align: end;" >{{ invoice.SGST|floatformat:1 }}</td>
-              </tr>
-              {% endif %}
-
-              {% if invoice.tax_amount_or_IGST|floatformat:1 != 0|floatformat:1 %}
-              <tr>
-                  <td class="text-dark" style="color: black;font-weight: bold;" >Tax Amount/IGST:</td>
-                  <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.tax_amount_or_IGST|floatformat:1 }}</td>
-              </tr>
-              {% endif %}
-              <tr>
-                <td class="text-dark"  style="color: black;font-weight: bold;" >TAX:</td>
-                <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.tax_amount_or_IGST}}</td>
-            </tr>
-            {% if invoice.shipping_charge != 0 %}
-              <tr>
-                  <td class="text-dark"  style="color: black;font-weight: bold;" >Shipping Charge:</td>
-                  <td class="text-right"  style="color: black;font-weight: bold; text-align: end;" >{{ invoice.shipping_charge }}</td>
-              </tr>
-              {% endif %}
-              {% if invoice.adjustment != 0 %}
-              <tr>
-                  <td class="text-dark"  style="color: black;font-weight: bold;" >Adjustment Charge:</td>
-                  <td class="text-right" style="color: black;font-weight: bold; text-align: end;" >{{ invoice.adjustment|floatformat:1}}</td>
-              </tr>
-              {% endif %}
-              
-              
-              <tr>
-
-                  <td class="text-right"  style="color: black;font-weight: bold;" >Total:</td>
-                  
-                  <td class="text-right " style="color: black;font-weight: bold; text-align: end;" >{{ invoice.grand_total|floatformat:1}}</td>
-              </tr>
-             
-              {% if invoice.advanced_paid != 0 %}
-              <tr>
-
-                  <td class="text-right"  style="color: black;font-weight: bold;" >Paid Amount:</td>
-                  
-                  <td class="text-right " style="color: black;font-weight: bold; text-align: end;" >{{ invoice.advanced_paid|floatformat:1}}</td>
-              </tr>
-              {% endif %}
-              {% if invoice.balance != 0 %}
-              <tr>
-
-                  <td class="text-right"  style="color: black;font-weight: bold;" >Balance:</td>
-                  
-                  <td class="text-right " style="color: black;font-weight: bold; text-align: end;" >{{ invoice.balance|floatformat:1}}</td>
-              </tr>
-              {% endif %}
-
-             
-          </table>
+         
           
           
          
        
         
-          <div class="row mt-3">
+          <!-- <div class="row mt-3">
             <div class="col-5"><label class="text-black" for="">Customer Note:</label></div>
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">   {{invoice.description}}</p>
               <label> <p class="m-0 font-weight-bold" style="color:black "> </p></label>
 
             </div>
-          </div>
-          <div class="row mt-3">
+          </div> -->
+          <!-- <div class="row mt-3">
             <div class="col-5"><label class="text-black" for="">Terms & Conditions:</label></div>
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">
                 {{invoice.terms_condition}}</p>
             </div>
-          </div>
+          </div> -->
           <div class="row mt-3">
             <div class="col-5"><label class="text-black" for="">Tax Preference :</label></div>
             <div class="col-7">
@@ -723,14 +681,8 @@
             </div>
           </div>
           {% endif %}
-          <div class="row mt-3">
-            <div class="col-5"><label class="text-black" for="">Status :</label></div>
-            <div class="col-7">
-              <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">                        {{invoice.status}}</p>
-
-            </div>
-          </div>
-          <div class="row mt-3">
+         
+          <!-- <div class="row mt-3">
             <div class="col-5"><label class="text-black" for=""> </label></div>
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">        {{selitem.minimum_stock_to_maintain}}</p>
@@ -754,7 +706,7 @@
             <div class="col-7">
               <p class="bold text-black" style="max-width: 15rem;word-wrap: break-word;">  {{selitem.current_stock}}</p>
             </div>
-          </div>
+          </div> -->
         </div>
        
         
@@ -767,24 +719,89 @@
             </div>
   
   
-            <div class="row mt-2 text-white" >
-              <div class="col-5"><label class="text-white" for="">Invoice Date: </label></div>
-              <div class="col-7">
-                <p class="bold text-white"> : &nbsp;{{invoice.date|date:"d/m/Y" }}</p>
-              </div>
-            </div>
-            <div class="row mt-2">
-              <div class="col-5"><label class="text-white" for="">Due Date: </label></div>
-              <div class="col-7">
-                <p class="bold text-white" >  : &nbsp;{{invoice.expiration_date|date:"d/m/Y" }}  </p>
-              </div>
-            </div>
-            <div class="row mt-2">
+           
+          <table class="table ">
+              <tr>
+                  <td class="text-white" >Sub-Total:</td>
+                  <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.sub_total|floatformat:1 }}</td>
+              </tr>
+              {% if invoice.CGST|floatformat:1 != 0|floatformat:1 %}
+              <tr>
+                  <td class="text-white" >CGST:</td>
+                  <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.CGST|floatformat:1 }}</td>
+              </tr>
+              </tr>
+              {% endif %}
+
+              {% if invoice.SGST|floatformat:1 != 0|floatformat:1 %}
+              <tr>
+                  <td class="text-white" >SGST:</td>
+                  <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.SGST|floatformat:1 }}</td>
+              </tr>
+              </tr>
+              {% endif %}
+
+              {% if invoice.tax_amount_or_IGST|floatformat:1 != 0|floatformat:1 %}
+              <tr>
+                  <td class="text-white" >Tax Amount/IGST:</td>
+                  <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.tax_amount_or_IGST|floatformat:1 }}</td>
+              </tr>
+              </tr>
+              {% endif %}
+              <tr>
+                <td class="text-white" >TAX:</td>
+                <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.tax_amount_or_IGST|floatformat:1 }}</td>
+            </tr>
+            </tr>
+            {% if invoice.shipping_charge != 0 %}
+              <tr>
+                  <td class="text-white" >Shipping Charge:</td>
+                  <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.shipping_charge|floatformat:1 }}</td>
+              </tr>
+              </tr>
+              {% endif %}
+              {% if invoice.adjustment != 0 %}
+              <tr>
+                  <td class="text-white" >Adjustment Charge:</td>
+                  <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.adjustment|floatformat:1 }}</td>
+              </tr>
+              </tr>
+              {% endif %}
+              
+              
+              <tr>
+
+                  <td class="text-white" >Total:</td>
+                  <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.grand_total|floatformat:1 }}</td>
+              </tr>
+              </tr>
+             
+              {% if invoice.advanced_paid != 0 %}
+              <tr>
+
+                  <td class="text-white" >Paid Amount:</td>
+                  <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.advanced_paid|floatformat:1 }}</td>
+              </tr>
+              </tr>
+              {% endif %}
+              {% if invoice.balance != 0 %}
+              <tr>
+
+                  <td class="text-white" >Balance:</td>
+                  <td class="text-right" style="color: rgb(243, 235, 235);" >{{ invoice.balance|floatformat:1 }}</td>
+              </tr>
+              </tr>
+              {% endif %}
+
+             
+          </table>
+          
+            <!-- <div class="row mt-2">
               <div class="col-5"><label class="text-white" for=""> Purchase Description </label></div>
               <div class="col-7">
                 <p class="bold text-white"> : &nbsp; {{selitem.purchase_description}} </p>
               </div>
-            </div>
+            </div> -->
   
   <br>
               
@@ -909,6 +926,7 @@
                 </a>
         
                 <a class="btn btn-outline-warning py-2" style="cursor: pointer;margin-left: 4px;" onclick="exportToExcel()" style="width: 50px;margin-left: 4px;">XLS</a>
+
         
                 <a class="text-dark" onclick="printSelectedArea2()">
                     <button class="btn btn-outline-warning" title="Print" style="width: 50px;margin-left: 4px;"><i class="fas fa-print" ></i></button>
@@ -935,148 +953,209 @@
         <div class="row" id="div-to-pdf"
           style="background-color: #c4c1c1fd;  height: auto; margin-left:20px; margin-right: 1rem; width: 75%; ">
     
-          <div class="row text-center">
-            <h2 style="color: #000000;"><br>{{invoice.invoice_number}}
-              <hr>
-            </h2>
-          </div>    
-          <div class="row" id="div-to-print"
-          style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right: 1rem;width: 100%; ">
-          <div class="row mt-3">
-            <div class="col-md-6">
-                <label class="text-dark bold" for="">Customer Name:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.customer.first_name}} {{invoice.customer.last_name}}</p>
-            </div>
-            <div class="col-md-6">
-                <label class="text-dark bold text-dark" for="">Customer Email:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.customer.customer_email}}</p>
-            </div>
-        </div>
-        
-        <div class="row mt-3" >
-            <div class="col-md-6">
-                <label class="text-dark" for="">Customer GST:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.customer.GST_number}}</p>
-            </div>
-            <div class="col-md-6" id="mini">
-                <label class="text-dark" for="">Customer place of supply:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.customer_place_of_supply}}</p>
-            </div>
-        </div>
-        
-        <div class="row mt-3" id="stock">
-            <div class="col-md-6">
-                <label class="text-dark" for="">Invoice Date:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.date}}</p>
-            </div>
-            <div class="col-md-6" id="value">
-                <label class="text-dark" for="">Due Date:</label>
-                <p class="bold text-dark d-inline" style="max-width: 15rem; word-wrap: break-word; font-weight: bold;">{{invoice.expiration_date}}</p>
-            </div>
-        </div>
-        
-    
-    <style>
-      .dashed-line {
-        border-top: 1px dashed #000; /* Set color and style */
-        margin: 20px 0; /* Adjust margin for spacing */
-      }
-    </style>
-    
-    <div class="dashed-line"></div>
-  
-    <input type="text" id="searchInput2" class="form-control text-black" style="border-color: rgb(198, 134, 16);background-color: antiquewhite;width: 20%;" placeholder="Search...">
-    <br><br>
-    
-    <table class="table table-hover table-bordered" id="table1" style="border-color: #000000;color: rgb(0, 0, 0);">
-      <thead>
-        <tr>
-          <th id="th" style="text-align: center;">#    
-             <a class="extra text-white" id="fil" style="display: block;" onclick="toggleDropdown(0)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
-            <div class="dropdown-content" id="dropdownContent0">
-                <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
-                <input type="text" id="filterInput0"  />
-                <a class="btn btn-info" onclick="cleardropdown(0)">Clear</a> 
-                &nbsp;<a class="btn btn-info" onclick="filterTable(0)">Apply</a>
-            </div>
-          </th>
-          <th id="th" style="text-align: center;">Product
-            <a class="extra text-white" id="fil2" style="display: block;"  onclick="toggleDropdown(1)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
-            <div class="dropdown-content" id="dropdownContent1">
-                <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
-                <input type="text" id="filterInput1"  />
-                <a class="btn btn-info" onclick="cleardropdown(1)">Clear</a> 
-                &nbsp;<a class="btn btn-info" onclick="filterTable(1)">Apply</a>
-            </div>
-          </th>
-          <th id="th" style="text-align: center;">HSN
-            <a class="extra text-white"  id="fil3" style="display: block;"  onclick="toggleDropdown(2)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
-            <div class="dropdown-content" id="dropdownContent2">
-                <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
-                <input type="text" id="filterInput2"  />
-                <a class="btn btn-info" onclick="cleardropdown(2)">Clear</a> 
-                &nbsp;<a class="btn btn-info" onclick="filterTable(2)">Apply</a>
-            </div></th>
-          <th id="th" style="text-align: center;">TAX 
-            <a class="extra text-white" id="fil4" style="display: block;"  onclick="toggleDropdown(3)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
-            <div class="dropdown-content" id="dropdownContent3">
-                <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
-                <input type="date" id="filterInput3"  />
-                <a class="btn btn-info" onclick="cleardropdown(3)">Clear</a> 
-                &nbsp;<a class="btn btn-info" onclick="filterTable(3)">Apply</a>
-            </div>
-          </th>
-          <th id="th" style="text-align: center;">Quantity
-            
-            <a class="extra text-white" id="fil5" style="display: block;"  onclick="toggleDropdown(4)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"> </i></a>
-            <div class="dropdown-content" id="dropdownContent4">
-                <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
-                <input type="text" id="filterInput4"  />
-                <a class="btn btn-info" onclick="cleardropdown(4)">Clear</a> 
-                &nbsp;<a class="btn btn-info" onclick="filterTable(4)">Apply</a>
-            </div>
-          </th>
-          <th id="th" style="text-align: center;">Price 
-            <a class="extra text-white" id="fil6" style="display: block;"  onclick="toggleDropdown(5)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
-            <div class="dropdown-content" id="dropdownContent5">
-                <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
-                <input type="text" id="filterInput5"  />
-                <a class="btn btn-info" onclick="cleardropdown(5)">Clear</a> 
-                &nbsp;<a class="btn btn-info" onclick="filterTable(5)">Apply</a>
-            </div>
-          </th>
-          <th id="th" style="text-align: center;">Status   
-            <a class="extra text-white" id="fil7" style="display: block;"  onclick="toggleDropdown(6)">&nbsp;<i class="fa fa-filter" aria-hidden="true" style="color: #000;"></i></a>
-            <div class="dropdown-content" id="dropdownContent6">
-                <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
-                <input type="text" id="filterInput6"  />
-                <a class="btn btn-info" onclick="cleardropdown(6)">Clear</a> 
-                &nbsp;<a class="btn btn-info" onclick="filterTable(6)">Apply</a>
-            </div>  
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in invItems %}
+          
+         
+    <div class="slip-container bg-white" id="slip_container">
+      <div class="slip text-dark">
+          <h5 class="font-weight-bold text-center text-dark">{{cmp.company_name}}</h5>
+          <div class="address text-center">
+              <p>{{cmp.address}}</p>
+              <p>{{cmp.state}}, {{cmp.country}}</p>
+              <p>{{cmp.contact}}</p>
+          </div>
 
-  
-        <tr style="color: black;">  
-          <td style="text-align: center;">{{forloop.counter}}</td>
-          <td style="text-align: center;">{{item.Items.item_name}}</td>
-          <td style="text-align: center;">{{ item.hsn }}</td>
-          <td style="text-align: center;">{{ item.tax_rate }}</td>
-  
-          <td style="text-align: center;">{{item.quantity}}</td>
-          <td style="text-align: center;">{{ item.total|floatformat:1}}</td>
-          <td style="text-align: center;">{{item.invoice.status}}</td>
-        </tr>
-  
-       
-        
-    </tbody>
-        <!-- Add more rows as needed -->
-        {% endfor  %}
-    </table>
+          <div class="divider"></div>
+
+          <div class="ml-4 mt-2" style="color: black;">
+              <div class="row">
+                  <div class="col-md-6 text-left">Invoice No:</div>
+                  <div class="col-md-5 text-right">{{invoice.invoice_number}}</div>
+              </div>
+              {% if invoice.order_number  %}
+              <div class="row">
+                  <div class="col-md-6 text-left">Order No:</div>
+                  <div class="col-md-5 text-right">{{invoice.order_number}}</div>
+              </div>
+              {% endif %}
+              <div class="row">
+                  <div class="col-md-6 text-left">Customer Name:</div>
+                  <div class="col-md-5 text-right">{{invoice.customer.first_name}} {{invoice.customer.last_name}}</div>
+              </div>
+              <div class="row">
+                  <div class="col-md-6 text-left">Invoice Date :</div>
+                  <div class="col-md-5 text-right">{{invoice.date | date:'d-m-Y'}}</div>
+              </div>
+              <div class="row">
+                  <div class="col-md-6 text-left">Shipment Date:</div>
+                  <div class="col-md-5 text-right">{{invoice.expiration_date | date:'d-m-Y'}}</div>
+              </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="equal-length-container" style="color: black; font-weight: bold;">
+              <div class="equal-length-item" style=" text-align: center;">
+                  Item
+                  <hr style="border-bottom: 1px solid black; margin-top:1vh; width:95%">
+              </div>
+              <div class="equal-length-item ml-2"  style=" text-align:center;">
+                  HSN
+                  <hr style="border-bottom: 1px solid black; margin-top:1vh; width:63%; margin-left: 10px;">
+              </div>
+              <div class="equal-length-item"  style=" text-align: center; ">
+                  Qty
+                  <hr style="border-bottom: 1px solid black; margin-top:1vh; width:60%;  margin-left: 10px;">
+              </div>
+              <div class="equal-length-item"  style=" text-align: center; ">
+                  Rate
+                  <hr style="border-bottom: 1px solid black; margin-top:1vh; width:65%;  margin-left: 10px;">
+              </div>
+              <div class="equal-length-item"  style=" text-align: center; ">
+                  Tax
+                  <hr style="border-bottom: 1px solid black; margin-top:1vh; width:60%;  margin-left: 10px;">
+              </div>
+              <div class="equal-length-item" style=" text-align: center; ">
+                  Total
+                  <hr style="border-bottom: 1px solid black; margin-top:1vh; width:65%;  margin-left: 10px;">
+              </div>
+          </div>
+          {% for i in invItems %}
+          <div class="equal-length-container" style="color: black; font-size: small; word-wrap: break-word; margin-bottom: 1vh;">
+              <div class="equal-length-item"  style="text-align: center; margin-left: 2px;">
+                  {{i.Items.item_name}}
+              </div>
+              <div class="equal-length-item" style="text-align: right;">
+                  {{i.hsn}}
+              </div>
+              <div class="equal-length-item" style="text-align: center; ">
+                  {{i.quantity}}
+              </div>
+              <div class="equal-length-item" style="text-align: center; ">
+                  {{i.price}}
+              </div>
+              <div class="equal-length-item" id="tax{{ forloop.counter }}">
+                  {{ i.tax_rate  }}%
+              </div>
+              <div class="equal-length-item" style="text-align: center; ">
+                  {{i.total}}
+              </div>
+          </div>
+          {% endfor %}
+
+          <div class="subtot mt-5">
+              <div class="subtot-item d-flex justify-content-between">
+                  <span>Subtotal</span>
+                  <span><span>&#8377; </span>{{invoice.sub_total}}</span>
+              </div>
+              <div class="subtot-item d-flex justify-content-between">
+                  <span>Tax Amount</span>
+                  <span><span>&#8377; </span>{{invoice.tax_amount_or_IGST}}</span>
+              </div>
+              {% if invoice.tax_amount_or_IGST == 0 %}
+              <div class="subtot-item d-flex justify-content-between">
+                  <span>CGST</span>
+                  <span><span>&#8377; </span>{{invoice.CGST}}</span>
+              </div>
+              <div class="subtot-item d-flex justify-content-between">
+                  <span>SGST</span>
+                  <span><span>&#8377; </span>{{invoice.SGST}}</span>
+              </div>
+              {% else %}
+              <div class="subtot-item d-flex justify-content-between">
+                  <span>IGST</span>
+                  <span><span>&#8377; </span>{{invoice.tax_amount_or_IGST}}</span>
+              </div>
+              {% endif %}
+              {% if invoice.adjustment != 0 %}
+              <div class="subtot-item d-flex justify-content-between">
+                  <span>Adjustment</span>
+                  <span><span>&#8377; </span>{{invoice.adjustment}}</span>
+              </div>
+              {% endif %}
+          </div>
+          <div class="divider"></div>
+          <div class="grandtot fw-bold d-flex justify-content-between">
+              <span><strong>TOTAL</strong></span>
+              <span><strong><span>&#8377; </span>{{invoice.grand_total}}</strong></span>
+          </div>
+          <div class="divider"></div>
+          <div class="paid-by mb-4 d-flex justify-content-between">
+              <span>Paid By:</span>
+              <span>{{invoice.payment_method}}</span>
+          </div>
+          <div class="createdby d-flex justify-content-between">
+              <p class="">Created By:</p>
+              <span>{{created.LoginDetails.First_name}} {{created.LoginDetails.Last_name}}</span>
+          </div>
+          <div class="datetime d-flex justify-content-between">
+              <p class="">Printed On:</p>
+              <span id="dateTimeDisplay"></span>
+          </div>
+          <div class="trns-id d-flex justify-content-between">
+              <span>Transaction ID:</span>
+              <span>XXXXXXXXX</span>
+              <!-- <div>
+                  <p class="float-start">
+                      <span>Vendor ID:</span>
+                      <span>XXXXXXXXXX</span>
+                  </p>
+              </div> -->
+          </div>
+          <div class="slip-footer mt-4 text-center">
+              <p>Thank you for supporting Local business!</p>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+</div>
+</div>
+</div>
+<style>
+  .slip h5{
+    font-family: serif;
+}
+p {
+    font-size: 1.2em;
+}
+.address{
+    display: flex;
+    flex-direction: column;
+}
+.address p,.slip-footer p{
+    font-size: 1rem;
+    margin: 0;
+}
+.slip-container{
+    width: 105mm;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 1px dotted black;
+    box-shadow: rgba(60, 64, 67, 0.5) 0px 1px 2px 0px, rgba(60, 64, 67, 0.35) 0px 2px 6px 2px;
+}
+.divider{
+    margin: 1rem 0;
+    border-bottom: 3px dotted black;
+}
+.trns-id p,.datetime p, .createdby p{
+    font-size: 0.85rem;
+    margin: 0;
+}
+.equal-length-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    margin-left: 2vh;
+    margin-right: 2vh;
+}
+
+.equal-length-item {
+    flex: 1;
+    text-align: center;
+}
+</style>
     
     </div>
     
@@ -1174,7 +1253,28 @@
         </div>
     </div>  </div>
   
-           
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <script>
+      function slip() {
+        document.getElementById('overview').style.display = 'none';
+        document.getElementById('template').style.display = 'none';
+        document.getElementById('slip').style.display = 'block';
+        document.getElementById('overviewBtn').style.backgroundColor='transparent';
+        document.getElementById('templateBtn').style.backgroundColor='transparent';
+        document.getElementById('slipBtn').style.backgroundColor='rgba(22,37,50,255)';
+        $("#printBtn").attr("onclick","printSection('slip')");
+        $('#printBtn').show();
+        $('#pdfBtn').hide();
+        $('#shareBtn').hide();
+        $('#deleteBtn').hide();
+        $('#editBtn').hide();
+        $('#convertBtn').hide();
+        $('#historyBtn').show();
+        $('#commentsBtn').show();
+    }
+    </script>        
   <!-- SORT  AND FILTER SCRIPT -->
   <script>
       $(document).ready(function() {

@@ -364,7 +364,7 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
                                 </td>
                                 <td >
                                     <input type="number" name='qty[]' id="qty{{forloop.counter}}"  class="form-control qty mb-1" step=0 min=1 style="background-color: #0c0f11; color: white;" value={{itm.quantity}} onchange="changeItemQty(this.id,`{{itm.quantity}}`)" required/>
-                                    <input type="text" id="avl{{forloop.counter}}" value="{{itm.Item.current_stock}}" style="display: none;">
+                                    <input type="text" id="avl{{forloop.counter}}" value="{{itm.Items.current_stock}}" style="display: none;">
                                     <div class="d-flex"><span>Available Qty :</span><span id="qtyspan{{forloop.counter}}" class=''>{{itm.Items.current_stock}}</span></div>
                                 </td>
                                 <td>
@@ -1291,10 +1291,9 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
 
 
 
-<!-- 
-<script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>
+
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -1740,6 +1739,7 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
         var crQty = parseInt(QTY)
         var qty = document.getElementById(id).value;
         var avl_val = document.getElementById(`avl${id_val}`).value;
+        alert(avl_val)
         var diff = Math.abs(parseInt(qty) - crQty);
         
     
