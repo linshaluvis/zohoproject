@@ -644,6 +644,8 @@ def view(request,pk):
         inv = invoice.objects.get(id = pk)
         # cmt = invoice_Comments.objects.filter(Invoice = inv)
         hist =invoiceHistory.objects.filter( invoice = inv).last()
+        histo =invoiceHistory.objects.filter( invoice = inv)
+
         invItems = invoiceitems.objects.filter( invoice = inv)
         created = invoiceHistory.objects.filter( invoice = inv,  action = 'Created')
 
@@ -654,7 +656,7 @@ def view(request,pk):
         elif log_details.user_type == 'Company':
                 company = CompanyDetails.objects.get(login_details=log_details)
         
-        return render(request,'staff/invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'history':hist,  'created':created})
+        return render(request,'staff/invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'history':hist,'historys':histo,  'created':created})
     else:
        return redirect('/')
 def overview(request,pk):
@@ -685,6 +687,127 @@ def overview(request,pk):
         return render(request,'staff/overview_invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'history':hist,  'created':created})
     else:
        return redirect('/')
+def convertInvoice(request,id):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company
+        invoices = invoice.objects.filter(company = cmp)
+
+
+        inv = invoice.objects.get(id = id)
+        inv.status = 'Saved'
+        inv.save()
+        return redirect(view, id)
+def invoicePdf(request,id):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+        cmp =dash_details.company
+        invoices = invoice.objects.filter(company = cmp)
+
+        
+        inv = invoice.objects.get(id = id)
+        itms = invoiceitems.objects.filter(invoice = inv)
+    
+        context = {'invoice':inv, 'invItems':itms,'cmp':company}
+        
+        template_path = 'staff/invoice_Pdf.html'
+        fname = 'Invoice_'+inv.invoice_number
+        # return render(request, 'company/Fin_Invoice_Pdf.html',context)
+        # Create a Django response object, and specify content_type as pdftemp_
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] =f'attachment; filename = {fname}.pdf'
+        # find the template and render it.
+        template = get_template(template_path)
+        html = template.render(context)
+
+        # create a pdf
+        pisa_status = pisa.CreatePDF(
+        html, dest=response)
+        # if error then show some funny view
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        return response
+    else:
+        return redirect('view')
+def InvoiceHistory(request,id):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        inv = invoice.objects.get(id = id)
+        his = invoiceHistory.objects.filter(invoice = inv)
+        if log_details.user_type == "Company":
+            company = CompanyDetails.objects.get(login_details=log_details)
+            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        else:
+            company = StaffDetails.objects.get(login_details=log_details)
+            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        
+        return render(request,'staff/invoice_History.html',{'allmodules':allmodules,'com':company,'data':log_details,'history':his, 'invoice':inv})
+    else:
+       return redirect('/')
+def deleteInvoice(request, id):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+        cmp =dash_details.company
+        invoices = invoice.objects.filter(company = cmp)
+        inv = invoice.objects.get( id = id)
+        print("delete ok")
+
+
+  
+
+        for i in invoiceitems.objects.filter(invoice = inv):
+            item = Items.objects.get(id = i.Items.id)
+            print(item)
+            item.current_stock += i.quantity
+            item.save()
+        
+        invoiceitems.objects.filter(invoice = inv).delete()
+        print("delete item")
+
+        # Storing ref number to deleted table
+        # if entry exists and lesser than the current, update and save => Only one entry per company
+        if invoiceReference.objects.filter(company = cmp).exists():
+            deleted = invoiceReference.objects.get(company = cmp)
+            if int(inv.reference_number) > int(deleted.reference_number):
+                deleted.reference_number = inv.reference_number
+                deleted.save()
+        else:
+            invoiceReference.objects.create(company = cmp, reference_number = inv.reference_number)
+        
+        inv.delete()
+        return redirect(invoice_list_out)
 def editInvoice(request,id):
     if 'login_id' in request.session:
         log_id = request.session['login_id']

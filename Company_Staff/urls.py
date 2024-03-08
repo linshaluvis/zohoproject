@@ -55,8 +55,15 @@ urlpatterns = [
     path('Staff/invoice/filter_invoice_sent/<int:pk>',views.filter_invoice_sent,name='filter_invoice_sent'),
     path('Staff/invoice/filter_invoice_name/<int:pk>',views.filter_invoice_name,name='filter_invoice_name'),
     path('Staff/invoice/filter_invoice_number/<int:pk>',views.filter_invoice_number,name='filter_invoice_number'),
-     path('edit_invoice/<int:id>',views.editInvoice, name='editInvoice'),
-    path('update_invoice/<int:id>',views.updateInvoice, name='updateInvoice'),
+     path('Staff/invoice/edit_invoice/<int:id>',views.editInvoice, name='editInvoice'),
+    path('Staff/invoice/update_invoice/<int:id>',views.updateInvoice, name='updateInvoice'),
+    path('Staff/invoice/convert_invoice/<int:id>',views.convertInvoice, name='convertInvoice'),
+    path('Staff/invoice/invoicePdf/<int:id>',views.invoicePdf, name='invoicePdf'),
+    path('Staff/invoice/delete_invoice/<int:id>',views.deleteInvoice, name= 'deleteInvoice'),
+    path('Staff/invoice/Invoice_history/<int:id>',views.InvoiceHistory, name='InvoiceHistory'),
+
+
+
 
 
 

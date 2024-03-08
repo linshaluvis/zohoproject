@@ -1,533 +1,532 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-                                                <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-                                                
-                                                <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
-                                                <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-                                                <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
-                                                <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-ez8n5b/9F3JpKCEY6zIp+Hg7IbU8d7Q5ST78iEiRaP2mNPjkDps8I+1i0fblDOoh" crossorigin="anonymous">
-                                                <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
-                                                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                                                <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
-                                                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-                                                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-                                                <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
-                                                <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
-                                                <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-                                                <!--dropdown button-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://kit.fontawesome.com/274ee977b7.js" crossorigin="anonymous"></script>
-                                                
-                                                <style>
-                                                  .bs{
-                                                      box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.397);
-                                                  }
-                                                
-                                                  .bs_sm{
-                                                      box-shadow: inset 2px 2px 5px 3px rgba(0, 0, 0, 0.199);
-                                                  }
-                                                
-                                                  .paiddiv{
-                                                      color: black;
-                                                      height: 10vh;
-                                                      width: 20vh;
-                                                      padding-left: 2vh;
-                                                      padding-top: 1vh;
-                                                      padding-bottom: 1vh;
-                                                      margin-left: 7vh;
-                                                      border-radius: 8px;
-                                                      background-color: rgb(0, 0, 0);
-                                                  }
-                                                
-                                                  .unpaiddiv{
-                                                      color: black;
-                                                      height: 10vh;
-                                                      width: 20vh;
-                                                      padding-left: 2vh;
-                                                      padding-top: 1vh;
-                                                      padding-bottom: 1vh;
-                                                      margin-left: 7vh;
-                                                      border-radius: 8px;
-                                                      background-color: lightsteelblue;
-                                                  }
-                                                
-                                                  .totaldiv{
-                                                      color: black;
-                                                      height: 10vh;
-                                                      width: 20vh;
-                                                      padding-left: 2vh;
-                                                      padding-top: 1vh;
-                                                      padding-bottom: 1vh;
-                                                      margin-left: 7vh;
-                                                      border-radius: 8px;
-                                                      background-color: lightgreen;
-                                                  }
-                                                
-                                                  #billtable tbody{
-                                                      cursor: pointer;
-                                                  }
-                                                
-                                                  #emptyMessage {
-                                                      display: none;
-                                                      font-size: x-large;
-                                                      font-weight: bold;
-                                                      color: red;
-                                                  }
-                                                
-                                                  .dropdown {
-                                                      position: relative;
-                                                      display: inline-block;
-                                                  }
-                                                
-                                                  .dropdown-content {
-                                                      display: none;
-                                                      position: absolute;
-                                                      background-color: #fff;
-                                                      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-                                                      border-radius: 5px;
-                                                      padding: 10px;
-                                                      z-index: 1;
-                                                      width: 15%;
-                                                  }
-                                                
-                                                  .dropdown-content label {
-                                                      display: block;
-                                                      margin-bottom: 5px;
-                                                  }
-                                                
-                                                  .dropdown-content input {
-                                                      width: 100%;
-                                                      padding: 5px;
-                                                      box-sizing: border-box;
-                                                      margin-bottom: 10px;
-                                                  }
-                                                
-                                                  .tplus{
-                                                      margin-top: 3vh;
-                                                      margin-left: 5vh;
-                                                      margin-right: -2vh;
-                                                  }
-                                                
-                                                  .tequal{
-                                                      margin-top: 3vh;
-                                                      margin-left: 5vh;
-                                                      margin-right: -2vh;
-                                                  }
-                                                
-                                                  .tg{
-                                                      color: rgb(0, 140, 7);
-                                                  }
-                                                
-                                                  .tr{
-                                                      color: rgb(218, 0, 0);
-                                                  }
-                                                
-                                                  .tj{
-                                                      color:#E4A11B;
-                                                  }
-                                                
-                                                  .th{
-                                                      color: rgb(12, 79, 234);
-                                                  }
-                                                
-                                                  @media print{
-                                                      body{
-                                                          visibility: hidden !important; /* hide everything in body when in print mode*/
-                                                      }
-                                                
-                                                      .printContainer {
-                                                          visibility: visible !important; /* Override the rule above to only show the printables*/
-                                                          position: absolute;
-                                                          z-index: 99999;
-                                                          top: 0;
-                                                          left: 0;
-                                                          width: 100%;
-                                                          height: 100%;
-                                                          font-size: large;
-                                                      } 
-                                                
-                                                      #calcdiv{
-                                                          visibility: visible;
-                                                          margin-top: -30vh;
-                                                          margin-left: -9vh;
-                                                          margin-bottom: 30vh;
-                                                      }
-                                                
-                                                      #billtable{
-                                                          margin-top: 20vh;
-                                                          margin-bottom: 20vh;
-                                                      }
-                                                
-                                                      #billtable th{
-                                                          font-size: medium;
-                                                      }
-                                                
-                                                      .extra{
-                                                          display: none;
-                                                      }
-                                                  }
-                                                  
-                                                  ::-webkit-scrollbar{
-                                                      display: none
-                                                  }
-                                                </style>
-                                                
-                                                <style>
-                                                   .modal {
-                                                    z-index: 9999;
-                                                    overflow: scroll;
-                                                  }
-                                                
-                                                  .modal-content {
-                                                    background-color: #fefefe;
-                                                    margin: 15% auto;
-                                                    padding: 20px;
-                                                    border: 1px solid #888;
-                                                    width: 80%;
-                                                  }
-                                                
-                                                  /* Add your CSS styles here */
-                                                  /* Styling for the filter input window */
-                                                /* Styling for the filter input window */
-                                                .filter-window {
-                                                  display: none;
-                                                  position: absolute;
-                                                  padding: 10px;
-                                                  color: rgb(6, 9, 11);
-                                                  width: 10%;
-                                                  background-color: rgb(19, 24, 24);
-                                                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                                                  z-index: 1; /* Ensures the window is on top */
-                                                }
-                                                
-                                                /* Additional styling for the filter input */
-                                                .filter-window label, .filter-window input, .filter-window button {
-                                                  display: block;
-                                                  margin-bottom: 5px;
-                                                }
-                                                .filter-window button {
-                                                    display: inline-block;
-                                                    margin-right: 5px;
-                                                    padding: 5px 10px;
-                                                    background-color: #4CAF50; /* Green background color */
-                                                    color: white; /* White text color */
-                                                    border: none; /* Remove border */
-                                                    border-radius: 3px; /* Optional: Add rounded corners */
-                                                    cursor: pointer; /* Add a pointer cursor on hover */
-                                                }
-                                                
-                                                .filter-window button:hover {
-                                                    background-color: #45a049; /* Darker green on hover */
-                                                }
-                                                  .filterTable-column .dropdown-toggle::after{
-                                                      content: none;
-                                                  }
-                                                  .filterTable-column .btn:focus{
-                                                      box-shadow: none;
-                                                  }
-                                                  .card-registration .select-input.form-control[readonly]:not([disabled]) {
-                                                      font-size: 1rem;
-                                                      line-height: 2.15;
-                                                      padding-left: .75em;
-                                                      padding-right: .75em;
-                                                  }
-                                              
-                                                  .card-registration .select-arrow {
-                                                      top: 13px;
-                                                  }
-                                              
-                                                  .bg-grey {
-                                                      background-color: rgba(0, 0, 0, 0.4);
-                                                  }
-                                              
-                                                  @media (min-width: 992px) {
-                                                      .card-registration-2 .bg-grey {
-                                                          border-top-right-radius: 16px;
-                                                          border-bottom-right-radius: 16px;
-                                                      }
-                                                  }
-                                              
-                                                  @media (max-width: 991px) {
-                                                      .card-registration-2 .bg-grey {
-                                                          border-bottom-left-radius: 16px;
-                                                          border-bottom-right-radius: 16px;
-                                                      }
-                                                  }
-                                              
-                                                  .vl {
-                                                      border-left: 6px solid rgb(15, 11, 11);
-                                                  }
-                                              
-                                                  .table-row {
-                                                      cursor: pointer;
-                                                  }
-                                                  .submitShareEmailBtn, #commentSaveBtn {
-                                                      background: #192d3e;
-                                                      border: 1px solid #3a4b5a;
-                                                      border-radius: 4px;
-                                                      color: white;
-                                                      font-weight: 600;
-                                                      padding: 0.5rem 1rem;
-                                                  }
-                                                  .submitShareEmailBtn:hover, #commentSaveBtn:hover {
-                                                      background: #3a4b5a;
-                                                  }
-                                                  .print-only {
-                                                      /* display: none; */
-                                                      height: auto;
-                                                      width: auto;
-                                                      overflow-y: auto;
-                                                      border: none;
-                                                      /* box-shadow: 5px 2px 5px 2px  grey; */
-                                                  }
-                                                  .ribbon .ribbon-inner {
-                                                      text-align: center;
-                                                      color: #fff;
-                                                      top: -20px;
-                                                      left: -90px;
-                                                      width: 120px;
-                                                      padding: 3px;
-                                                      /* position: relative;
-                                                      transform: rotate(-45deg); */
-                                                  }
-                                                  .ribbon .ribbon-open {
-                                                      background-color: #268ddd;
-                                                      border-color: #1c72b4;
-                                                  }
-                                                  :root {
-                                                      --body-bg: rgb(204, 204, 204);
-                                                      --white: #ffffff;
-                                                      --darkWhite: #ccc;
-                                                      --black: #000000;
-                                                      --dark: #615c60;
-                                                      --themeColor: #eec554;
-                                                      --pageShadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
-                                                  }
-                                                  @media print {
-                                                      body{
-                                                          visibility: hidden !important;
-                                                          /* background-color: white; */
-                                                      }
-                                              
-                                                      #slip{
-                                                          margin-left: 2vh;
-                                                          margin-right: 2vh;
-                                                      }
-                                              
-                                                      .printContainer {
-                                                          visibility: visible !important;
-                                                          position: absolute;
-                                                          z-index: 99999;
-                                                          top: 0;
-                                                          left: 0;
-                                                          width: 100%;
-                                                          height: 100%;
-                                                          font-size: large;
-                                                      }
-                                              
-                                                  }
-                                                  /* Font Include */
-                                                  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap');
-                                              
-                                                  .page {
-                                                      background: var(--white);
-                                                      display: block;
-                                                      margin: 0 auto;
-                                                      position: relative;
-                                                      box-shadow: var(--pageShadow);
-                                                  }
-                                              
-                                                  .page[size="A4"] {
-                                                      width: 21cm;
-                                                      height: 29.7cm;
-                                                      overflow: hidden;
-                                                  }
-                                              
-                                                  .bb {
-                                                      border-bottom: 3px solid var(--darkWhite);
-                                                  }
-                                              
-                                                  /* Top Section */
-                                                  .top-content {
-                                                      padding-bottom: 15px;
-                                                  }
-                                              
-                                                  .logo img {
-                                                      height: 60px;
-                                                  }
-                                              
-                                                  .top-left p {
-                                                      margin: 0;
-                                                      color: #000000;
-                                                  }
-                                              
-                                                  .top-left .graphic-path {
-                                                      height: 40px;
-                                                      position: relative;
-                                                  }
-                                              
-                                                  .top-left .graphic-path::before {
-                                                      content: "";
-                                                      height: 20px;
-                                                      background-color: var(--dark);
-                                                      position: absolute;
-                                                      left: 15px;
-                                                      right: 0;
-                                                      top: -15px;
-                                                      z-index: 2;
-                                                  }
-                                              
-                                                  .top-left .graphic-path::after {
-                                                      content: "";
-                                                      height: 22px;
-                                                      width: 17px;
-                                                      background: var(--black);
-                                                      position: absolute;
-                                                      top: -13px;
-                                                      left: 6px;
-                                                      transform: rotate(45deg);
-                                                  }
-                                              
-                                                  .top-left .graphic-path p {
-                                                      /* color: var(--white); */
-                                                      height: 40px;
-                                                      left: 0;
-                                                      right: 0;
-                                                      text-transform: uppercase;
-                                                      background-color: var(--themeColor);
-                                                      /* font: 26px; */
-                                                      z-index: 3;
-                                                      position: absolute;
-                                                      padding-left: 10px;
-                                                  }
-                                                  
-                                                  /* User Store Section */
-                                                  .store-user {
-                                                      padding-bottom: 25px;
-                                                  }
-                                              
-                                                  .store-user p {
-                                                      margin: 0;
-                                                      font-weight: 600;
-                                                      color: #000000;
-                                                  }
-                                              
-                                                  .store-user .address {
-                                                      font-weight: 400;
-                                                  }
-                                              
-                                                  .store-user h5 {
-                                                      color: var(--themeColor);
-                                                      font-family: 'Rajdhani', sans-serif;
-                                                  }
-                                              
-                                                  .extra-info p span {
-                                                      font-weight: 400;
-                                                  
-                                                  }
-                                              
-                                                  /* Product Section */
-                                                  thead {
-                                                      color: var(--white);
-                                                  }
-                                              
-                                                  .table td,
-                                                  .table th {
-                                                      text-align: center;
-                                                      vertical-align: middle;
-                                                  }
-                                              
-                                                  tr th:first-child,
-                                                  tr td:first-child {
-                                                      text-align: left;
-                                                  }
-                                              
-                                                  /* Balance Info Section */
-                                                  .balance-info .table td,
-                                                  .balance-info .table th {
-                                                      padding: 0;
-                                                      border: 0;
-                                                  }
-                                              
-                                                  .balance-info tr td:first-child {
-                                                      font-weight: 600;
-                                                  }
-                                              
-                                                  /* SLIP VIEW STYLINGS */
-                                                  .slip h5{
-                                                      font-family: serif;
-                                                  }
-                                                  p {
-                                                      font-size: 1.2em;
-                                                  }
-                                                  .address{
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                  }
-                                                  .address p,.slip-footer p{
-                                                      font-size: 1rem;
-                                                      margin: 0;
-                                                  }
-                                                  .slip-container{
-                                                      width: 105mm;
-                                                      margin: 2rem auto;
-                                                      padding: 2rem;
-                                                      border: 1px dotted black;
-                                                      box-shadow: rgba(60, 64, 67, 0.5) 0px 1px 2px 0px, rgba(60, 64, 67, 0.35) 0px 2px 6px 2px;
-                                                  }
-                                                  .divider{
-                                                      margin: 1rem 0;
-                                                      border-bottom: 3px dotted black;
-                                                  }
-                                                  .trns-id p,.datetime p, .createdby p{
-                                                      font-size: 0.85rem;
-                                                      margin: 0;
-                                                  }
-                                                  .equal-length-container {
-                                                      display: flex;
-                                                      align-items: center;
-                                                      justify-content: space-between;
-                                                      height: 100%;
-                                                      margin-left: 2vh;
-                                                      margin-right: 2vh;
-                                                  }
-                                              
-                                                  .equal-length-item {
-                                                      flex: 1;
-                                                      text-align: center;
-                                                  }
-                                              
-                                              
-                                              </style>
-                                              
-                                              <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
-                                              <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
-                                              <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
-                                                
-                                                </style>
-                                                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                                  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
-                                                  <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
-                                                  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script> -->
-                                                  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-                                                  <style>
-                                                    .scrollable-container {
-                                                      border-right: 1px solid white;
-                                                      overflow-y: scroll;
-                                                      height: 84vh;
-                                                    }
-                                                  
-                                                    .scrollable-container::-webkit-scrollbar {
-                                                      width: 0; /* Set width to 0 to hide the scrollbar */
-                                                    }
-                                                  </style>
-                                                  
-                                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-xxxxxx" crossorigin="anonymous" />
+{% load social_share %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Title</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-xxxxxx" crossorigin="anonymous" />
+</head>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<style>
+    .bs{
+        box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.397);
+    }
+
+    .bs_sm{
+        box-shadow: inset 2px 2px 5px 3px rgba(0, 0, 0, 0.199);
+    }
+
+    .paiddiv{
+        color: black;
+        height: 10vh;
+        width: 20vh;
+        padding-left: 2vh;
+        padding-top: 1vh;
+        padding-bottom: 1vh;
+        margin-left: 7vh;
+        border-radius: 8px;
+        background-color: rgb(0, 0, 0);
+    }
+
+    .unpaiddiv{
+        color: black;
+        height: 10vh;
+        width: 20vh;
+        padding-left: 2vh;
+        padding-top: 1vh;
+        padding-bottom: 1vh;
+        margin-left: 7vh;
+        border-radius: 8px;
+        background-color: lightsteelblue;
+    }
+
+    .totaldiv{
+        color: black;
+        height: 10vh;
+        width: 20vh;
+        padding-left: 2vh;
+        padding-top: 1vh;
+        padding-bottom: 1vh;
+        margin-left: 7vh;
+        border-radius: 8px;
+        background-color: lightgreen;
+    }
+
+    #billtable tbody{
+        cursor: pointer;
+    }
+
+    #emptyMessage {
+        display: none;
+        font-size: x-large;
+        font-weight: bold;
+        color: red;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        border-radius: 5px;
+        padding: 10px;
+        z-index: 1;
+        width: 15%;
+    }
+
+    .dropdown-content label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .dropdown-content input {
+        width: 100%;
+        padding: 5px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    .tplus{
+        margin-top: 3vh;
+        margin-left: 5vh;
+        margin-right: -2vh;
+    }
+
+    .tequal{
+        margin-top: 3vh;
+        margin-left: 5vh;
+        margin-right: -2vh;
+    }
+
+    .tg{
+        color: rgb(0, 140, 7);
+    }
+
+    .tr{
+        color: rgb(218, 0, 0);
+    }
+
+    .tj{
+        color:#E4A11B;
+    }
+
+    .th{
+        color: rgb(12, 79, 234);
+    }
+
+    @media print{
+        body{
+            visibility: hidden !important; /* hide everything in body when in print mode*/
+        }
+
+        .printContainer {
+            visibility: visible !important; /* Override the rule above to only show the printables*/
+            position: absolute;
+            z-index: 99999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: large;
+        } 
+
+        #calcdiv{
+            visibility: visible;
+            margin-top: -30vh;
+            margin-left: -9vh;
+            margin-bottom: 30vh;
+        }
+
+        #billtable{
+            margin-top: 20vh;
+            margin-bottom: 20vh;
+        }
+
+        #billtable th{
+            font-size: medium;
+        }
+
+        .extra{
+            display: none;
+        }
+    }
+    
+    ::-webkit-scrollbar{
+        display: none
+    }
+</style>
+
+<style>
+    .modal {
+    z-index: 9999;
+    overflow: scroll;
+    }
+
+    .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    }
+
+    /* Add your CSS styles here */
+    /* Styling for the filter input window */
+/* Styling for the filter input window */
+.filter-window {
+    display: none;
+    position: absolute;
+    padding: 10px;
+    color: rgb(6, 9, 11);
+    width: 10%;
+    background-color: rgb(19, 24, 24);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1; /* Ensures the window is on top */
+}
+
+/* Additional styling for the filter input */
+.filter-window label, .filter-window input, .filter-window button {
+    display: block;
+    margin-bottom: 5px;
+}
+.filter-window button {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 5px 10px;
+    background-color: #4CAF50; /* Green background color */
+    color: white; /* White text color */
+    border: none; /* Remove border */
+    border-radius: 3px; /* Optional: Add rounded corners */
+    cursor: pointer; /* Add a pointer cursor on hover */
+}
+
+.filter-window button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+    .filterTable-column .dropdown-toggle::after{
+        content: none;
+    }
+    .filterTable-column .btn:focus{
+        box-shadow: none;
+    }
+    .card-registration .select-input.form-control[readonly]:not([disabled]) {
+        font-size: 1rem;
+        line-height: 2.15;
+        padding-left: .75em;
+        padding-right: .75em;
+    }
+
+    .card-registration .select-arrow {
+        top: 13px;
+    }
+
+    .bg-grey {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    @media (min-width: 992px) {
+        .card-registration-2 .bg-grey {
+            border-top-right-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+    }
+
+    @media (max-width: 991px) {
+        .card-registration-2 .bg-grey {
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+    }
+
+    .vl {
+        border-left: 6px solid rgb(15, 11, 11);
+    }
+
+    .table-row {
+        cursor: pointer;
+    }
+    .submitShareEmailBtn, #commentSaveBtn {
+        background: #192d3e;
+        border: 1px solid #3a4b5a;
+        border-radius: 4px;
+        color: white;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+    }
+    .submitShareEmailBtn:hover, #commentSaveBtn:hover {
+        background: #3a4b5a;
+    }
+    .print-only {
+        /* display: none; */
+        height: auto;
+        width: auto;
+        overflow-y: auto;
+        border: none;
+        /* box-shadow: 5px 2px 5px 2px  grey; */
+    }
+    .ribbon .ribbon-inner {
+        text-align: center;
+        color: #fff;
+        top: -20px;
+        left: -90px;
+        width: 120px;
+        padding: 3px;
+        /* position: relative;
+        transform: rotate(-45deg); */
+    }
+    .ribbon .ribbon-open {
+        background-color: #268ddd;
+        border-color: #1c72b4;
+    }
+    :root {
+        --body-bg: rgb(204, 204, 204);
+        --white: #ffffff;
+        --darkWhite: #ccc;
+        --black: #000000;
+        --dark: #615c60;
+        --themeColor: #eec554;
+        --pageShadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+    }
+    @media print {
+        body{
+            visibility: hidden !important;
+            /* background-color: white; */
+        }
+
+        #slip{
+            margin-left: 2vh;
+            margin-right: 2vh;
+        }
+
+        .printContainer {
+            visibility: visible !important;
+            position: absolute;
+            z-index: 99999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: large;
+        }
+
+    }
+    /* Font Include */
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap');
+
+    .page {
+        background: var(--white);
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        box-shadow: var(--pageShadow);
+    }
+
+    .page[size="A4"] {
+        width: 21cm;
+        height: 29.7cm;
+        overflow: hidden;
+    }
+
+    .bb {
+        border-bottom: 3px solid var(--darkWhite);
+    }
+
+    /* Top Section */
+    .top-content {
+        padding-bottom: 15px;
+    }
+
+    .logo img {
+        height: 60px;
+    }
+
+    .top-left p {
+        margin: 0;
+        color: #000000;
+    }
+
+    .top-left .graphic-path {
+        height: 40px;
+        position: relative;
+    }
+
+    .top-left .graphic-path::before {
+        content: "";
+        height: 20px;
+        background-color: var(--dark);
+        position: absolute;
+        left: 15px;
+        right: 0;
+        top: -15px;
+        z-index: 2;
+    }
+
+    .top-left .graphic-path::after {
+        content: "";
+        height: 22px;
+        width: 17px;
+        background: var(--black);
+        position: absolute;
+        top: -13px;
+        left: 6px;
+        transform: rotate(45deg);
+    }
+
+    .top-left .graphic-path p {
+        /* color: var(--white); */
+        height: 40px;
+        left: 0;
+        right: 0;
+        text-transform: uppercase;
+        background-color: var(--themeColor);
+        /* font: 26px; */
+        z-index: 3;
+        position: absolute;
+        padding-left: 10px;
+    }
+    
+    /* User Store Section */
+    .store-user {
+        padding-bottom: 25px;
+    }
+
+    .store-user p {
+        margin: 0;
+        font-weight: 600;
+        color: #000000;
+    }
+
+    .store-user .address {
+        font-weight: 400;
+    }
+
+    .store-user h5 {
+        color: var(--themeColor);
+        font-family: 'Rajdhani', sans-serif;
+    }
+
+    .extra-info p span {
+        font-weight: 400;
+    
+    }
+
+    /* Product Section */
+    thead {
+        color: var(--white);
+    }
+
+    .table td,
+    .table th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    tr th:first-child,
+    tr td:first-child {
+        text-align: left;
+    }
+
+    /* Balance Info Section */
+    .balance-info .table td,
+    .balance-info .table th {
+        padding: 0;
+        border: 0;
+    }
+
+    .balance-info tr td:first-child {
+        font-weight: 600;
+    }
+
+    /* SLIP VIEW STYLINGS */
+    .slip h5{
+        font-family: serif;
+    }
+    p {
+        font-size: 1.2em;
+    }
+    .address{
+        display: flex;
+        flex-direction: column;
+    }
+    .address p,.slip-footer p{
+        font-size: 1rem;
+        margin: 0;
+    }
+    .slip-container{
+        width: 105mm;
+        margin: 2rem auto;
+        padding: 2rem;
+        border: 1px dotted black;
+        box-shadow: rgba(60, 64, 67, 0.5) 0px 1px 2px 0px, rgba(60, 64, 67, 0.35) 0px 2px 6px 2px;
+    }
+    .divider{
+        margin: 1rem 0;
+        border-bottom: 3px dotted black;
+    }
+    .trns-id p,.datetime p, .createdby p{
+        font-size: 0.85rem;
+        margin: 0;
+    }
+    .equal-length-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        margin-left: 2vh;
+        margin-right: 2vh;
+    }
+
+    .equal-length-item {
+        flex: 1;
+        text-align: center;
+    }
+
+
+    .scrollable-container {
+        border-right: 1px solid white;
+        overflow-y: scroll;
+        height: 84vh;
+    }
+    
+    .scrollable-container::-webkit-scrollbar {
+        width: 0; /* Set width to 0 to hide the scrollbar */
+    }
+    </style>
+    <body>
+
+        <!-- Your HTML content goes here -->
+        
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+        <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/274ee977b7.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+        
                                               
 <div class="body-wrapper">
     <div class="container-fluid">
@@ -636,53 +635,7 @@
                  {% endfor %}
                </tbody>
              </table>
-             <!-- <table id="table2" class="table customer-table" style="border: 1px solid black; width: 100%; margin-left: 0;color: #d19d0d;">
-               <tbody>
-                 {% for i in acc %} -->
-                        <!-- <td>
-                     <a class="text-white"  href="{% url 'itemsoverview'  i.id%}"><b>{{i.item_name}}</b> <span class="d-flex justify-content-end text-warning align-items-start" > {{i.current_stock}}</span> <br>
-                         <span class="d-flex  align-items-start text-warning"> {{i.hsn_code}}</span> <span class="d-flex justify-content-end align-items-start"> {{i.activation_tag}}</span>
-                     </a>   
-                 </td> -->
-                 
-                 <!-- <style>
-                   .reduce-gap {
-                     margin-top: -0px; /* Adjust the value as needed */
-                   }
-                 </style> -->
-                 
-                 <!-- Your HTML code -->
-                 
-                 <!-- <tr class="account-row" data-account-type="{{ i.account_type }}">
-                   <td><a href="{% url 'chartofaccountsoverview' i.id %}" style="text-decoration: none; color: rgb(255, 254, 252);"><b>{{i.account_name}}</b></a></td>
-                   <td><a href="{% url 'chartofaccountsoverview' i.id %}" style="text-decoration: none; color: rgb(255, 255, 253);">{{ i.Create_status }}</a></td>
-                 </tr> 
-                 
-                 <tr class="account-row reduce-gap" data-account-type="{{ i.account_type }}">
-                   <td><a href="{% url 'chartofaccountsoverview' i.id %}" style="text-decoration: none; color: rgb(245, 245, 245);">{{i.account_type}}</a></td>
-                   <td><a href="{% url 'chartofaccountsoverview' i.id %}" style="text-decoration: none; color: rgb(255, 255, 254);">{{ i.account_code }}</a><hr style="width: 500%;margin-left: -220px;color: #ffffff;"></td>
-                 </tr>
-                 
-             
-                 {% endfor %}
-               </tbody>
-             </table> -->
- <!--               
-             <table id="table2" class="table customer-table" style="border: 1px solid black; width: 100%; margin-left: 0;">
- 
-               <tbody>
-                 {%for i in acc %}
-                 <tr class="account-row" data-account-type="{{ i.account_type }}">
-                   <td>
-                     <a class="text-white"  href="{% url 'chartofaccountsoverview'  i.id%}"><b>{{i.account_name}}</b> <span class="d-flex justify-content-end text-warning align-items-start" > {{i.account_type}}</span> <br>
-                         <span class="d-flex  align-items-start text-warning"> {{i.account_code}}</span> <span class="d-flex justify-content-end align-items-start"> {{i.Create_status}}</span>
-                     </a> 
-                 </td>
-                 </tr>
-                 {%endfor%}
-               </tbody>
-             </table> -->
- 
+            
    </div>
  </div>
  <div class="col" style="width: 300%;" id="overviewdiv" style="display: block;">
@@ -699,41 +652,7 @@
           Templates</a>
           <a class="btn" style=" margin-right: 2vh;color: aliceblue;" onclick="slip()" id="slipBtn"><i class="fas fa-eye"></i>
             Slip</a>
-          <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Get the elements by ID
-                var overviewDiv = document.getElementById('overviewdiv');
-                var transactionDiv = document.getElementById('Transaction');
-        
-                // Set the initial display state
-                overviewDiv.style.display = 'block';
-                transactionDiv.style.display = 'none';
-            });
-        
-            function totemplate() {
-                // Get the elements by ID
-                var overviewDiv = document.getElementById('overviewdiv');
-                var transactionDiv = document.getElementById('Transaction');
-        
-                // Toggle the display property
-                if (overviewDiv.style.display === 'block' || overviewDiv.style.display === '') {
-                    overviewDiv.style.display = 'none';
-                    transactionDiv.style.display = 'block';
-                } else {
-                    overviewDiv.style.display = 'block';
-                    transactionDiv.style.display = 'none';
-                }
-            }
-            function totemplate2() {
-      // Get the elements by ID
-      var overviewDiv = document.getElementById('overviewdiv');
-      var transactionDiv = document.getElementById('Transaction');
 
-      // Show the overviewDiv and hide the transactionDiv
-      overviewDiv.style.display = 'block';
-      transactionDiv.style.display = 'none';
-  }
-        </script>
         
 
 
@@ -743,86 +662,46 @@
       <div class="col-md-6 d-flex justify-content-between align-items-center">
   
           <!-- Edit Button -->
-          <!-- <a href="{% url 'editInvoice' invoice.id %}" class="btn btn-outline-warning py-2 text-warning" title="edit">
-              <i class="fas fa-pencil-alt"></i>
-          </a> -->
+          <a href="{% url 'editInvoice' invoice.id %}" class="ml-2 fa fa-pencil btn btn-outline-warning text-grey" id="editBtn" role="button"style="margin-left: 4px;"></a>
+
   
-          <!-- Item Status Edit Button -->
-          <a href="" class="btn btn-outline-warning py-2" title="Save this draft" style="margin-left: 4px;">
+          <a href="" class="ml-2 btn btn-outline-warning py-2" title="Save this draft" style="margin-left: 4px;">
               {{invoice.status}}
           </a>
-  
-          <!-- Delete Button -->
-          <a href="" class="delete fa fa-trash btn btn-outline-warning text-warning px-2 py-2"
-              data-toggle="tooltip" title="DELETE" onclick="return confirm('Do you want to Delete this Item?');" style="margin-left: 4px;"></a>
-  
-          <!-- Share Button -->
-          <!-- <div class="dropdown px-2 py-4">
-              <a class="btn text-center  btn-outline-warning" id="sortbutton" data-bs-toggle="dropdown" role="button" style="margin-left: 4px;">
-                  <i class="fas fa-share"></i>
-              </a>
-              <div class="dropdown-menu m-1" style="background-color: rgb(43, 42, 42); color: white;margin-left: 4px;">
-                  <a class="dropdown-item" data-toggle="modal" data-target="#shareBillEmail" href="#" style="color: #eeeaea;">GMAIL</a>
-                  <a class="dropdown-item" href="javascript:void(0);" onclick="shareOnWhatsApp()" style="color: #fefefe;">WhatsApp</a>
-              </div>
-          </div>
-  
-          <a class="tex
-          t-dark" onclick="exportToPDF3()">
-              <button class="btn btn-outline-warning" title="Pdf" style="width: 50px;margin-left: 4px;"><i class="fas fa-file-pdf" ></i></button>
-          </a>
-  
-          <a class="btn btn-outline-warning py-2" style="cursor: pointer;margin-left: 4px;" onclick="exportToExcel()" style="width: 50px;margin-left: 4px;">XLS</a>
-  
-          <a class="text-dark" onclick="printSelectedArea2()">
-              <button class="btn btn-outline-warning" title="Print" style="width: 50px;margin-left: 4px;"><i class="fas fa-print" ></i></button>
-          </a>
-   -->
-          <!-- Comment Button -->
-          <!-- <div class="dropdown">
-              <a href=" " class="btn btn-outline-warning py-2 fas fa-comment-dots dropdown-toggle text-warning"
-                  data-bs-toggle="dropdown" id="attachmentDropdown" aria-haspopup="true" aria-expanded="false" style="margin-left: 4px;"></a>
-              <div class="dropdown-menu" aria-labelledby="attachmentDropdown" style="background-color: rgb(46, 45, 45); color: white;margin-left: 4px;">
-                  <a class="dropdown-item text-white" style="cursor: pointer;" data-toggle="modal" data-target="#cmnts"><i
-                          class="fa-solid fa fa-plus"></i>Add</a>
-                  <a class="dropdown-item text-white" style="cursor: pointer;" data-toggle="modal" data-target="#cmt_list"><i
-                          class="fas fa-list"></i>&nbsp;View List</a>
-              </div>
-          </div> -->
-          <a class="btn btn-outline-warning" href="" data-toggle="modal" data-target="#commentModal"  id="commentsBtn" data-toggle="tooltip" title="comment">
-            <i class="far fa-comment"></i>
-          </a>
-          <a class="btn btn-outline-warning" href="" data-toggle="modal" data-target="#commentModal2" id="historyBtn"data-toggle="tooltip" title="history">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-          </a>
-          <a class="ml-2 btn btn-outline-secondary text-grey fa fa-table" role="button" id="exportBtn" style="display: none;" onclick="ExportToExcel('xlsx')">&nbsp;Export</a>
-
           {% if invoice.status == 'Draft' %}
-          <div class="dropdown p-0 nav-item"  id="convertBtn" style="display: block;">
+          <div class="dropdown p-0 nav-item"  id="convertBtn" style="margin-left: 4px;">
               <li  class="dropdown-toggle btn btn-outline-warning text-warning fa fa-exchange" data-toggle="dropdown"> {{invoice.status}}</li>
               <ul class="dropdown-menu" style="background-color: black;" id="">
-                  <a class="dropdown-item" href="">Saved</a>
+                  <a class="dropdown-item" href="{% url 'convertInvoice' invoice.id %}">Saved</a>
               </ul>
           </div>
           {% endif %}
+  
+  
+       
+          <a class=" ml-2 btn btn-outline-warning" href="" data-toggle="modal" data-target="#commentModal"  id="commentsBtn" style="margin-left: 4px;" data-toggle="tooltip" title="comment"> <i class="far fa-comment"></i> </a>
+
+          <a class=" ml-2 btn btn-outline-warning" href="{% url 'InvoiceHistory' invoice.id %}" data-toggle="modal" style="margin-left: 4px;" data-target="#commentModal2" id="historyBtn"data-toggle="tooltip" title="history"> <i class="fa-solid fa-clock-rotate-left"></i></a>
+
+          <a class="ml-2 btn btn-outline-secondary text-grey fa fa-table" role="button" id="exportBtn" style="display: none;" onclick="ExportToExcel('xlsx')">&nbsp;Export</a>
+
           <a class="ml-2 btn btn-outline-warning fa fa-table" role="button" id="exportBtn" style="display: none;" onclick="ExportToExcel('xlsx')"></a>
-          <a href="" class="ml-2 btn btn-outline-warning text-grey fa fa-file" role="button" id="pdfBtn" style="display: none;"> </a> 
-          <a class="ml-2 btn btn-outline-warning text-grey fa fa-print" role="button" id="printBtn" style="display: none; " onclick="printSection('whatToPrint')"></a>
-          <div class="dropdown p-0 nav-item"  id="shareBtn" style="display: none;">
+
+          <a href="{% url 'invoicePdf' invoice.id %}" class="ml-2 btn btn-outline-warning text-grey fa fa-file" role="button" id="pdfBtn" style="display: none;margin-left: 4px;"> </a> 
+
+          <a class="ml-2 btn btn-outline-warning text-grey fa fa-print" role="button" id="printBtn" style="display: none;margin-left: 4px; " onclick="printSection('whatToPrint')"></a>
+          
+          <div class=" ml-2 dropdown p-0 nav-item"  id="shareBtn" style="display: none;margin-left: 4px;">
               <li  class="ml-2 dropdown-toggle btn btn-outline-warning text-grey fa fa-share-alt" data-toggle="dropdown"></li>
               <ul class="dropdown-menu" style="background-color: black;" id="listdiv">
-                  <li style="text-align: center;" ></li>
-                  <li style="text-align: center;color: #e5e9ec; cursor: pointer;" data-toggle="modal" data-target="#shareToEmail">Email</li>
+                  <li style="text-align: center;color: #e5e9ec; cursor: pointer;" >{% post_to_whatsapp object_or_url "WhatsApp" %}</li>
+                  <li style="text-align: center;color: #e5e9ec; cursor: pointer;" data-toggle="modal" data-target="#shareBillEmail">Email</li>
               </ul>
           </div>
-          <a href="{% url 'editInvoice' invoice.id %}" class="ml-2 fa fa-pencil btn btn-outline-warning text-grey" id="editBtn" role="button"></a>
-          <a href="" class="ml-2 btn btn-outline-warning text-grey fa fa-trash" id="deleteBtn" role="button" onclick="return confirm('Are you sure you want to delete Invoice - {{invoice.invoice_no}}.?')"></a>
+          <a href="{% url 'deleteInvoice' invoice.id %}"  style="margin-left: 4px;" class="ml-2 btn btn-outline-warning text-grey fa fa-trash" id="deleteBtn" role="button" onclick="return confirm('Are you ok sure you want to delete Invoice - {{invoice.invoice_number}}.?')"></a>
         
 
-          <a href="" class="delete fa fa-times  btn btn-outline-warning text-warning px-2 py-2 btn-margin" style="width:80px;" data-toggle="tooltip" title="back" ></a>
       
-          <!-- History Button -->
-          <!-- <a class="btn btn-outline-warning py-2" style="cursor: pointer;margin-left: 4px;" data-toggle="modal" data-target="#history" >History</a> -->
       </div>
   </div><br>
   </div><br>
@@ -1026,7 +905,7 @@
                                                     <h6 class="mb-0">Tax Amount</h6>
                                                 </div>
                                                 <div class="col-md-3 mt-3">
-                                                    <p class="mb-0 text-right">{{itm.tax}} %</p>
+                                                    <p class="mb-0 text-right">{{itm.tax_rate}} %</p>
                                                 </div>
                                                 <div class="col-md-3 mt-3 vl"> 
                                                     <h6 class="mb-0">Discount</h6>
@@ -2462,9 +2341,12 @@
     <div class="modal-dialog modal-xl" >
       <div class="modal-content" style="background: #1f1f1ffd;border-radius: 20px;">
         <div class="modal-header" style="background: #1f1f1ffd;">
-          <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #e1e1e1;">Transaction History</h5>
+          <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #e1e1e1;">Transaction History  <a class="btn btn-outline-warning" href="{% url 'InvoiceHistory' invoice.id %}"  title="history">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </a></h5>
           <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
+             
         </div>
         <div class="modal-body" style="background: #1f1f1ffd;;">
           <div class="card p-3 m-3" style="background-color: #000;">
@@ -2482,13 +2364,22 @@
               </thead>
           
               <tbody style="background-color: black; padding-top: 20px;"> <!-- Adjusted padding-top for spacing -->
-                  {% for i in latest_item_id %}
-                      <tr style="background-color: black;height: 40px;">
-                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ i.action }}</td>            
-                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ i.Date }}</td>
-                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ i.logindetails.first_name }}&nbsp;{{ i.logindetails.last_name }}</td>
+                {% if history %}
+                {% if history.action == 'Created' %}
+                <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.action }}</td>            
+                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.date }}</td>
+                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.login_details.first_name }}&nbsp;{{ history.login_details.last_name }}</td>
                       </tr>
-                  {% endfor %}
+               {% else %}
+               <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.action }}</td>            
+                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.date }}</td>
+                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.login_details.first_name }}&nbsp;{{ history.login_details.last_name }}</td>
+                      </tr>
+            {% endif %}
+           
+            {% endif %}
+              
+                        
               </tbody>
           </table>
           
@@ -2750,49 +2641,51 @@
     <div class="modal-dialog modal-xl">
       <div class="modal-content" style="background-color: #3b3b3b;">
         <div class="modal-header">
-          <h3 class="modal-title text-light" id="exampleModalLabel">HISTORY</h3>
+          <h3 class="modal-title text-light" id="exampleModalLabel"></h3>
           <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true" style="font-size: x-large;">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-        <div class="container " >
-          <table class="table text-light table-borderless " style="margin:3px; background-color: #000000;width: 100%;">
-            <thead>
-              <tr>
-                <th>
-                  sl
-                </th>
-                <th>
-                  Date
-                </th>
-                <th>
-                  Action
-                </th>
-                <th>
-                  By
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for i in latest_item_id %}
-              <tr>
-                <td>{{forloop.counter}}</td>
-                <td>{{i.Date}}</td>
-                <td>{{i.action}}</td>
-                <td>{{ i.logindetails.first_name }}&nbsp;{{ i.logindetails.last_name }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>  
-          </table>
-        </div>
+            <div class=" card-registration card-registration-2" style="border-radius: 15px;">
+                <div class=" p-0">
+                    <div id="history">
+                        <center><h3 class="mt-3 text-white text-uppercase"># {{ invoice.invoice_number }} -  HISTORY</h3></center>
+                        <div class="table-responsive px-2">
+                            <table class="table text-light table-borderless " style="margin:3px; background-color: #000000;width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">SL NO.</th>
+                                        <th class="text-center">DATE</th>
+                                        <th class="text-center">ACTION</th>
+                                        <th class="text-center">DONE BY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for h in historys %}
+                                    <tr>
+                                        <td style="text-align: center;">{{forloop.counter}}</td>
+                                        <td style="text-align: center;">{{h.date}}</td>
+                                        {% if h.action == 'Created' %}<td class="text-success text-center">{{h.action}}</td>{% else %}<td class="text-warning text-center">{{h.action}}</td>{% endif %}
+                                        <td style="text-align: center;">{{h.login_details.first_name}} {{h.login_details.last_name}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       
       </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
+         
   
         </div>
       </div>
     </div>
+    
   </div>
   </div>
 {% endblock %}
