@@ -676,8 +676,55 @@
               </ul>
           </div>
           {% endif %}
+         
+      
+                        <!-- <div class="dropdown btn ml-1 " title="comments" style="height: 1.7rem;">
+                            <a href=" " class="ml-2 fa fa-pencil btn btn-outline-warning text-grey"  
+                                data-bs-toggle="dropdown"  aria-haspopup="true" aria-expanded="false"> 
+                            </a>
+          
+                            <div class="dropdown-menu" aria-labelledby="attachmentDropdown">
+                                <form  method="post" action="" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <label class="dropdown-item"  for="file-input"  data-toggle="tooltip" title="Upload Attachments">
+                                        <i class="fas fa-paperclip"></i>
+                                    </label>
+                                    <input id="file-input" type="file" name="file" style="display: none;" onchange="uploadFile()">
+                                    <input type="hidden" id="payroll-id" value="{{ loan.payroll.id }}">
+                                </form>
+                                 {% if invoice.document != "" %}
+                        <a href="{{invoice.document.url}}"  style="margin-left: 4px;cursor: pointer;" class=" dropdown-item  btn btn-outline-warning text-grey fa fa-download"
+                            data-toggle="tooltip" title="Download Attached File">
+                            </a>
+                        {% endif %}
+                                        
+                            </div>
+                        </div>
+               
+         -->
   
-  
+                        <div class=" ml-2 dropdown p-0 nav-item"  style="margin-left: 4px;">
+                            <li  class="ml-2 dropdown-toggle btn btn-outline-warning text-grey fa-solid fa-file-pen" data-toggle="dropdown"></li>
+                            <ul class="dropdown-menu" style="background-color: black;" id="listdiv">
+                                <li style="text-align: center;color: #e19d16; cursor: pointer;" >
+                                     <form  method="post" action="{% url 'add_attach' invoice.id %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <label class="dropdown-item"  for="file-input"  data-toggle="tooltip" title="Upload Attachments">
+                                        <i class="fas fa-paperclip  btn btn-outline-warning text-grey "></i>
+                                    </label>
+                                    <input id="file-input" type="file" name="file" style="display: none;" onchange="uploadFile()">
+                                    <input type="hidden" id="payroll-id" value="{{ invoice.id }}">
+
+
+                                </form></li>
+                                <li style="text-align: center;color: #e5e9ec; cursor: pointer;" > {% if invoice.document != "" %}
+                                    <a href="{{invoice.document.url}}"  style="margin-left: 4px;cursor: pointer;" class=" dropdown-item  "
+                                        data-toggle="tooltip" title="Download Attached File">     <i class="fas fa-download  btn btn-outline-warning text-grey "></i>
+
+                                        </a>
+                                    {% endif %}</li>
+                            </ul>
+                        </div>
        
           <a class=" ml-2 btn btn-outline-warning" href="" data-toggle="modal" data-target="#commentModal"  id="commentsBtn" style="margin-left: 4px;" data-toggle="tooltip" title="comment"> <i class="far fa-comment"></i> </a>
 
@@ -687,9 +734,10 @@
 
           <a class="ml-2 btn btn-outline-warning fa fa-table" role="button" id="exportBtn" style="display: none;" onclick="ExportToExcel('xlsx')"></a>
 
-          <a href="{% url 'invoicePdf' invoice.id %}" class="ml-2 btn btn-outline-warning text-grey fa fa-file" role="button" id="pdfBtn" style="display: none;margin-left: 4px;"> </a> 
 
           <a class="ml-2 btn btn-outline-warning text-grey fa fa-print" role="button" id="printBtn" style="display: none;margin-left: 4px; " onclick="printSection('whatToPrint')"></a>
+          <a class="ml-2 btn btn-outline-warning text-grey fa fa-file" role="button" id="pdfBtn" style="display: none;margin-left: 4px; " onclick="convertToPDF('whatToPrint')"></a>
+
           
           <div class=" ml-2 dropdown p-0 nav-item"  id="shareBtn" style="display: none;margin-left: 4px;">
               <li  class="ml-2 dropdown-toggle btn btn-outline-warning text-grey fa fa-share-alt" data-toggle="dropdown"></li>
@@ -705,8 +753,73 @@
       </div>
   </div><br>
   </div><br>
+  <div id="upload-message" style="display: none;"></div>
+
+  <script>
+    function getCookie(name) {
+        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return cookieValue ? cookieValue.pop() : '';
+    }
+        
+    function uploadFile() {
+        const fileInput = document.getElementById("file-input");
+        const file = fileInput.files[0];
+        alert("ok")
+        const csrfToken = getCookie('csrftoken');
+        alert(csrfToken)
+
+        const payrollId = document.getElementById("payroll-id").value;
+        alert(payrollId)
+
+        
+        const formData = new FormData();
+        formData.append("file", file);
+        alert(file)
+
+        
+        fetch(`Staff/invoice/add_attach/${payrollId}/`, {
+            method: "POST",
+            headers: { 'X-CSRFToken': csrfToken },
+            body: formData
+        })
+        alert(formData)
+
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response from the server (if needed)
+            const messageDiv = document.getElementById("upload-message");
+if (data.message) {
+    alert(data.message)
+
+// Display the success message
+messageDiv.textContent = data.message;
+messageDiv.style.color = "green";
+}
+messageDiv.style.display = "block";
+})
+.catch(error => {
+console.error("Error:", error);
+});
+}
+    
+</script>        
   
-  
+  <script>
+    function convertToPDF(sectionId) {
+        const element = document.getElementById(sectionId);
+
+        html2pdf().from(element).save('invoice.pdf');
+    }
+
+    function toggleTemplate(templateId, buttonId) {
+        $('.printTemplates').css('display', 'none');
+        $('#' + templateId).css('display', 'block');
+        $('.templateToggleButtons').removeClass('active');
+        $('#' + buttonId).addClass('active');
+        $("#templatePrintButton").attr("onclick", "convertToPDF('" + templateId + "')");
+        document.getElementById('page-content').scrollIntoView();
+    }
+</script>
 
   <div class="row" id="div-to-pdf"
     style="background-color: #292626fd;  height: auto; margin-left:1px; margin-right: 1rem; width: 80%;  ">
@@ -1826,6 +1939,8 @@
         document.getElementById('slipBtn').style.backgroundColor='transparent';
         document.getElementById('templateBtn').style.backgroundColor='rgb(255, 153, 0)';
         $("#printBtn").attr("onclick","printSection('whatToPrint')");
+        $("#pdfBtn").attr("onclick","convertToPDF('whatToPrint')");
+
         $('#shareBtn').show();
         $('#printBtn').show();
         $('#pdfBtn').show();
@@ -1844,8 +1959,11 @@
         document.getElementById('templateBtn').style.backgroundColor='transparent';
         document.getElementById('slipBtn').style.backgroundColor='rgb(255, 153, 0)';
         $("#printBtn").attr("onclick","printSection('slip')");
+        $("#pdfBtn").attr("onclick","convertToPDF('slip')");
+
+        
         $('#printBtn').show();
-        $('#pdfBtn').hide();
+        $('#pdfBtn').show();
         $('#shareBtn').hide();
         $('#deleteBtn').hide();
         $('#editBtn').hide();

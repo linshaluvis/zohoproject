@@ -61,6 +61,8 @@ urlpatterns = [
     path('Staff/invoice/invoicePdf/<int:id>',views.invoicePdf, name='invoicePdf'),
     path('Staff/invoice/delete_invoice/<int:id>',views.deleteInvoice, name= 'deleteInvoice'),
     path('Staff/invoice/Invoice_history/<int:id>',views.InvoiceHistory, name='InvoiceHistory'),
+    path('Staff/invoice/add_attach/<int:id>',views.add_attach, name='add_attach'),
+
 
 
 

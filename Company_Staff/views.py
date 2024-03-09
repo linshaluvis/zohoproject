@@ -702,6 +702,27 @@ def convertInvoice(request,id):
         inv = invoice.objects.get(id = id)
         inv.status = 'Saved'
         inv.save()
+        return redirect(view)
+def add_attach(request,id):
+    if request.method == 'POST' and request.FILES.get('file'):
+        inv = invoice.objects.get(id=id)
+        inv.document = request.FILES['file']
+        print("success")
+
+        inv.save()
+        # Return a JSON response indicating success
+        response_data = { 'message': 'The file was uploaded successfully.Please reload the page to download it.'}
+
+        return JsonResponse(response_data)
+
+    
+
+        
+        
+    else:
+        print("not success")
+
+        
         return redirect(view, id)
 def invoicePdf(request,id):
     if 'login_id' in request.session:
