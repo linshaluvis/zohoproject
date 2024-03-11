@@ -642,7 +642,7 @@ def view(request,pk):
 
    
         inv = invoice.objects.get(id = pk)
-        # cmt = invoice_Comments.objects.filter(Invoice = inv)
+        cmt = invoicecomments.objects.filter(invoice = inv)
         hist =invoiceHistory.objects.filter( invoice = inv).last()
         histo =invoiceHistory.objects.filter( invoice = inv)
 
@@ -656,7 +656,7 @@ def view(request,pk):
         elif log_details.user_type == 'Company':
                 company = CompanyDetails.objects.get(login_details=log_details)
         
-        return render(request,'staff/invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'history':hist,'historys':histo,  'created':created})
+        return render(request,'staff/invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'comments':cmt,'history':hist,'historys':histo,  'created':created})
     else:
        return redirect('/')
 def overview(request,pk):
@@ -710,17 +710,6 @@ def add_attach(request,id):
         print("success")
 
         inv.save()
-        # Return a JSON response indicating success
-        response_data = { 'message': 'The file was uploaded successfully.Please reload the page to download it.'}
-
-        return JsonResponse(response_data)
-
-    
-
-        
-        
-    else:
-        print("not success")
 
         
         return redirect(view, id)
@@ -1072,6 +1061,83 @@ def filter_invoice_number(request, pk):
     
     except invoice.DoesNotExist:
         return redirect('/') 
+def addInvoiceComment(request, id):
+    if 'login_id' not in request.session:
+        return redirect('/')
+    
+    log_id = request.session['login_id']
+    log_details = LoginDetails.objects.get(id=log_id)
+    if log_details.user_type == "Company":
+            com = CompanyDetails.objects.get(login_details=log_details)
+    else:
+            cmp = StaffDetails.objects.get(login_details=log_details)
+            com = cmp.company
+
+            
+
+    inv = invoice.objects.get(id = id)
+    if request.method == "POST":
+            cmt = request.POST['comment'].strip()
+
+            invoicecomments.objects.create(company = com, invoice = inv, comments = cmt)
+            return redirect(view, id)
+    return redirect(view, id)
+def deleteInvoiceComment(request,id):
+    if 'login_id' not in request.session:
+        return redirect('/')
+    print(id)
+    cmt = invoicecomments.objects.get(id = id)
+    invId = cmt.invoice.id
+    cmt.delete()
+
+    return redirect(view,invId)
+def shareInvoiceToEmail(request,id):
+    if 'login_id' not in request.session:
+        return redirect('/')
+    
+    log_id = request.session['login_id']
+    log_details = LoginDetails.objects.get(id=log_id)
+
+    if log_details.user_type == 'Staff':
+        staff = StaffDetails.objects.get(login_details=log_details)
+        company = staff.company
+    elif log_details.user_type == 'Company':
+        company = CompanyDetails.objects.get(login_details=log_details)
+        
+    inv = invoice.objects.get(id = id)
+    itms = invoiceitems.objects.filter(invoice = inv)
+    try:
+        if request.method == 'POST':
+            emails_string = request.POST['email_ids']
+            print(emails_string)
+
+            # Split the string by commas and remove any leading or trailing whitespace
+            emails_list = [email.strip() for email in emails_string.split(',')]
+            email_message = request.POST['email_message']
+            print(email_message)
+
+            print(emails_list)
+        
+            context = {'invoice':inv, 'invItems':itms,'cmp':company}
+            template_path = 'invoice_pdf.html'
+            template = get_template(template_path)
+
+            html  = template.render(context)
+            result = BytesIO()
+            pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+            pdf = result.getvalue()
+            filename = f'Invoice_{inv.invoice_number}'
+            subject = f"Invoice_{inv.invoice_number}"
+            email = EmailMessage(subject, f"Hi,\nPlease find the attached Invoice for - INVOICE-{inv.invoice_number}. \n{email_message}\n\n--\nRegards,\n{company.company_name}\n{company.address}\n{company.state} - {company.country}\n{company.contact}", from_email=settings.EMAIL_HOST_USER, to=emails_list)
+            email.attach(filename, pdf, "application/pdf")
+            email.send(fail_silently=False)
+
+            messages.success(request, 'Invoice details has been shared via email successfully..!')
+            return redirect(view,id)
+    except Exception as e:
+            print(e)
+            messages.error(request, f'{e}')
+            return redirect(view, id)
 def filter_invoice_draft(request,pk):
     invo=invoice.objects.filter(status='draft')
     invoic=invoice.objects.get(id=pk)

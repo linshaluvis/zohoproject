@@ -62,6 +62,12 @@ urlpatterns = [
     path('Staff/invoice/delete_invoice/<int:id>',views.deleteInvoice, name= 'deleteInvoice'),
     path('Staff/invoice/Invoice_history/<int:id>',views.InvoiceHistory, name='InvoiceHistory'),
     path('Staff/invoice/add_attach/<int:id>',views.add_attach, name='add_attach'),
+    path('Staff/invoice/share_invoice_to_email/<int:id>',views.shareInvoiceToEmail, name='shareInvoiceToEmail'),
+    path('Staff/invoice/addInvoiceComment/<int:id>',views.addInvoiceComment, name='addInvoiceComment'),
+    path('Staff/invoice/deleteInvoiceComment/<int:id>',views.deleteInvoiceComment, name='deleteInvoiceComment'),
+
+
+
 
 
 

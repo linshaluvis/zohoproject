@@ -264,16 +264,13 @@
         cursor: pointer;
     }
     .submitShareEmailBtn, #commentSaveBtn {
-        background: #192d3e;
         border: 1px solid #3a4b5a;
         border-radius: 4px;
         color: white;
         font-weight: 600;
         padding: 0.5rem 1rem;
     }
-    .submitShareEmailBtn:hover, #commentSaveBtn:hover {
-        background: #3a4b5a;
-    }
+   
     .print-only {
         /* display: none; */
         height: auto;
@@ -665,9 +662,7 @@
           <a href="{% url 'editInvoice' invoice.id %}" class="ml-2 fa fa-pencil btn btn-outline-warning text-grey" id="editBtn" role="button"style="margin-left: 4px;"></a>
 
   
-          <a href="" class="ml-2 btn btn-outline-warning py-2" title="Save this draft" style="margin-left: 4px;">
-              {{invoice.status}}
-          </a>
+        
           {% if invoice.status == 'Draft' %}
           <div class="dropdown p-0 nav-item"  id="convertBtn" style="margin-left: 4px;">
               <li  class="dropdown-toggle btn btn-outline-warning text-warning fa fa-exchange" data-toggle="dropdown"> {{invoice.status}}</li>
@@ -678,51 +673,25 @@
           {% endif %}
          
       
-                        <!-- <div class="dropdown btn ml-1 " title="comments" style="height: 1.7rem;">
-                            <a href=" " class="ml-2 fa fa-pencil btn btn-outline-warning text-grey"  
-                                data-bs-toggle="dropdown"  aria-haspopup="true" aria-expanded="false"> 
-                            </a>
-          
-                            <div class="dropdown-menu" aria-labelledby="attachmentDropdown">
-                                <form  method="post" action="" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    <label class="dropdown-item"  for="file-input"  data-toggle="tooltip" title="Upload Attachments">
-                                        <i class="fas fa-paperclip"></i>
-                                    </label>
-                                    <input id="file-input" type="file" name="file" style="display: none;" onchange="uploadFile()">
-                                    <input type="hidden" id="payroll-id" value="{{ loan.payroll.id }}">
-                                </form>
-                                 {% if invoice.document != "" %}
-                        <a href="{{invoice.document.url}}"  style="margin-left: 4px;cursor: pointer;" class=" dropdown-item  btn btn-outline-warning text-grey fa fa-download"
-                            data-toggle="tooltip" title="Download Attached File">
-                            </a>
-                        {% endif %}
-                                        
-                            </div>
-                        </div>
-               
-         -->
+                  
   
                         <div class=" ml-2 dropdown p-0 nav-item"  style="margin-left: 4px;">
                             <li  class="ml-2 dropdown-toggle btn btn-outline-warning text-grey fa-solid fa-file-pen" data-toggle="dropdown"></li>
                             <ul class="dropdown-menu" style="background-color: black;" id="listdiv">
                                 <li style="text-align: center;color: #e19d16; cursor: pointer;" >
-                                     <form  method="post" action="{% url 'add_attach' invoice.id %}" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    <label class="dropdown-item"  for="file-input"  data-toggle="tooltip" title="Upload Attachments">
-                                        <i class="fas fa-paperclip  btn btn-outline-warning text-grey "></i>
-                                    </label>
-                                    <input id="file-input" type="file" name="file" style="display: none;" onchange="uploadFile()">
-                                    <input type="hidden" id="payroll-id" value="{{ invoice.id }}">
+                                   </li> 
+                                <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#attachmentModal">
+                                    <i class="fas fa-paperclip text-grey"></i> Upload Attachment
+                                </button>
+                                {% if invoice.document != "" %}
+                                <li style="text-align: center;color: #e19d16; cursor: pointer;" >
 
+                                <button type="button" class="btn btn-outline-warning">
+                                    <a href="{{invoice.document.url}}"  style="margin-left: 4px;cursor: pointer; text-decoration: none;color: #e19d16;" 
+                                        data-toggle="tooltip" title="Download Attached File">     <i class="fas fa-download text-grey "></i>Download Attachment
 
-                                </form></li>
-                                <li style="text-align: center;color: #e5e9ec; cursor: pointer;" > {% if invoice.document != "" %}
-                                    <a href="{{invoice.document.url}}"  style="margin-left: 4px;cursor: pointer;" class=" dropdown-item  "
-                                        data-toggle="tooltip" title="Download Attached File">     <i class="fas fa-download  btn btn-outline-warning text-grey "></i>
-
-                                        </a>
-                                    {% endif %}</li>
+                                        </a></button></li> 
+                                    {% endif %}
                             </ul>
                         </div>
        
@@ -735,19 +704,21 @@
           <a class="ml-2 btn btn-outline-warning fa fa-table" role="button" id="exportBtn" style="display: none;" onclick="ExportToExcel('xlsx')"></a>
 
 
-          <a class="ml-2 btn btn-outline-warning text-grey fa fa-print" role="button" id="printBtn" style="display: none;margin-left: 4px; " onclick="printSection('whatToPrint')"></a>
-          <a class="ml-2 btn btn-outline-warning text-grey fa fa-file" role="button" id="pdfBtn" style="display: none;margin-left: 4px; " onclick="convertToPDF('whatToPrint')"></a>
-
+         
           
           <div class=" ml-2 dropdown p-0 nav-item"  id="shareBtn" style="display: none;margin-left: 4px;">
               <li  class="ml-2 dropdown-toggle btn btn-outline-warning text-grey fa fa-share-alt" data-toggle="dropdown"></li>
               <ul class="dropdown-menu" style="background-color: black;" id="listdiv">
-                  <li style="text-align: center;color: #e5e9ec; cursor: pointer;" >{% post_to_whatsapp object_or_url "WhatsApp" %}</li>
-                  <li style="text-align: center;color: #e5e9ec; cursor: pointer;" data-toggle="modal" data-target="#shareBillEmail">Email</li>
+                  <li style="text-align: center; cursor: pointer; text-decoration: none;color: #e19d16;" >{% post_to_whatsapp object_or_url "WhatsApp" %}</li>
+                  <li style="text-align: center;color: #e19d16; cursor: pointer;" data-toggle="modal" data-target="#shareToEmail">Email</li>
               </ul>
           </div>
+          <a class="ml-2 btn btn-outline-warning text-grey fa fa-print" role="button" id="printBtn" style="display: none;margin-left: 4px; " onclick="printSection('whatToPrint')"></a>
+          <a class="ml-2 btn btn-outline-warning text-grey fa fa-file" role="button" id="pdfBtn" style="display: none;margin-left: 4px; " onclick="convertToPDF('whatToPrint')"></a>
+
           <a href="{% url 'deleteInvoice' invoice.id %}"  style="margin-left: 4px;" class="ml-2 btn btn-outline-warning text-grey fa fa-trash" id="deleteBtn" role="button" onclick="return confirm('Are you ok sure you want to delete Invoice - {{invoice.invoice_number}}.?')"></a>
         
+          <span class="d-flex justify-content-end p-2" style="cursor: pointer;" onclick="window.location.href=`{% url 'invoice_list_out' %}`"><i class="fa fa-times-circle ml-2 btn btn-outline-warning text-grey" style="font-size: 1.2rem;"></i></span>
 
       
       </div>
@@ -755,54 +726,75 @@
   </div><br>
   <div id="upload-message" style="display: none;"></div>
 
-  <script>
-    function getCookie(name) {
-        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-        return cookieValue ? cookieValue.pop() : '';
-    }
-        
-    function uploadFile() {
-        const fileInput = document.getElementById("file-input");
-        const file = fileInput.files[0];
-        alert("ok")
-        const csrfToken = getCookie('csrftoken');
-        alert(csrfToken)
 
-        const payrollId = document.getElementById("payroll-id").value;
-        alert(payrollId)
+<!-- Modal -->
+<div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="attachmentModalLabel">Upload Attachment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="attachmentForm" method="post" action="{% url 'add_attach' invoice.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="file" class="form-control-file" required>
+                    <input type="hidden" name="invoice_id" value="{{ invoice.id }}">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Success message alert -->
+<div id="successAlert"tabindex="-1" class=" text-success modal-dialog " role="alert" style="display: none;font: 1000px;">
+    <strong>Success!</strong> File uploaded successfully.Please reload the page to see changes.
+   
+</div>
+<script>
+    document.getElementById('attachmentForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
         
-        const formData = new FormData();
-        formData.append("file", file);
-        alert(file)
+        // Perform form submission via AJAX
+        var formData = new FormData(this);
 
-        
-        fetch(`Staff/invoice/add_attach/${payrollId}/`, {
-            method: "POST",
-            headers: { 'X-CSRFToken': csrfToken },
+        fetch(this.action, {
+            method: this.method,
             body: formData
         })
-        alert(formData)
+        .then(response => {
+            if (response.ok) {
+                // Show success message
+                document.getElementById('successAlert').style.display = 'block';
+                // Show reload message
+                // Reset form
+                this.reset();
+                // Close modal
+                var modal = document.getElementById('attachmentModal');
+                var modalBackdrop = document.querySelector('.modal-backdrop');
+                modal.classList.remove('show');
+                modalBackdrop.parentNode.removeChild(modalBackdrop);
+                // Return to previous window
+            } else {
+                // Handle error response
+                // You can show an error message here if needed
+            }
+        })
+        .catch(error => {
+            // Handle network errors
+            console.error('Error:', error);
+        });
+    });
+</script>
 
-        .then(response => response.json())
-        .then(data => {
-            // Handle the response from the server (if needed)
-            const messageDiv = document.getElementById("upload-message");
-if (data.message) {
-    alert(data.message)
 
-// Display the success message
-messageDiv.textContent = data.message;
-messageDiv.style.color = "green";
-}
-messageDiv.style.display = "block";
-})
-.catch(error => {
-console.error("Error:", error);
-});
-}
-    
-</script>        
+
   
   <script>
     function convertToPDF(sectionId) {
@@ -1314,7 +1306,6 @@ console.error("Error:", error);
                                     </div>
                                 </section>
                     
-                                <img src="cart.jpg" class="img-fluid cart-bg" alt="">
                             </div>
                         </div>
                     </div>
@@ -1833,10 +1824,10 @@ console.error("Error:", error);
             </div>
             <div class="modal-body">
                 <div class="card p-3">
-                    <form action="" method="post" class="needs-validation" id="share_to_email_form">
+                    <form action="{% url 'shareInvoiceToEmail' invoice.id %}" method="post" class="needs-validation" id="share_to_email_form">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="emailIds">Email IDs</label>
+                            <label for="emailIds">Email IDsokok</label>
                             <textarea class="form-control" name="email_ids" id="emailIds" rows="3" placeholder="Multiple emails can be added by separating with a comma(,)." required></textarea>
                         </div>
                         <div class="form-group mt-2">
@@ -1856,15 +1847,15 @@ console.error("Error:", error);
 <!-- Add Comments Modal -->
 <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color: #213b52;">
+        <div class="modal-content" style="background-color: #222d36;">
             <div class="modal-header">
-                <h3 class="modal-title" id="exampleModalLabel">Add Comments</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h3 class="modal-title text-white" id="exampleModalLabel">Add Comments</h3>
+                <button type="button" class="  btn-outline-danger close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
-            <form action="" method="post">
+            <form action="{% url 'addInvoiceComment' invoice.id %}" method="post">
                 {% csrf_token %}
                 <div class="modal-body">
                     <textarea type="text" class="form-control" name="comment" placeholder="Add Comments.." required></textarea>
@@ -1875,17 +1866,17 @@ console.error("Error:", error);
                         <table class="table mt-4">
                             <thead>
                                 <tr>
-                                    <th class="text-center">sl no.</th>
-                                    <th class="text-center">Comment</th>
-                                    <th class="text-center">Delete</th>
+                                    <th class="text-center text-white">sl no.</th>
+                                    <th class="text-center text-white">Comment</th>
+                                    <th class="text-center text-white">Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for c in comments %}
                                 <tr class="">
-                                    <td class="text-center">{{forloop.counter }}</td>
-                                    <td class="text-center">{{c.comments}}</td>
-                                    <td class="text-center"><a class="text-danger" href="{% url 'Fin_deleteInvoiceComment' c.id %}" onclick="return confirm('Are you sure you want to delete.?')"><i class="fa fa-trash" style="font-size: 1.1rem;"></i></a></td>
+                                    <td class="text-center text-white">{{forloop.counter }}</td>
+                                    <td class="text-center text-white">{{c.comments}}</td>
+                                    <td class="text-center text-white"><a class="text-danger" href="{% url 'deleteInvoiceComment' c.id %}" onclick="return confirm('Are you sure you want to delete.?')"><i class="fa fa-trash" style="font-size: 1.1rem;"></i></a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -1895,8 +1886,8 @@ console.error("Error:", error);
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn" id="commentSaveBtn">Save</button>
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-outline-warning" id="commentSaveBtn">Save</button>
                 </div>
             </form>
         </div>
@@ -2426,11 +2417,11 @@ console.error("Error:", error);
         </div>
         <div class="modal-body" style="background: rgb(32, 35, 37);">
           <div class="card p-3 m-3">
-            <form action="" method="post" class="needs-validation"
+            <form action="{% url 'shareInvoiceToEmail' invoice.id %}" method="post" class="needs-validation"
               id="share_to_email_form" autocomplete="off">
               {% csrf_token %}
               <div class="form-group">
-                <label for="emailIds" style="color: #000;">Email IDs</label>
+                <label for="emailIds" style="color: #000;">Email IDsok</label>
                 <textarea class="form-control text-dark"  style="color: #000;" name="email_ids" id="emailIds" rows="5"
                   placeholder="Multiple emails can be added by separating with a comma(,)." required></textarea>
               </div>
@@ -2452,135 +2443,11 @@ console.error("Error:", error);
     </div>
   </div>
   
-  <!-- history modal -->
+  
+ 
   
   
-  <div class="modal fade" id="history" >
-    <div class="modal-dialog modal-xl" >
-      <div class="modal-content" style="background: #1f1f1ffd;border-radius: 20px;">
-        <div class="modal-header" style="background: #1f1f1ffd;">
-          <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #e1e1e1;">Transaction History  <a class="btn btn-outline-warning" href="{% url 'InvoiceHistory' invoice.id %}"  title="history">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-          </a></h5>
-          <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-             
-        </div>
-        <div class="modal-body" style="background: #1f1f1ffd;;">
-          <div class="card p-3 m-3" style="background-color: #000;">
-          
-            <table style="background-color: #000; margin-right: 10px; border-radius: 5px;">
-              <thead class="text-white">
-                  <tr>
-                      <th style="color: rgb(250, 247, 242); padding-bottom: 10px;"><b>Action</b></th>
-                      <th style="color: rgb(244, 244, 244); padding-bottom: 10px;"><b>Date</b></th>
-                      <th style="color: rgb(250, 247, 242); padding-bottom: 10px;"><b>Name</b></th>
-                  </tr>
-                  <tr>
-                      <td colspan="3" style="border-bottom: 2px solid white; margin-bottom: 10px;"></td>
-                  </tr>
-              </thead>
-          
-              <tbody style="background-color: black; padding-top: 20px;"> <!-- Adjusted padding-top for spacing -->
-                {% if history %}
-                {% if history.action == 'Created' %}
-                <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.action }}</td>            
-                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.date }}</td>
-                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.login_details.first_name }}&nbsp;{{ history.login_details.last_name }}</td>
-                      </tr>
-               {% else %}
-               <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.action }}</td>            
-                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.date }}</td>
-                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ history.login_details.first_name }}&nbsp;{{ history.login_details.last_name }}</td>
-                      </tr>
-            {% endif %}
-           
-            {% endif %}
-              
-                        
-              </tbody>
-          </table>
-          
-          </div>
-      </div>
-      
-  </div>
-  </div></div>
-  <!-- comment modal -->
-  <div class="modal fade" id="cmnts">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
-        <div class="modal-header" style="background: rgb(32, 35, 37);">
-          <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #fefefe;">Comments</h5>
-          <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="modal-body" style="background: rgb(32, 35, 37);">
-          <div class="card p-3 m-3">
-            <form action="" method="post" class="needs-validation"
-              id="share_to_email_form" autocomplete="off">
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="emailIds" style="color: #000;">Enter Comment</label>
-                <textarea class="form-control text-dark"  style="color: #000;" name="comment" id="comment" rows="5"
-                  placeholder="MEnter your comment here" required></textarea>
-              </div>
-             
-       
-          </div>
-          <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffff;">
-            <!-- <button type="submit">submit</button> -->
-            <input type="submit" id="share_with_email"
-              class="submitShareEmailBtn rounded-pill text-grey w-50 my-4 mx-3"  style="background-color: #222121; color: #e1e1e1;" value="Save">
-          </div>
-        </div>
-      </form>
-      </div>
-    </div>
-  </div>
   
-  
-  <div class="modal fade" id="cmt_list">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
-        <div class="modal-header" style="background: rgb(32, 35, 37);">
-          <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #eeeaea;">Comments</h5>
-          <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="modal-body" style="background: rgb(32, 35, 37);">
-          <div class="card p-3 m-3" style="background-color: #000;">
-          
-            <table style="background-color: #000; margin-right: 10px; border-radius: 5px;">
-              <thead class="text-white">
-                  <tr>
-                      <th style="color: rgb(250, 247, 242); padding-bottom: 10px;"><b>Comments</b></th>
-                      <th style="color: rgb(244, 244, 244); padding-bottom: 10px;"><b></b></th>
-                      <th style="color: rgb(250, 247, 242); padding-bottom: 10px;"><b>Delete</b></th>
-                  </tr>
-                  <tr>
-                      <td colspan="3" style="border-bottom: 2px solid white; margin-bottom: 10px;"></td>
-                  </tr>
-              </thead>
-          
-              <tbody style="background-color: black; padding-top: 20px;"> <!-- Adjusted padding-top for spacing -->
-                {% for i in est_comments %}
-                      <tr style="background-color: black;height: 40px;">
-                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ i.comments }}</td>            
-                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;"></td>
-                         
-                      </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-   
-  
-  
-      </div>
-    </div>
-  </div>
-  </div>
-  </div>
   <script>
     function sortTable(columnIndex) {
        const table = document.getElementById("table2");
@@ -2708,17 +2575,49 @@ console.error("Error:", error);
       // You can add any additional logic or calculations here
     }
   </script>
+  <!-- Share To Email Modal -->
+<!-- <div class="modal fade" id="shareToEmail">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: #213b52;">
+            <div class="modal-header">
+                <h5 class="m-3">Share Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card p-3">
+                    <form action="{% url 'shareInvoiceToEmail' invoice.id %}" method="post" class="needs-validation" id="share_to_email_form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="emailIds">Email IDs Please</label>
+                            <textarea class="form-control" name="email_ids" id="emailIds" rows="3" placeholder="Multiple emails can be added by separating with a comma(,)." required></textarea>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="item_unitname">Message(optional)</label>
+                            <textarea name="email_message" id="email_message" class="form-control" cols="" rows="4" placeholder="This message will be sent along with Bill details."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffffff;">
+                    <button type="submit" id="share_with_email" class="submitShareEmailBtn w-50 text-uppercase">SEND MAIL</button>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div> -->
+
   
-  <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"  aria-hidden="true" style="margin-top: 8vh;">
+  <!-- <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"  aria-hidden="true" style="margin-top: 8vh;">
     <div class="modal-dialog modal-xl">
       <div class="modal-content" style="background-color: #3b3b3b;">
         <div class="modal-header">
-          <h3 class="modal-title text-light" id="exampleModalLabel">Add Comments</h3>
+          <h3 class="modal-title text-light" id="exampleModalLabel">Add Commentsok</h3>
           <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true" style="font-size: x-large;">&times;</span>
           </button>
         </div>
-        <form action="" method="POST" enctype="multipart/form-data">
+        <form action="{% url 'addInvoiceComment' invoice.id %}" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="modal-body">
             <textarea type="text" class="form-control text-light" name="comment"></textarea>
@@ -2752,7 +2651,7 @@ console.error("Error:", error);
         </form>
       </div>
     </div>
-  </div>
+  </div> -->
   
   
   <div class="modal fade" id="commentModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"  aria-hidden="true" style="margin-top: 8vh;width: 100%;">

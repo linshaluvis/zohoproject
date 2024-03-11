@@ -380,10 +380,6 @@ class invoice(models.Model):
     status=models.CharField(max_length=220,null=True,blank=True) 
 
 
-
- 
-
-
 class invoiceHistory(models.Model):
     login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE,null=True,blank=True)
     company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True,blank=True)
@@ -414,7 +410,11 @@ class invoiceitems(models.Model):
 
 
 
-    
+class invoicecomments(models.Model):
+    company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE)
+    invoice = models.ForeignKey(invoice,on_delete=models.CASCADE,null=True,blank=True)
+    comments = models.CharField(max_length=500,null=True,blank=True)
+
 
 
 
