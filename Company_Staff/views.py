@@ -629,6 +629,7 @@ def invoice_list_out(request):
             return render(request,'staff/invoicelist.html',{'allmodules':allmodules,'com':com,'data':log_details,'details': dash_details,'invoices':inv})
     else:
        return redirect('/')
+   
 def view(request,pk):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
@@ -702,7 +703,8 @@ def convertInvoice(request,id):
         inv = invoice.objects.get(id = id)
         inv.status = 'Saved'
         inv.save()
-        return redirect(view)
+        return redirect(view,id)
+    
 def add_attach(request,id):
     if request.method == 'POST' and request.FILES.get('file'):
         inv = invoice.objects.get(id=id)
@@ -713,6 +715,7 @@ def add_attach(request,id):
 
         
         return redirect(view, id)
+    
 def invoicePdf(request,id):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
@@ -755,6 +758,7 @@ def invoicePdf(request,id):
         return response
     else:
         return redirect('view')
+    
 def InvoiceHistory(request,id):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
@@ -899,10 +903,10 @@ def updateInvoice(request, id):
             inv.UPI_number = None if request.POST['upi_id'] == "" else request.POST['upi_id']
             inv.bank_account_number = None if request.POST['bnk_id'] == "" else request.POST['bnk_id']
             inv.sub_total = 0.0 if request.POST['subtotal'] == "" else float(request.POST['subtotal'])
-            inv.tax_amount_or_IGST = 0.0 if request.POST['igst'] == "" else float(request.POST['igst'])
+            inv.IGST = 0.0 if request.POST['igst'] == "" else float(request.POST['igst'])
             inv.CGST = 0.0 if request.POST['cgst'] == "" else float(request.POST['cgst'])
             inv.SGST = 0.0 if request.POST['sgst'] == "" else float(request.POST['sgst'])
-            inv.tax_amount_or_IGST = 0.0 if request.POST['taxamount'] == "" else float(request.POST['taxamount'])
+            inv.tax_amount = 0.0 if request.POST['taxamount'] == "" else float(request.POST['taxamount'])
             inv.adjustment = 0.0 if request.POST['adj'] == "" else float(request.POST['adj'])
             inv.shipping_charge = 0.0 if request.POST['ship'] == "" else float(request.POST['ship'])
             inv.grand_total = 0.0 if request.POST['grandtotal'] == "" else float(request.POST['grandtotal'])
@@ -918,40 +922,67 @@ def updateInvoice(request, id):
             # Save invoice items.
 
             itemId = request.POST.getlist("item_id[]")
+            print(itemId)
+
             itemName = request.POST.getlist("item_name[]")
+            print(itemName)
             hsn  = request.POST.getlist("hsn[]")
             qty = request.POST.getlist("qty[]")
             price = request.POST.getlist("priceListPrice[]") if 'priceList' in request.POST else request.POST.getlist("price[]")
             tax = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == com.company.state else request.POST.getlist("taxIGST[]")
+            x=request.POST['place_of_supply']
+            y=com.company.state
+            print(x)
+            print(y)
+
+            print(tax)
             discount = request.POST.getlist("discount[]")
             total = request.POST.getlist("total[]")
             inv_item_ids = request.POST.getlist("id[]")
+            print(inv_item_ids)
+            
+
             invItem_ids = [int(id) for id in inv_item_ids]
+            print(invItem_ids)
+
 
             inv_items = invoiceitems.objects.filter(invoice = inv)
             object_ids = [obj.id for obj in inv_items]
+            print(object_ids)
+
+            
 
             ids_to_delete = [obj_id for obj_id in object_ids if obj_id not in invItem_ids]
             for itmId in ids_to_delete:
                 invItem = invoiceitems.objects.get(id = itmId)
-                item = Items.objects.get(id = invItem.Item.id)
+                item = Items.objects.get(id = invItem.Items.id)
                 item.current_stock += invItem.quantity
                 item.save()
 
             invoiceitems.objects.filter(id__in=ids_to_delete).delete()
             
             count = invoiceitems.objects.filter(invoice = inv).count()
+            print(count)
+
 
             if len(itemId)==len(itemName)==len(hsn)==len(qty)==len(price)==len(tax)==len(discount)==len(total)==len(invItem_ids) and invItem_ids and itemId and itemName and hsn and qty and price and tax and discount and total:
                 mapped = zip(itemId,itemName,hsn,qty,price,tax,discount,total,invItem_ids)
                 mapped = list(mapped)
+                print("ifok")
+
                 for ele in mapped:
                     if int(len(itemId))>int(count):
+                        print(itemId)
                         if ele[8] == 0:
                             itm = Items.objects.get(id = int(ele[0]))
+                            print(itm)
+
                             invoiceitems.objects.create(invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                            
                             itm.current_stock -= int(ele[3])
                             itm.save()
+                            print("ifokok")
+
                         else:
                             itm = Items.objects.get(id = int(ele[0]))
                             inItm = invoiceitems.objects.get(id = int(ele[8]))
@@ -959,23 +990,30 @@ def updateInvoice(request, id):
                             
                             invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
                             
+                            
                             if crQty < int(ele[3]):
                                 itm.current_stock -=  abs(crQty - int(ele[3]))
                             elif crQty > int(ele[3]):
                                 itm.current_stock += abs(crQty - int(ele[3]))
                             itm.save()
+                            print("ifokokok")
+
                     else:
                         itm = Items.objects.get(id = int(ele[0]))
                         inItm = invoiceitems.objects.get(id = int(ele[8]))
                         crQty = int(inItm.quantity)
 
                         invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                        print(float(ele[4]))
+                        print(ele[5])
 
                         if crQty < int(ele[3]):
                             itm.current_stock -=  abs(crQty - int(ele[3]))
                         elif crQty > int(ele[3]):
                             itm.current_stock += abs(crQty - int(ele[3]))
                         itm.save()
+                        print("ifokokokelse")
+
             
             # Save transaction
                     
@@ -995,10 +1033,16 @@ def updateInvoice(request, id):
        return redirect('/')
 def filter_invoice_name(request, pk):
     if 'login_id' not in request.session:
-        return redirect('/')
-    
+                return redirect('/')
+    log_id = request.session['login_id']
+
+    log_details= LoginDetails.objects.get(id=log_id)
+    dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+    allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
     log_id = request.session['login_id']
     log_details = LoginDetails.objects.get(id=log_id)
+    cmp =dash_details.company
+
 
     if log_details.user_type == 'Staff':
         staff = StaffDetails.objects.get(login_details=log_details)
@@ -1010,18 +1054,39 @@ def filter_invoice_name(request, pk):
         invoic = invoice.objects.get(id=pk)
         item = invoiceitems.objects.filter(invoice=pk)
         customers = Customer.objects.filter(company_id=company, customer_status='Active')
+        print(customers)
+        cmt = invoicecomments.objects.filter(invoice = invoic)
+        hist =invoiceHistory.objects.filter( invoice = invoic).last()
+        histo =invoiceHistory.objects.filter( invoice = invoic)
+
+        invItems = invoiceitems.objects.filter( invoice = invoic)
+        created = invoiceHistory.objects.filter( invoice = invoic,  action = 'Created')
+
 
         for r in customers:
             vn = r.first_name.split()[1:]
             r.cust_name = " ".join(vn)
 
         sorted_customers = sorted(customers, key=lambda r: r.cust_name)
+        print(sorted_customers)
+        for customer in sorted_customers:
+            print(customer.first_name)  # Assuming you have a field named 'cust_name'
+
 
         context = {
+            'allmodules':allmodules,
+            'com':company,
+            'data':log_details, 
+            'details': dash_details,
             'invoices': sorted_customers,
             'invoice': invoic,
-            'item': item,
+            'invItems': invItems,
             'company': company,
+            'comments':cmt,
+            'history':hist,
+            'historys':histo, 
+            'created':created,
+            'cmp':cmp
         }
         return render(request, 'staff/invoice.html', context)
     
@@ -1030,7 +1095,11 @@ def filter_invoice_name(request, pk):
 def filter_invoice_number(request, pk):
     if 'login_id' not in request.session:
         return redirect('/')
-    
+    log_id = request.session['login_id']
+
+    log_details= LoginDetails.objects.get(id=log_id)
+    dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+    allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')    
     log_id = request.session['login_id']
     log_details = LoginDetails.objects.get(id=log_id)
 
@@ -1050,8 +1119,15 @@ def filter_invoice_number(request, pk):
             r.cust_no = " ".join(vn)
 
         sorted_invoices = sorted(invoices, key=lambda r: r.cust_no)
+        for customer in sorted_invoices:
+            print(customer.invoice_number) 
+        
 
         context = {
+             'allmodules':allmodules,
+            'com':company,
+            'data':log_details, 
+            'details': dash_details,
             'invoices': sorted_invoices,
             'invoice': invoic,
             'item': item,
@@ -1091,6 +1167,7 @@ def deleteInvoiceComment(request,id):
     cmt.delete()
 
     return redirect(view,invId)
+
 def shareInvoiceToEmail(request,id):
     if 'login_id' not in request.session:
         return redirect('/')
@@ -1119,8 +1196,11 @@ def shareInvoiceToEmail(request,id):
             print(emails_list)
         
             context = {'invoice':inv, 'invItems':itms,'cmp':company}
-            template_path = 'invoice_pdf.html'
+            template_path = 'Staff/invoice_pdf.html'
             template = get_template(template_path)
+            print(template)
+
+            
 
             html  = template.render(context)
             result = BytesIO()
@@ -1334,6 +1414,7 @@ def getInvItemDetails(request):
 
         context = {
             'status':True,
+            'id':item.id,
             'hsn':item.hsn_code,
             'sales_rate':item.selling_price,
             'avl':item.current_stock,
@@ -1401,10 +1482,12 @@ def createInvoice(request):
                  cheque_number = None if request.POST['cheque_id'] == "" else request.POST['cheque_id'],
                 UPI_number = None if request.POST['upi_id'] == "" else request.POST['upi_id'],
                 bank_account_number = None if request.POST['bnk_id'] == "" else request.POST['bnk_id'],
-                 sub_total = 0.0 if request.POST['subtotal'] == "" else float(request.POST['subtotal']),
-                 CGST = 0.0 if request.POST['cgst'] == "" else float(request.POST['cgst']),
-                 SGST = 0.0 if request.POST['sgst'] == "" else float(request.POST['sgst']),
-                tax_amount_or_IGST = 0.0 if request.POST['taxamount'] == "" else float(request.POST['taxamount']),
+                sub_total = 0.0 if request.POST['subtotal'] == "" else float(request.POST['subtotal']),
+                IGST = 0.0 if request.POST['igst'] == "" else float(request.POST['igst']),
+
+                CGST = 0.0 if request.POST['cgst'] == "" else float(request.POST['cgst']),
+                SGST = 0.0 if request.POST['sgst'] == "" else float(request.POST['sgst']),
+                tax_amount = 0.0 if request.POST['taxamount'] == "" else float(request.POST['taxamount']),
                 adjustment = 0.0 if request.POST['adj'] == "" else float(request.POST['adj']),
                  shipping_charge = 0.0 if request.POST['ship'] == "" else float(request.POST['ship']),
                 grand_total = 0.0 if request.POST['grandtotal'] == "" else float(request.POST['grandtotal']),
@@ -1531,7 +1614,10 @@ def invoice_import(request):
                     sub_total=row[19],
                     CGST=row[20],
                     SGST=row[21],
-                    tax_amount_or_IGST=row[22],
+                    IGST=row[22],
+
+                    
+                    tax_amount=row[22],
                     shipping_charge=row[23],
                     grand_total=row[25],
                     advanced_paid=row[26],

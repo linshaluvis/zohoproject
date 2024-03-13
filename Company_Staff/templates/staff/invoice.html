@@ -607,15 +607,14 @@
           
              
              <br>
-             <!-- Table 2: Billable Projects -->
              <table class="table  text-white" id="table2">
                <tbody>
                  {% for i in invoices %}
                    <tr class="clickable" id="{{i.id}}">
                      <td class="justify-content-between align-items-center ">
-                       <!-- <b ><a class="text-white"  href="">{{i.item_name}} </a></b>
-                       <br>
-                       <a class="text-white"  href="">{{i.hsn_code}}</a><br> -->
+                        <label class="text-left d-block"><a class="text-white"  href="">{{ i.first_name}} </a></label>
+
+                      
                        <label class="text-left d-block"><a class="text-white"  href=""> {{ i.invoice_number }}
                        </a></label>
                        <br>
@@ -725,6 +724,13 @@
   </div><br>
   </div><br>
   <div id="upload-message" style="display: none;"></div>
+  {% if messages %}
+  <ul class="messages text-success">
+    {% for message in messages %}
+      <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 
 
 <!-- Modal -->
@@ -1053,12 +1059,12 @@
                             </div>
                             <div class="d-flex justify-content-between mb-4">
                                 <h6 class=" text-white">Tax Amount</h6>
-                                {{invoice.tax_amount_or_IGST }}
+                                {{invoice.tax_amount }}
                             </div>
-                            {%if invoice.tax_amount_or_IGST != 0 %}
+                            {%if invoice.IGST != 0 %}
                             <div class="d-flex justify-content-between mb-4">
                                 <h6 class=" text-white">IGST</h6>
-                                {{ invoice.tax_amount_or_IGST }}
+                                {{ invoice.IGST }}
                             </div>
                             {%endif%}
                             {%if invoice.CGST != 0 %}
@@ -1248,11 +1254,11 @@
                                                         <td class="text-right" style="color: #000;">{{invoice.sub_total}}</td>
                                                     </tr>
                                                     
-                                                    {% if invoice.tax_amount_or_IGST != 0 %}
+                                                    {% if invoice.IGST != 0 %}
                                                     <tr >
                                                         <td style="color: #000;">IGST</td>
                                                         <td style="color: #000;">:</td>
-                                                        <td class="text-right" style="color: #000;">{{invoice.tax_amount_or_IGST}}</td>
+                                                        <td class="text-right" style="color: #000;">{{invoice.IGST}}</td>
                                                     </tr>
                                                     {% endif %}
                                                     {% if invoice.CGST != 0 %}
@@ -1273,7 +1279,7 @@
                                                     <tr >
                                                         <td style="color: #000;">Tax Amount</td>
                                                         <td style="color: #000;">:</td>
-                                                        <td class="text-right" style="color: #000;">{{invoice.tax_amount_or_IGST}}</td>
+                                                        <td class="text-right" style="color: #000;">{{invoice.tax_amount}}</td>
                                                     </tr>
                                                     {% if invoice.shipping_charge != 0 %}
                                                     <tr >
@@ -1414,11 +1420,11 @@
                                                           <td class="text-right" style="color: #000;">{{invoice.sub_total}}</td>
                                                       </tr>
                                                       
-                                                      {% if invoice.tax_amount_or_IGST != 0 %}
+                                                      {% if invoice.IGST != 0 %}
                                                       <tr >
                                                           <td style="color: #000;">IGST</td>
                                                           <td style="color: #000;">:</td>
-                                                          <td class="text-right" style="color: #000;">{{invoice.tax_amount_or_IGST}}</td>
+                                                          <td class="text-right" style="color: #000;">{{invoice.IGST}}</td>
                                                       </tr>
                                                       {% endif %}
                                                       {% if invoice.CGST != 0 %}
@@ -1439,7 +1445,7 @@
                                                       <tr >
                                                         <td style="color: #000;">Tax Amount</td>
                                                         <td style="color: #000;">:</td>
-                                                        <td class="text-right" style="color: #000;">{{invoice.tax_amount_or_IGST}}</td>
+                                                        <td class="text-right" style="color: #000;">{{invoice.tax_amount}}</td>
                                                     </tr>
                                                     {% if invoice.shipping_charge != 0 %}
                                                     <tr >
@@ -1580,11 +1586,11 @@
                                                         <td class="text-right" style="color: #000;">{{invoice.sub_total}}</td>
                                                     </tr>
                                                     
-                                                    {% if invoice.tax_amount_or_IGST != 0 %}
+                                                    {% if invoice.IGST != 0 %}
                                                     <tr >
                                                         <td style="color: #000;">IGST</td>
                                                         <td style="color: #000;">:</td>
-                                                        <td class="text-right" style="color: #000;">{{invoice.tax_amount_or_IGST}}</td>
+                                                        <td class="text-right" style="color: #000;">{{invoice.IGST}}</td>
                                                     </tr>
                                                     {% endif %}
                                                     {% if invoice.CGST != 0 %}
@@ -1605,7 +1611,7 @@
                                                     <tr >
                                                         <td style="color: #000;">Tax Amount</td>
                                                         <td style="color: #000;">:</td>
-                                                        <td class="text-right" style="color: #000;">{{invoice.tax_amount_or_IGST}}</td>
+                                                        <td class="text-right" style="color: #000;">{{invoice.tax_amount}}</td>
                                                     </tr>
                                                     {% if invoice.shipping_charge != 0 %}
                                                     <tr >
@@ -1746,9 +1752,9 @@
                             </div>
                             <div class="subtot-item d-flex justify-content-between">
                                 <span>Tax Amount</span>
-                                <span><span>&#8377; </span>{{invoice.tax_amount_or_IGST}}</span>
+                                <span><span>&#8377; </span>{{invoice.tax_amount}}</span>
                             </div>
-                            {% if invoice.tax_amount_or_IGST == 0 %}
+                            {% if invoice.IGST == 0 %}
                             <div class="subtot-item d-flex justify-content-between">
                                 <span>CGST</span>
                                 <span><span>&#8377; </span>{{invoice.CGST}}</span>
@@ -1760,7 +1766,7 @@
                             {% else %}
                             <div class="subtot-item d-flex justify-content-between">
                                 <span>IGST</span>
-                                <span><span>&#8377; </span>{{invoice.tax_amount_or_IGST}}</span>
+                                <span><span>&#8377; </span>{{invoice.IGST}}</span>
                             </div>
                             {% endif %}
                             {% if invoice.adjustment != 0 %}
@@ -1817,8 +1823,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="background-color: #213b52;">
             <div class="modal-header">
-                <h5 class="m-3">Share Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h5 class="m-3 text-white text-center">Share Invoice </h5>
+                <button type="button" class="close btn btn-outline-warning" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -1827,7 +1833,7 @@
                     <form action="{% url 'shareInvoiceToEmail' invoice.id %}" method="post" class="needs-validation" id="share_to_email_form">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="emailIds">Email IDsokok</label>
+                            <label for="emailIds">Email IDs</label>
                             <textarea class="form-control" name="email_ids" id="emailIds" rows="3" placeholder="Multiple emails can be added by separating with a comma(,)." required></textarea>
                         </div>
                         <div class="form-group mt-2">
@@ -1837,7 +1843,7 @@
                     </form>
                 </div>
                 <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffffff;">
-                    <button type="submit" id="share_with_email" class="submitShareEmailBtn w-50 text-uppercase">SEND MAIL</button>
+                    <button type="submit" id="share_with_email" class="submitShareEmailBtn btn btn-outline-warning w-50 text-uppercase">SEND MAIL</button>
                 </div>
             </div>
         </div>   
@@ -1850,7 +1856,7 @@
         <div class="modal-content" style="background-color: #222d36;">
             <div class="modal-header">
                 <h3 class="modal-title text-white" id="exampleModalLabel">Add Comments</h3>
-                <button type="button" class="  btn-outline-danger close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn  btn-outline-danger close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -2405,43 +2411,7 @@
   
   </script>
   
-  <!-- MOdal EMAIL -->
-  
-  <div class="modal fade" id="shareBillEmail">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
-        <div class="modal-header" style="background: rgb(32, 35, 37);">
-          <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #fefefe;">Share Item Transactions Via Email</h5>
-          <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="modal-body" style="background: rgb(32, 35, 37);">
-          <div class="card p-3 m-3">
-            <form action="{% url 'shareInvoiceToEmail' invoice.id %}" method="post" class="needs-validation"
-              id="share_to_email_form" autocomplete="off">
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="emailIds" style="color: #000;">Email IDsok</label>
-                <textarea class="form-control text-dark"  style="color: #000;" name="email_ids" id="emailIds" rows="5"
-                  placeholder="Multiple emails can be added by separating with a comma(,)." required></textarea>
-              </div>
-              <div class="form-group mt-2">
-                <label for="item_unitname"  style="color: #000;">Message(optional)</label>
-                <textarea name="email_message"  style="color: #000;" id="email_message" class="text-dark form-control" cols=""
-                  rows="4" placeholder="This message will be sent along with Bill details."></textarea>
-              </div>
-       
-          </div>
-          <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffff;">
-            <!-- <button type="submit">submit</button> -->
-            <input type="submit" id="share_with_email"
-              class="submitShareEmailBtn rounded-pill text-grey w-50 my-4 mx-3" value="SEND MAIL">
-          </div>
-        </div>
-      </form>
-      </div>
-    </div>
-  </div>
+ 
   
   
  
@@ -2575,83 +2545,7 @@
       // You can add any additional logic or calculations here
     }
   </script>
-  <!-- Share To Email Modal -->
-<!-- <div class="modal fade" id="shareToEmail">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="background-color: #213b52;">
-            <div class="modal-header">
-                <h5 class="m-3">Share Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="card p-3">
-                    <form action="{% url 'shareInvoiceToEmail' invoice.id %}" method="post" class="needs-validation" id="share_to_email_form">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="emailIds">Email IDs Please</label>
-                            <textarea class="form-control" name="email_ids" id="emailIds" rows="3" placeholder="Multiple emails can be added by separating with a comma(,)." required></textarea>
-                        </div>
-                        <div class="form-group mt-2">
-                            <label for="item_unitname">Message(optional)</label>
-                            <textarea name="email_message" id="email_message" class="form-control" cols="" rows="4" placeholder="This message will be sent along with Bill details."></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffffff;">
-                    <button type="submit" id="share_with_email" class="submitShareEmailBtn w-50 text-uppercase">SEND MAIL</button>
-                </div>
-            </div>
-        </div>   
-    </div>
-</div> -->
-
-  
-  <!-- <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"  aria-hidden="true" style="margin-top: 8vh;">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="background-color: #3b3b3b;">
-        <div class="modal-header">
-          <h3 class="modal-title text-light" id="exampleModalLabel">Add Commentsok</h3>
-          <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true" style="font-size: x-large;">&times;</span>
-          </button>
-        </div>
-        <form action="{% url 'addInvoiceComment' invoice.id %}" method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="modal-body">
-            <textarea type="text" class="form-control text-light" name="comment"></textarea>
-            <div class="container-fluid">
-              <table class="table  text-white">
-                <thead>
-                  <tr>
-                    <th style="text-align: center; font-size: large;">sl no.</th>
-                    <th style="text-align: center; font-size: large;">Comments</th>
-                    <th style="text-align: center; font-size: large;">Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for c in est_comments %}
-                    <tr class="table-row">
-                      <td style="text-align: center;">{{forloop.counter }}</td>
-                      <td style="text-align: center;">{{c.comments}}</td>
-                      <td style="text-align: center;">
-                        <a class="text-danger" href="{% url 'delete_item_comment' c.id selitem.id %}"><i class="fa fa-trash" style="font-size:20px;"></i></a>
-                      </td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-outline-warning">Save</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div> -->
+ 
   
   
   <div class="modal fade" id="commentModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"  aria-hidden="true" style="margin-top: 8vh;width: 100%;">
@@ -2659,7 +2553,7 @@
       <div class="modal-content" style="background-color: #3b3b3b;">
         <div class="modal-header">
           <h3 class="modal-title text-light" id="exampleModalLabel"></h3>
-          <button type="button" class="btn close" data-dismiss="modal" aria-label="Close">
+          <button type="button" class="btn btn-outline-warning close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true" style="font-size: x-large;">&times;</span>
           </button>
         </div>

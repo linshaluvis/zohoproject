@@ -1713,6 +1713,7 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
                     if (response.status){
                         $('#'+inpId).val(value);
                         document.getElementById('itemId'+n).value = response.id;
+                        alert( response.id)
                         document.getElementById('hsn'+n).value = response.hsn;
                         document.getElementById('price'+n).value = response.sales_rate;
                         document.getElementById('priceListPrice'+n).value = response.PLPrice;
@@ -1980,7 +1981,7 @@ $(document).ready(function(){
                             <input required type="text" id="item${roinc}" value="" name="item_name[]" class="dropdown-toggle form-control item-display" onkeyup="filterFunction($(this).attr('id'))"  data-toggle="dropdown" aria-expanded="false" placeholder="Items.." autocomplete="off">
                             <ul class="dropdown-menu w-100 items-available position-absolute" id="menu${roinc}"  style="overflow-y: auto; height: fit-content;max-height: 40vh;"> 
                                 {% for i in items %}
-                                <li class="dropdown-item items-options" onclick="getItemDetails($(this).parent().prev().attr('id'),$(this).html())">{{i.name}}</li>
+                                <li class="dropdown-item items-options" onclick="getItemDetails($(this).parent().prev().attr('id'),$(this).html())">{{i.item_name}}</li>
                                 {% endfor %}
                             </ul>
                             
@@ -2009,7 +2010,7 @@ $(document).ready(function(){
             
             <td style="width: 13%;">
                 <!-- <input type="text"  id="select_tax" placeholder="Tax Rate" class="form-control seltax d-flex"> -->
-                <select name='taxGST[]' id="taxGST${roinc}" class="form-control tax_ref tax_ref_gst" style="display: block;" onchange="taxchange(this.id)">
+                <select name='taxGST[]' id="taxGST${roinc}" class="form-control text-light tax_ref bg-black tax_ref_gst" style="display: block;colour:white;" onchange="taxchange(this.id)">
                     <option selected disabled hidden>Select GST</option>
                     <option value=28 >28.0% GST</option>
                     <option value=18 >18.0% GST</option>
@@ -2018,7 +2019,7 @@ $(document).ready(function(){
                     <option value=3 >03.0% GST</option>
                     <option value=0 >0.0% GST</option>
                 </select>
-                <select name='taxIGST[]' id="taxIGST${roinc}" class="form-control tax_ref tax_ref_igst" style="display: none;" onchange="taxchange(this.id)">
+                <select name='taxIGST[]' id="taxIGST${roinc}" class="form-control text-light tax_ref bg-black tax_ref_igst" style="display: none;" onchange="taxchange(this.id)">
                     <option selected disabled hidden >Select IGST</option>
                     <option value=28 >28.0% IGST</option>
                     <option value=18 >18.0% IGST</option>

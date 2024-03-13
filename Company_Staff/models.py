@@ -368,15 +368,17 @@ class invoice(models.Model):
     description=models.CharField(max_length=220,null=True,blank=True) 
     terms_and_condition=models.CharField(max_length=220,null=True,blank=True) 
     document=models.FileField(upload_to="images/",null=True)
-    sub_total=models.IntegerField(blank=True,null=True,)
-    CGST=models.IntegerField(blank=True,null=True,)
-    SGST=models.IntegerField(blank=True,null=True,)
-    tax_amount_or_IGST=models.IntegerField(blank=True,null=True,)
-    shipping_charge=models.IntegerField(blank=True,null=True,)
-    adjustment=models.IntegerField(blank=True,null=True,)
-    grand_total=models.IntegerField(blank=True,null=True,)
-    advanced_paid=models.IntegerField(blank=True,null=True,)
-    balance=models.IntegerField(blank=True,null=True,)
+    sub_total=models.FloatField(default=0.0, null=True, blank=True)
+    CGST=models.FloatField(default=0.0, null=True, blank=True)
+    SGST=models.FloatField(default=0.0, null=True, blank=True)
+    IGST = models.FloatField(default=0.0, null=True, blank=True)
+
+    tax_amount=models.FloatField(default=0.0, null=True, blank=True)
+    shipping_charge=models.FloatField(default=0.0, null=True, blank=True)
+    adjustment=models.FloatField(default=0.0, null=True, blank=True)
+    grand_total=models.FloatField(default=0.0, null=True, blank=True)
+    advanced_paid=models.FloatField(default=0.0, null=True, blank=True)
+    balance=models.FloatField(default=0.0, null=True, blank=True)
     status=models.CharField(max_length=220,null=True,blank=True) 
 
 
@@ -403,12 +405,10 @@ class invoiceitems(models.Model):
 
     hsn = models.CharField(max_length=220,null=True,blank=True)
     quantity=models.IntegerField(blank=True,null=True,default=0)
-    price=models.IntegerField(blank=True,null=True,default=0)
-    tax_rate=models.IntegerField(blank=True,null=True,)
-    discount=models.IntegerField(blank=True,null=True,)
-    total=models.IntegerField(blank=True,null=True,)
-
-
+    price=models.FloatField(default=0.0, null=True, blank=True)
+    tax_rate=models.FloatField(default=0.0, null=True, blank=True)
+    discount=models.FloatField(default=0.0, null=True, blank=True)
+    total=models.FloatField(default=0.0, null=True, blank=True)
 
 class invoicecomments(models.Model):
     company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE)

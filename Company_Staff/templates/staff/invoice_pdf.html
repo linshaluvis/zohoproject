@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FinsYs</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -145,9 +144,11 @@
                         </div>
                         <div class="data_row">
                             {% if invoice.tax_amount_or_IGST != 0 %}
-                            <div class="data_1 data_value">IGST&nbsp;&nbsp;&nbsp;&nbsp;: {{invoice.tax_amount_or_IGST}}</div>
-                            {% else %}
+                            <div class="data_1 data_value">IGST/TAX Amount&nbsp;&nbsp;&nbsp;&nbsp;: {{invoice.tax_amount_or_IGST}}</div>
+                            {% elif invoice.CGST != 0 %}
                             <div class="data_2 data_value">CGST&nbsp;&nbsp;&nbsp;&nbsp;: {{invoice.CGST}}</div>
+                            {% elif invoice.SGST != 0 %}
+
                             <div class="data_2 data_value">SGST&nbsp;&nbsp;&nbsp;&nbsp;: {{invoice.SGST}}</div>
                             {% endif %}
                         </div>
