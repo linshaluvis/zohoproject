@@ -631,9 +631,9 @@ input[type="date"] {
 
 <div class="modal fade" id="newCustomer">
   <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="background-color: #213b52;">
+      <div class="modal-content" style="background-color: #191d21;">
           <div class="modal-header">
-              <h5 class="m-3">New Customer</h5>
+              <h5 class="m-3 text-white">New Customer</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>
@@ -655,12 +655,12 @@ input[type="date"] {
                           </div>
                           <div class="col-md-4">
                               <label for="firstName">First Name*</label>
-                              <input type="text" class="form-control" id="firstName" name="first_name" required style="color: white;">
+                              <input type="text" class="form-control" id="firstName" name="first_name" required style="background-color: #191d21;color: white;">
                               <div class="valid-feedback">Looks good!</div>
                           </div>
                           <div class="col-md-4">
                               <label for="lastName">Last Name*</label>
-                              <input type="text" class="form-control" id="lastName" name="last_name" required style="color: white;">
+                              <input type="text" class="form-control" id="lastName" name="last_name" required style="background-color: #191d21;color: white;">
                               <div class="valid-feedback">Looks good!</div>
                           </div>
                       </div>
@@ -668,17 +668,17 @@ input[type="date"] {
                       <div class="row mt-3">
                           <div class="col-md-4">
                               <label for="companyName">Company</label>
-                              <input type="text" class="form-control" id="companyName" name="company_name" style="color: white;">
+                              <input type="text" class="form-control" id="companyName" name="company_name" style="background-color: #11161b;color: white;">
                               <div class="valid-feedback">Looks good!</div>
                           </div>
                           <div class="col-md-4">
                               <label for="location">Location</label>
-                              <input type="text" class="form-control" id="location" name="location" style="color: white;">
+                              <input type="text" class="form-control" id="location" name="location" style="background-color: #11161b;color: white;">
                               <div class="valid-feedback">Looks good!</div>
                           </div>
                           <div class="col-md-4">
                               <label for="custPlaceOfSupply">Place of Supply*</label>
-                              <select class="custom-select form-control" id="custPlaceOfSupply" name="place_of_supply" style=" color: white;" required>
+                              <select class="custom-select form-control " id="custPlaceOfSupply" name="place_of_supply" style="background-color: #11161b; color: white;" required>
                                   <option selected value="">Select Place of Supply</option>
                                   <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islands</option>
                                   <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -726,7 +726,7 @@ input[type="date"] {
                       <div class="row mt-3">
                           <div class="col-md-4">
                               <label for="gstType">GST Type*</label>
-                              <select class="form-control" id="custGstType" name="gst_type" style="background-color: #43596c; color: white;" required>
+                              <select class="form-control" id="custGstType" name="gst_type" style="background-color: #11161b; color: white;" required>
                                   <option selected value="">Select GST Type</option>
                                   <option value="Registered Business - Regular">Registered Business - Regular <span><i>(Business that is registered under gst)</i></span></option>
                                   <option value="Registered Business - Composition">Registered Business - Composition (Business that is registered under composition scheme in gst)</option>
@@ -744,15 +744,15 @@ input[type="date"] {
                           <div class="col-md-4 gstrow d-block" id="gstInValue">
                               <div>
                                   <label for="custGstIN">GSTIN*</label>
-                                  <input type="text" class="form-control" onchange="checkgst(this)" id="custGstIN" name="gstin" style="color: white;" placeholder="29APPCK7465F1Z1">
-                                  <a data-toggle="modal" href="#exampleModal" style="color:#3dd5f3">Get Taxpayer Details</a>
+                                  <input type="text" class="form-control" onchange="checkgst(this)" id="custGstIN" name="gstin" style="background-color: #11161b;color: white;" placeholder="29APPCK7465F1Z1">
+                                  <a data-toggle="modal" href="#exampleModal" style="color:#e0ad3f">Get Taxpayer Details</a>
                                   <div class="text-danger m-2" id="warngst"></div>
                               </div>
                           </div>
   
                           <div class="col-md-4">
                               <label for="panNo">PAN No.*</label>
-                              <input type="text" class="form-control" id="panNo" name="pan_no" style="background-color: #43596c;color: white;" required onchange="checkpan(this)" placeholder="APPCK7465F">
+                              <input type="text" class="form-control" id="panNo" name="pan_no" style="background-color: #11161b;color: white;" required onchange="checkpan(this)" placeholder="APPCK7465F">
                               <div class="text-danger m-2" id="warnpan"></div>
                           </div>
                       </div>
@@ -761,25 +761,25 @@ input[type="date"] {
                           <div class="col-md-4 mt-3">
                               <label for="validationCustom05">Opening Balance</label>
                               <div class="d-flex">
-                                  <select name="balance_type" id="bal" class="form-select text-white mr-1" style="background-color: #243e54; width: 25%; border-radius: 5px;">
+                                  <select name="balance_type" id="bal" class="form-select text-white mr-1" style="background-color: #11161b; width: 25%; border-radius: 5px;">
                                       <option value="debit">Debit</option>
                                       <option value="credit">Credit</option>
                                   </select>
-                                  <input type="text" class="form-control" name="open_balance" id="openbalance" step="any" style="background-color: #43596c;color: white;">
+                                  <input type="text" class="form-control" name="open_balance" id="openbalance" step="any" style="background-color: #11161b;color: white;">
                                   <div class="text-danger m-2" ></div>
                               </div>
                           </div>
   
                           <div class="col-md-4 mt-3">
                               <label for="creditLimit">Credit Limit</label>
-                              <input type="text" class="form-control" name="credit_limit" style="background-color: #43596c;color: white;" step="any" id="creditLimit">
+                              <input type="text" class="form-control" name="credit_limit" style="background-color: #11161b;color: white;" step="any" id="creditLimit">
                               <div class="text-danger m-2" ></div>
                           </div>
   
                           <div class="col-md-4 mt-3">
                               <label for="custPaymentTerms">Payment Terms</label>
-                              <div class="d-flex">
-                                  <select name="payment_terms" id="custPaymentTerms" class="form-control">
+                              <div class="d-flex  text-white">
+                                  <select name="payment_terms" id="custPaymentTerms" class="form-control  ">
                                       <option value="" selected>Choose</option>
                                       {% for p in payments %}
                                       <option value="{{p.id}}">{{p.term_name}}</option>
@@ -789,7 +789,7 @@ input[type="date"] {
                               </div>
                           </div>
   
-                          <div class="col-md-4 mt-3">
+                          <!-- {% comment %} <div class="col-md-4 mt-3">
                               <label for="priceList">Price List</label>
                               <select name="price_list" id="priceList" class="form-control">
                                   <option value="" selected>Choose</option>
@@ -797,23 +797,23 @@ input[type="date"] {
                                   <option value="{{l.id}}">{{l.name}}</option>
                                   {% endfor %}
                               </select>
-                          </div>
-                      </div>
+                          </div> {% endcomment %}
+                      </div> -->
   
                       <div class="row mt-3">
                           <div class="col-md-4">
                               <label for="custEmail">Email*</label>
-                              <input type="email" class="form-control" required id="custEmail" name="email" onchange="checkemail(this)" style="background-color: #43596c;color: white;" >
+                              <input type="email" class="form-control" required id="custEmail" name="email" onchange="checkemail(this)" style="background-color: #11161b;color: white;" >
                               <div id="warnemail" class="text-danger"></div>
                           </div>
                           <div class="col-md-4">
                               <label for="custWebsite">Website</label>
-                              <input type="text" class="form-control" id="custWebsite" required onchange="checkweb(this)" name="website" style="background-color: #43596c;color: white;">
+                              <input type="text" class="form-control" id="custWebsite" required onchange="checkweb(this)" name="website" style="background-color: #11161b;color: white;">
                               <div id="warnweb" class="text-danger"></div>
                           </div>
                           <div class="col-md-4">
                               <label for="custMobile">Mobile*</label>
-                              <input type="text" class="form-control" id="custMobile" required onchange="checkphone(this)" name="mobile" style="background-color: #43596c;color: white;">
+                              <input type="text" class="form-control" id="custMobile" required onchange="checkphone(this)" name="mobile" style="background-color: #11161b;color: white;">
                               <div class="text-danger m-2" id="warnphone"></div>
                           </div>
                       </div>
@@ -821,7 +821,7 @@ input[type="date"] {
                       <div class="row mt-5">
                           <div class="col-md-6">
                               <div class="row">
-                                  <div class="col-md-12 card-title">
+                                  <div class="col-md-12 card-title text-white">
                                       <h5 class="mb-0">Billing Address</h5>
                                   </div>
                               </div>
@@ -829,7 +829,7 @@ input[type="date"] {
                                   <div class="col-md-12 mt-3">
                                       <div class="form-row">
                                           <label for="street">Street*</label>
-                                          <textarea class="form-control street" required id="street" name="street" style="background-color: #43596c;color: white;"></textarea>
+                                          <textarea class="form-control street" required id="street" name="street" style="background-color: #11161b;color: white;"></textarea>
                                           <div class="invalid-feedback">Please provide a valid Street</div>
                                       </div>
                                   </div>
@@ -838,14 +838,14 @@ input[type="date"] {
                                   <div class="col-md-6 mt-3">
                                       <div class="form-row">
                                           <label for="city">City*</label>
-                                          <input type="text" class="form-control" required id="city" name="city" style="background-color: #43596c;color: white;" placeholder="City">
+                                          <input type="text" class="form-control" required id="city" name="city" style="background-color: #11161b;color: white;" placeholder="City">
                                           <div class="invalid-feedback">Please provide a valid City</div>
                                       </div>
                                   </div>
                                   <div class="col-md-6 mt-3">
                                       <div class="form-row">
                                           <label for="state">State*</label>
-                                          <select type="text" class="form-control" id="state" name="state" required style="background-color: #43596c; color: white;">
+                                          <select type="text" class="form-control" id="state" name="state" required style="background-color: #11161b; color: white;">
                                               <option value="" selected hidden>Choose</option>
                                               <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islands</option>
                                               <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -894,14 +894,14 @@ input[type="date"] {
                                   <div class="col-md-6 mt-3">
                                       <div class="form-row">
                                           <label for="pinco">Pin Code*</label>
-                                          <input type="text" class="form-control" required id="pinco" name="pincode" style="background-color: #43596c;color: white;" placeholder="PIN code">
+                                          <input type="text" class="form-control" required id="pinco" name="pincode" style="background-color: #11161b;color: white;" placeholder="PIN code">
                                           <div class="invalid-feedback">Please provide a valid Pin Code</div>
                                       </div>
                                   </div>
                                   <div class="col-md-6 mt-3">
                                       <div class="form-row">
                                           <label for="country">Country*</label>
-                                          <input type="text" class="form-control" required id="country" name="country" style="background-color: #43596c;color: white;" placeholder="Country">
+                                          <input type="text" class="form-control" required id="country" name="country" style="background-color: #11161b;color: white;" placeholder="Country">
                                           <div class="invalid-feedback">Please provide a valid Country</div>
                                       </div>
                                   </div>
@@ -909,7 +909,7 @@ input[type="date"] {
                           </div>
                           <div class="col-md-6">
                               <div class="row">
-                                  <div class="col-md-12 d-flex">
+                                  <div class="col-md-12 d-flex text-white">
                                       <h5>Shipping Address</h5>
                                       <input class="ml-4 ml-5" type="checkbox" onclick="placeShipAddress()" id="shipAddress" name="ship_address">
                                       <label class="ml-2 mt-1 ml-2" for="shipAddress">Same As Billing Address</label>
@@ -919,7 +919,7 @@ input[type="date"] {
                                   <div class="col-md-12 mt-3">
                                       <div class="form-row">
                                           <label for="shipstreet">Street</label>
-                                          <textarea class="form-control" id="shipstreet" name="shipstreet" style="background-color: #43596c;color: white;"></textarea>
+                                          <textarea class="form-control" id="shipstreet" name="shipstreet" style="background-color: #11161b;color: white;"></textarea>
                                           <div class="invalid-feedback">Please provide a valid Street</div>
                                       </div>
                                   </div>
@@ -928,14 +928,14 @@ input[type="date"] {
                                   <div class="col-md-6 mt-3">
                                       <div class="form-row">
                                           <label for="shipcity">City</label>
-                                          <input type="text" class="form-control" id="shipcity" name="shipcity" style="background-color: #43596c;color: white;" placeholder="City">
+                                          <input type="text" class="form-control" id="shipcity" name="shipcity" style="background-color: #11161b;color: white;" placeholder="City">
                                           <div class="invalid-feedback">Please provide a valid City</div>
                                       </div>
                                   </div>
                                   <div class="col-md-6 mt-3">
                                       <div class="form-row">
                                           <label for="shipstate">State</label>
-                                          <select type="text" class="form-control" id="shipState" name="shipstate" style="background-color: #43596c; color: white;">
+                                          <select type="text" class="form-control" id="shipState" name="shipstate" style="background-color: #11161b; color: white;">
                                               <option value="" selected>Choose</option>
                                               <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islands</option>
                                               <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -984,14 +984,14 @@ input[type="date"] {
                                   <div class="col-md-6 mt-3">
                                       <div class="form-row">
                                           <label for="shippinco">Pin Code</label>
-                                          <input type="text" class="form-control" id="shippinco" name="shippincode" style="background-color: #43596c;color: white;" placeholder="PIN code">
+                                          <input type="text" class="form-control" id="shippinco" name="shippincode" style="background-color: #11161b;color: white;" placeholder="PIN code">
                                           <div class="invalid-feedback">Please provide a valid Pin Code</div>
                                       </div>
                                   </div>
                                   <div class="col-md-6 mt-3">
                                       <div class="form-row">
                                           <label for="shipcountry">Country</label>
-                                          <input type="text" class="form-control" id="shipcountry" name="shipcountry" style="background-color: #43596c;color: white;" placeholder="Country">
+                                          <input type="text" class="form-control" id="shipcountry" name="shipcountry" style="background-color: #11161b;color: white;" placeholder="Country">
                                           <div class="invalid-feedback">Please provide a valid Country</div>
                                       </div>
                                   </div>
@@ -1971,6 +1971,427 @@ function validateForm() {
 }
 
 
+</script>
+
+<!-- NEW CUSTOMER -> Scripts -->
+
+<script>
+function placeShipAddress() {
+    var chkbtn = document.getElementById('shipAddress');
+    if (chkbtn.checked == true) {
+        document.getElementById('shipstreet').value = document.getElementById('street').value;
+        document.getElementById('shipcity').value = document.getElementById('city').value;
+        document.getElementById('shippinco').value = document.getElementById('pinco').value;
+        document.getElementById('shipcountry').value = document.getElementById('country').value;
+        document.getElementById('shipState').value = document.getElementById('state').value;
+    } else {
+        document.getElementById('shipstreet').value = '';
+        document.getElementById('shipcity').value = '';
+        document.getElementById('shippinco').value = '';
+        document.getElementById('shipcountry').value = '';
+        document.getElementById('shipState').value = '';
+        
+    }
+}
+
+$(document).on("click","#saveCustomerPaymentTerm",function(){
+    var trm = $('#custTermName').val();
+    var dys = $("#custTermDays").val();
+    if (trm !="" && dys !=""){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'newCustomerPaymentTerm' %}",
+            data:{
+                'term' : trm,
+                'days' : dys,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            
+            success: function(response) {
+                if(response.status){
+                    document.getElementById("newCustomerPaymentTermForm").reset();
+                    
+                    var dropdown = $('#custPaymentTerms');
+                    dropdown.empty();
+                    dropdown.append(`<option value="" selected>Choose</option>`);
+                    $.each(response, function(key, value) {
+                        for(let i=0; i<value.length; i++){
+                            if(value[i].name == trm){
+                                dropdown.append($('<option selected></option>').text(value[i].name).val(value[i].id))
+                            }else{
+                                dropdown.append($('<option></option>').text(value[i].name).val(value[i].id))
+                            }   
+                        }
+                    });
+
+                }else{
+                    alert("Something went wrong.!")
+                }
+            },         
+        });
+    }else{
+        alert('Invalid')
+    }
+});
+
+$(document).ready(function() {
+    $("#custGstType").change(function() {
+        var x=$('#custGstType').val();
+        if(x == "Unregistered Business" || x == 'Overseas' || x == 'Consumer'){
+            $(".gstrow").removeClass('d-block');
+            $(".gstrow").addClass('d-none');
+            $('#custGstIN').prop('required',false);
+        }else {
+            $('#custGstIN').prop('required',true);
+            $(".gstrow").removeClass('d-none');
+            $(".gstrow").addClass('d-block');
+        }
+    });
+});
+
+    
+function showMessage(input) {
+    const gstin = input.value;
+
+    if (gstin.length === 15) {
+        // document.getElementById("message").textContent = "Please wait, validating GSTIN format...";
+        setTimeout(() => checkgst(input), 1000);  // Wait for a second and then validate GSTIN
+    } else {
+        document.getElementById("message").textContent = "";
+    }
+}
+
+function checkgst(element) {
+    var gstinput = element.value;
+    var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+
+    if (gstinput.length === 15) {
+        if (gstinput.match(gstregexp)) {
+            document.getElementById('warngst').innerHTML = '';
+            checkCustomerGSTIN(gstinput)
+        } else {
+            document.getElementById('warngst').innerHTML = 'Please provide a valid GST Number';
+            alert('Please provide a valid GST Number');
+        }
+    }
+        else {
+        document.getElementById('warngst').innerHTML = 'Please provide a valid GST Number';
+        alert('Please provide a valid GST Number');
+    }
+}
+
+function checkpan(element) {
+    var paninput = element.value;
+    var panregexp = ["[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}"]
+    if (paninput.match(panregexp)) {
+        document.getElementById('warnpan').innerHTML = '';
+        checkCustomerPAN(paninput)
+    } else {
+        document.getElementById('warnpan').innerHTML = 'Please provide a valid PAN Number';
+        alert('Please provide a valid PAN Number')
+    }
+}
+
+function checkweb(element) {
+    var webinput = element.value;
+    var webregexp = "www."
+    if (webinput.startsWith(webregexp)) {
+        document.getElementById('warnweb').innerHTML = '';
+    } else {
+        document.getElementById('warnweb').innerHTML = 'Please provide a valid Website Address';
+        alert('Please provide a valid Website Address')
+    }
+}
+
+function checkphone(element) {
+    var phoneinput = element.value;
+    var phoneregexp = /^\d{10}$/;
+    if (phoneinput.match(phoneregexp)) {
+        document.getElementById('warnphone').innerHTML = '';
+        checkCustomerPhone(phoneinput)
+    } else {
+        document.getElementById('warnphone').innerHTML = 'Please provide a valid Phone Number';
+        alert('Please provide a valid Phone Number')
+    }
+}
+
+function checkemail(element) {
+    var emailinput = element.value;
+    var emailregexp = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    if (emailinput.match(emailregexp)) {
+        document.getElementById('warnemail').innerHTML = '';
+        checkCustomerEmail(emailinput)
+    } else {
+        document.getElementById('warnemail').innerHTML = 'Please provide a valid Email ID';
+        alert('Please provide a valid Email id')
+    }
+}
+
+$(document).on('change', '#openbalance',function () {
+    openbal = $("#openbalance").val()
+    if($('#bal').val()=='credit'){
+        if(openbal.slice(0,1) != '-'){
+            if(parseFloat(openbal) != 0){
+                document.getElementById("openbalance").value = "-"+openbal
+            }else{
+                document.getElementById("openbalance").value = openbal
+            }
+        }else{
+            if(parseFloat(openbal) != 0){
+                document.getElementById("openbalance").value = openbal
+            }else{
+                document.getElementById("openbalance").value = -1 * parseFloat(openbal)
+            }
+        }
+    }else{
+        document.getElementById("openbalance").value = openbal
+    }
+});
+
+$(document).on('change', '#bal',function () {
+    openbal = $("#openbalance").val()
+    if(openbal != ""){
+        if($('#bal').val()=='credit'){
+            openbal = $("#openbalance").val()
+            if (parseFloat(openbal) != 0){
+                document.getElementById("openbalance").value = "-"+openbal
+            }else{
+                document.getElementById("openbalance").value = openbal
+            }
+        }else{
+            openbal = $("#openbalance").val()
+            document.getElementById("openbalance").value = -1*(parseFloat(openbal))
+        }
+    }
+});
+
+$(document).ready(function(){
+    $('#lastName').on('change',()=>{
+        var fName = $('#firstName').val().replace(/\d/g, '');
+        var lName = $('#lastName').val().replace(/\d/g, '');
+        if(fName !="" && lName !=""){
+            checkCustomerName(fName,lName)
+        }else{
+            alert('Please enter a valid Full Name.!')
+            return false
+        }
+    });
+
+    $('#firstName').on('change',()=>{
+        var fName = $('#firstName').val().replace(/\d/g, '');
+        var lName = $('#lastName').val().replace(/\d/g, '');
+        if(fName !="" && lName !=""){
+            checkCustomerName(fName,lName)
+        }else if(fName == "" && lName !=""){
+            alert('Please enter a valid First Name.!')
+        }
+
+    })
+});
+
+function checkCustomerName(fname,lname){
+    if (fname != "" && lname !=""){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'checkCustomerName' %}",
+            data:{
+                'fname' : fname,
+                'lname' : lname,
+
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            
+            success: function(response) {
+                if(response.is_exist){
+                    alert(response.message)
+                }
+            },         
+        });
+    }
+}
+
+function checkCustomerGSTIN(gstin){
+    var gstNo = gstin;
+    if (gstNo != ""){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'checkCustomerGSTIN' %}",
+            data:{
+                'gstin' : gstNo,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            
+            success: function(response) {
+                if(response.is_exist){
+                    alert(response.message)
+                }
+            },         
+        });
+    }
+}
+
+function checkCustomerPAN(pan){
+    var panNo = pan;
+    if (panNo != ""){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'checkCustomerPAN' %}",
+            data:{
+                'pan' : panNo,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            
+            success: function(response) {
+                if(response.is_exist){
+                    alert(response.message)
+                }
+            },         
+        });
+    }
+}
+
+function checkCustomerPhone(phone){
+    var phoneNo = phone;
+    if (phoneNo != ""){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'checkCustomerPhone' %}",
+            data:{
+                'phone' : phoneNo,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            
+            success: function(response) {
+                if(response.is_exist){
+                    alert(response.message)
+                }
+            },         
+        });
+    }
+}
+
+function checkCustomerEmail(email){
+    var custEmail = email;
+    if (custEmail != ""){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'checkCustomerEmail' %}",
+            data:{
+                'email' : custEmail,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            
+            success: function(response) {
+                if(response.is_exist){
+                    alert(response.message)
+                }
+            },         
+        });
+    }
+}
+
+$(document).on("click", "#newCustomerSave", function(){
+    var fName = $('#firstName').val();
+    var lName = $('#lastName').val();
+    var placeSupply = $('#custPlaceOfSupply').val();
+    var gstType = $("#custGstType").val();
+    var gstIN = $("#custGstIN").val();
+    var panNo = $("#panNo").val();
+    var Email = $("#custEmail").val();
+    var Mob = $("#custMobile").val();
+    var street = $("#street").val();
+    var city = $("#city").val();
+    var state = $("#state").val();
+    var pin = $("#pinco").val();
+    var country = $("#country").val();
+   
+
+
+
+    if(gstType != "Unregistered Business" && gstType != 'Overseas' && gstType != 'Consumer' && gstIN == ""){
+        alert('Fill all required fields..!')
+        return
+    }
+
+    if(fName != "" && lName != "" && placeSupply != "" && gstType != "" && panNo != "" && Email != "" && Mob != "" && street != "" && city != ""  && pin != "" && country != ""){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'createInvoiceCustomer' %}",
+            data:{
+                title : $('#title').val(),
+                first_name : fName,
+                last_name : lName,
+                company_name : $("#companyName").val(),
+                location : $("#location").val(),
+                place_of_supply : placeSupply,
+                gst_type : gstType,
+                gstin : gstIN,
+                pan_no : panNo,
+                payment_terms :$('#custPaymentTerms').val(),
+                open_balance : $("#openbalance").val(),
+                balance_type : $("#bal").val(),
+                credit_limit : $("#creditLimit").val(),
+                email : Email,
+                website :$("#custWebsite").val(),
+                mobile : Mob,
+                street : street,
+                city : $("#city").val(),
+                state : $("#state").val(),
+                country : $("#country").val(),
+                pincode : $("#pinco").val(),
+                shipstreet : $("#shipstreet").val(),
+                shipcity : $("#shipcity").val(),
+                shipstate : $("#shipState").val(),
+                shipcountry : $("#shipcountry").val(),
+                shippincode : $("#shippinco").val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+
+            success: function(response) {
+                if(response.status){
+                    console.log("AJAX Success",response)
+                    document.getElementById("newCustomerForm").reset();
+
+                    reloadCustomer();
+                }else{
+                    alert(response.message)
+                }
+            },
+        });
+    }else{
+        alert('Fill all required fields..!')
+        return
+    }
+});
+
+function reloadCustomer() {
+    $.ajax({
+        url: "{% url 'getCustomers' %}",
+        type: "GET",
+        dataType: "json",
+        data: {},
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+
+        success: function(data) {
+            var $select = $(document.getElementById('customer'));
+            var selectize = $select[0].selectize;
+            $.each(data, function(key, value) {
+                selectize.addOption({value:value[0],text:value[1]+' '+value[2]+' '+value[3]});
+                selectize.addItem(value[0]); 
+            });
+
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+
+    });
+    refreshCustomerDetails();
+
+    if ($('#newCustomerPaymentTerm').hasClass('show')){
+        $('#newCustomerPaymentTerm').modal('toggle');
+    }
+}
 </script>
    
 {% endblock %}
