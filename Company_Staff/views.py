@@ -2082,6 +2082,279 @@ def getCustomers(request):
         return JsonResponse(options)
     else:
         return redirect('/')
+def saveItemUnit(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company       
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                com = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                com = CompanyDetails.objects.get(login_details=log_details) 
+        if request.method == "POST":
+            name = request.POST['name'].upper()
+            print(name)
+
+            if not Unit.objects.filter(company = com, unit_name__iexact = name).exists():
+                unit = Unit(
+                    company = com,
+                    unit_name = name
+                )
+                unit.save()
+                return JsonResponse({'status':True})
+            else:
+                return JsonResponse({'status':False, 'message':'Unit already exists.!'})
+def unit_dropdown(request):
+
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company       
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                com = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                com = CompanyDetails.objects.get(login_details=log_details) 
+
+        options = {}
+        option_objects = Unit.objects.filter(company = com)
+        for option in option_objects:
+            options[option.id] = [option.unit_name,option.id]
+
+        return JsonResponse(options)
+
+
+def item_dropdown(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company       
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                com = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                com = CompanyDetails.objects.get(login_details=log_details) 
+
+        options = {}
+        option_objects = Items.objects.filter(user = request.user)
+        for option in option_objects:
+            options[option.id] = [option.Name,option.id]
+
+        return JsonResponse(options)
+def invoice_item(request):   
+
+    if 'login_id' in request.session:
+            log_id = request.session['login_id']
+            if 'login_id' not in request.session:
+                return redirect('/')
+            log_details= LoginDetails.objects.get(id=log_id)
+            dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+            cmp =dash_details.company       
+            if log_details.user_type == 'Staff':
+                    staff = StaffDetails.objects.get(login_details=log_details)
+                    com = staff.company
+                        
+            elif log_details.user_type == 'Company':
+                    com = CompanyDetails.objects.get(login_details=log_details) 
+            if request.method=='POST':
+                
+                type=request.POST.get('type')
+                
+                name=request.POST.get('name')
+
+                ut=request.POST.get('unit')
+                inter=request.POST.get('inter')
+                intra=request.POST.get('intra')
+                sell_price=request.POST.get('sell_price')
+                sell_acc=request.POST.get('sell_acc')
+                sell_desc=request.POST.get('sell_desc')
+                cost_price=request.POST.get('cost_price')
+                cost_acc=request.POST.get('cost_acc')      
+                cost_desc=request.POST.get('cost_desc')
+                hsn_number = request.POST.get('hsn_number')
+                stock = 0 if request.POST.get('stock') == "" else request.POST.get('stock')
+                stockUnitRate = 0 if request.POST.get('stock_rate') == "" else request.POST.get('stock_rate')
+                print(stock)
+
+                print(stockUnitRate)
+
+                
+
+                
+                
+                units=Unit.objects.get(id=ut)
+                
+
+                if Items.objects.filter(company=com, item_name__iexact=name).exists():
+                    res = f"{name} already exists, try another!"
+                    return JsonResponse({'status': False, 'message':res})
+                elif Items.objects.filter(company = com, hsn_code__iexact = hsn_number).exists():
+                    res = f"HSN - {hsn_number} already exists, try another.!"
+                    return JsonResponse({'status': False, 'message':res})
+                else:
+
+
+                    item=Items(company = com,
+                        login_details = log_details,
+                        item_name = name,
+                        item_type = type,
+                        unit = units,
+                        hsn_code = hsn_number,
+                        intrastate_tax = intra,
+                        interstate_tax = inter,
+                        sales_account = sell_acc,
+                        selling_price = sell_price,
+                        sales_description = sell_desc,
+                        purchase_account = cost_acc,
+                        purchase_price = cost_price,
+                        purchase_description = cost_desc,
+                        # date = createdDate,
+                        # inventory_account = inventory,
+                        opening_stock = stock,
+                        current_stock = stock,
+                       
+                        opening_stock_per_unit = stockUnitRate,
+                        activation_tag = 'active'
+        )
+
+                item.save()
+                Item_Transaction_History.objects.create(
+                company = com,
+                logindetails = log_details,
+                items = item,
+                action = 'Created'
+            )
+            
+
+                return HttpResponse({"message": "success"})
+    
+    return HttpResponse("Invalid request method.")
+def createInvoiceItem(request):
+
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company       
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                com = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                com = CompanyDetails.objects.get(login_details=log_details)
+                
+        name = request.POST['name']
+        type = request.POST['type']
+        unit = request.POST.get('unit')
+        hsn = request.POST['hsn']
+        tax = request.POST['taxref']
+        gstTax = 0 if tax == 'non taxable' else request.POST['intra_st']
+        igstTax = 0 if tax == 'non taxable' else request.POST['inter_st']
+        purPrice = request.POST['pcost']
+        purAccount = None if not 'pur_account' in request.POST or request.POST['pur_account'] == "" else request.POST['pur_account']
+        purDesc = request.POST['pur_desc']
+        salePrice = request.POST['salesprice']
+        saleAccount = None if not 'sale_account' in request.POST or request.POST['sale_account'] == "" else request.POST['sale_account']
+        saleDesc = request.POST['sale_desc']
+        inventory = request.POST.get('invacc')
+        stock = 0 if request.POST.get('openstock') == "" else request.POST.get('openstock')
+        stockUnitRate = 0 if request.POST.get('stock_rate') == "" else request.POST.get('stock_rate')
+        minStock = request.POST['min_stock']
+        createdDate = date.today()
+        
+        #save item and transaction if item or hsn doesn't exists already
+        if Items.objects.filter(company=com, item_name__iexact=name).exists():
+            res = f"{name} already exists, try another!"
+            return JsonResponse({'status': False, 'message':res})
+        elif Items.objects.filter(company = com, hsn_code__iexact = hsn).exists():
+            res = f"HSN - {hsn} already exists, try another.!"
+            return JsonResponse({'status': False, 'message':res})
+        else:
+            item = Items(
+                company = com,
+                login_details = log_details,
+                item_name = name,
+                item_type = type,
+                unit = unit,
+                hsn_code = hsn,
+                tax_reference = tax,
+                intrastate_tax = gstTax,
+                interstate_tax = igstTax,
+                sales_account = saleAccount,
+                selling_price = salePrice,
+                sales_description = saleDesc,
+                purchase_account = purAccount,
+                purchase_price = purPrice,
+                purchase_description = purDesc,
+                date = createdDate,
+                minimum_stock_to_maintain = minStock,
+                inventory_account = inventory,
+                opening_stock = stock,
+                current_stock = stock,
+                stock_in = 0,
+                stock_out = 0,
+                opening_stock_per_unit = stockUnitRate,
+                activation_tag = 'active'
+            )
+            item.save()
+
+            #save transaction
+
+            Item_Transaction_History.objects.create(
+                company = com,
+                logindetails = log_details,
+                item = item,
+                action = 'Created'
+            )
+            
+            return JsonResponse({'status': True})
+    else:
+       return redirect('/')
+
+def getItems(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company       
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                com = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                com = CompanyDetails.objects.get(login_details=log_details)
+        items = {}
+        option_objects = Items.objects.filter(company = com)
+        for option in option_objects:
+            items[option.id] = [option.item_name]
+
+        return JsonResponse(items)
+    else:
+        return redirect('/')
+                
        
 def company_gsttype_change(request):
     if 'login_id' in request.session:

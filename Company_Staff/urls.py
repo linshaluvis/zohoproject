@@ -72,7 +72,14 @@ urlpatterns = [
     path('Staff/invoice/checkCustomerPhone',views.checkCustomerPhone, name='checkCustomerPhone'),
     path('Staff/invoice/checkCustomerEmail',views.checkCustomerEmail, name='checkCustomerEmail'),
     path('Staff/invoice/createInvoiceCustomer',views.createInvoiceCustomer, name='createInvoiceCustomer'),
+    path('Staff/invoice/invoice_item',views.invoice_item, name='invoice_item'),
+
     path('Staff/invoice/getCustomers',views.getCustomers, name='getCustomers'),
+    path('Staff/invoice/createInvoiceItem',views.createInvoiceItem, name='createInvoiceItem'),
+    path('Staff/invoice/getItems',views.getItems, name='getItems'),
+    path('Staff/invoice/saveItemUnit',views.saveItemUnit, name='saveItemUnit'),
+    path('Staff/invoice/unit_dropdown',views.unit_dropdown, name='unit_dropdown'),
+
 
 
 

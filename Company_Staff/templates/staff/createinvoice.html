@@ -335,8 +335,9 @@ input[type="date"] {
                                   
                               </div>
                           </div>
+                          
                           <a href="#">
-                              <button type="button" class="btn btn-outline-warning ml-1" data-target="#newItem" data-toggle="modal">+</button>
+                              <button type="button" class="btn btn-outline-warning ml-1" data-target="#newitem" data-toggle="modal">+</button>
                           </a>
                       </div>
                   
@@ -586,6 +587,463 @@ input[type="date"] {
       </div>   
   </div>
 </div>
+
+ <!-- .................................................ITEM MODAL................................................. -->
+
+
+ <div class="modal fade" id="newitem">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content" style="background: rgb(8, 19, 26);border-radius: 20px;">
+        <div class="modal-header " style="background: rgb(32, 35, 37);">
+          <h3 class="m-3 text-uppercase">New Item</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="background: rgb(14, 20, 25);">
+          <div class=" p-3 m-3">
+            <form action="" method="post" class="needs-validation" novalidate autocomplete="off" id="modalItem">
+              <div class="row mt-2">
+                <div class="col-md-4 mr-0">
+                  <label class="col-form-label col-sm-2 p-0">Type <i class="fa fa-question-circle"></i></label>
+                </div>
+                <div class="col-md-5 ml-0 d-flex">
+                  <div class="radio_opt mx-5 ">
+                    <input type="radio" id="item_type1" name="radioOption" value="Goods" >
+                    <label for="option1">Goods</label>
+                  </div>
+                  <div class="radio_opt mx-5 ">
+                    <input type="radio" id="item_type2" name="radioOption" value="Services" >
+                    <label for="option2">Services</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <label for="name" style="color: rgb(190, 88, 88);">Name *</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control text-dark bg-light" id="item_name" name="item_name" required>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3 ">
+                  <label for="units">Unit</label>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex">
+                    <select class="form-control text-dark bg-light" id="item_units" name="item_units" required>
+                      <option value="">Select Unit</option>
+                      {% for u in units %}
+                      <option class="text-dark" value="{{u.id}}">{{u.unit_name}}</option>
+                      {% endfor %}
+                    </select>                
+                    <a href="#" class="btn btn-outline-secondary py-2 my-1" data-target="#newunit" data-toggle="modal">+</a>  
+                </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <label for="name" style="color: rgb(190, 88, 88);">HSN Code</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control text-dark bg-light" id="myInputField" name="hsn_number" oninput="validateInput()" required>
+                  <div id="validationResult"></div>
+                </div>
+              </div>
+  
+             
+              <script>
+                function validateSixDigits(field) {
+                  // Define the regular expression pattern for exactly six digits
+                  var pattern = /^\d{6}$/;
+                
+                  // Check if the field matches the pattern
+                  return pattern.test(field);
+                }
+                
+                function validateInput() {
+                  var inputField = document.getElementById("myInputField");
+                  var inputValue = inputField.value;
+                
+                  var validationResultDiv = document.getElementById("validationResult");
+                
+                  if (validateSixDigits(inputValue)) {
+                    validationResultDiv.textContent = "Valid: The field contains exactly six digits.";
+                  } else {
+                    validationResultDiv.textContent = "Invalid: The field does not contain exactly six digits.";
+                  }
+                }
+              
+              </script>
+  
+              <div class="row mt-2">
+                <div class="col-md-4 ">
+                  <label for="c_tax" style="color: rgb(190, 88, 88);">Tax Preference * </label>
+                </div>
+                <div class="col-md-5">
+                  <div class="d-flex">
+                    <div class="radio_opt mx-5 mt-2">
+                      <input type="radio" id="item-tax1" name="radioOption1" value="Taxable" >
+                      <label for="option1">Taxable</label>
+                    </div>
+                    <div class="radio_opt mx-4 mt-2">
+                      <input type="radio" id="item-tax2" name="radioOption1" value="Tax-exempt" >
+                      <label for="option2">Tax-exempt</label>
+                    </div>
+                  </div>
+                </div>       
+              </div>
+  
+              <div class="row mt-2 mb-4 d-none inter-intra" >
+                <div class="col-md-3">
+                  <label for="intra">Intra-State TAX</label>
+                </div>
+                <div class="col-md-3">
+                  <select name="intra" class="form-control text-dark bg-light" id="intra">
+                    <option value="">Select GST</option>
+  
+                    <option value=0>GST 0 (0%)</option>
+                    <option value=3>GST 3 (3%)</option>
+                    <option value=5>GST 5 (5%)</option>
+                    <option value=12>GST 12 (12%)</option>
+                    <option value=18>GST 18 (18%)</option>
+                    <option value=28>GST 28 (28%)</option>
+                  </select>             
+                </div>
+  
+                
+                <div class="col-md-2">
+                  <label for="inter">Inter-State TAX</label>
+                </div>
+                <div class="col-md-3">
+                  <select name="inter" class="form-control text-dark bg-light" id="inter">
+                    <option value="">Select IGST</option>
+  
+                    <option value=0>IGST 0 (0%)</option>
+                    <option value=3>IGST 3 (3%)</option>
+                    <option value=5>IGST 5 (5%)</option>
+                    <option value=12>IGST 12 (12%)</option>
+                    <option value=18>IGST 18 (18%)</option>
+                    <option value=28>IGST 28 (28%)</option>
+                  </select>               
+                </div>
+                <div class="col-md-1"></div>
+  
+              </div>
+              
+              <hr>
+  
+              <div class="row mt-5 text-center">
+                <div class="col-md-6 d-flex text-center">
+                  <input  type="checkbox" name="selling" checked class="mx-2 my-0">
+                  <h6 class="m-0">Selling Information</h6>
+                </div>
+                <div class="col-md-6 d-flex text-center">
+                  <input  type="checkbox" name="purchase" checked class="mx-2 my-0">
+                  <h6 class="m-0">Purchase Information</h6>
+                </div>
+              </div>
+              
+              <div class="row mt-4">
+                <div class="col-md-2">
+                  <label for="sell_price">Selling Price *</label>
+                </div>
+                <div class="col-md-4">
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">INR</div>
+                    </div>
+                    <input required type="text" class="form-control text-dark bg-light" name="sell_price" id="sell_price">
+                  </div>                  
+                </div>
+  
+                <div class="col-md-2">
+                  <label for="cost_price">Cost Price *</label>
+                </div>
+                <div class="col-md-4 ">
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">INR</div>
+                    </div>
+                    <input required type="text" class="form-control text-dark bg-light" name="cost_price" id="cost_price">
+                  </div>
+                </div>
+              </div>
+  
+              <div class="row mt-2">
+                <div class="col-md-2">
+                  <label for="vcity">Account</label>
+                </div>
+                <div class="col-md-4">
+                    <input required type="text" class="form-control text-dark bg-light" name="sell_acc" id="sell_acc">
+
+                  <!-- <select name="sell_acc" id="sell_acc" class="form-control text-dark bg-light">
+                    <option value="">Select Account</option>
+     
+                    
+                      {% for s in sales %}
+                          <option value="{{s.id}}">{{ s.Account_name }}</option>
+                    {% endfor %}
+                  </select>  -->
+                </div>
+                <div class="col-md-2">
+                  <label for="cost_acc">Account</label>
+                </div>
+                <div class="col-md-4">
+                  <input required type="text" name="cost_acc" class="form-control text-dark bg-light" id="cost_acc">
+                    <!-- <option value="">Select Account</option>
+  
+  
+                      {% for p in purchase %}
+                          <option value="{{p.id}}">{{ p.Account_name }}</option>
+                    {% endfor %}
+  
+                  </select>  -->
+                </div>
+              </div>
+  
+              <div class="row mt-2">
+                <div class="col-md-2">
+                  <label for="sell_desc">Description</label>
+                </div>
+                <div class="col-md-4">
+                  <input  type="text" name="sell_desc" class="form-control text-dark bg-light"  id="sell_desc">
+                </div>
+  
+                <div class="col-md-2">
+                  <label for="cost_desc">Description</label>
+                </div>
+                <div class="col-md-4 ">
+                  <input  type="text" name="cost_desc" class="form-control text-dark bg-light"  id="cost_desc">
+                </div>
+  
+              </div>
+              <div class="row mt-3" >
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" onclick="ShowHideDiv(this)" type="checkbox"  id="track">
+                        <label class="form-check-label" for="track">Track Inventory</label>
+                    </div>  
+                </div>
+            </div>
+            <div class="row" id="inventorytrack" style="display: none">
+                <div class="col-md-6 mt-3">
+                    <label style="color: white;">Inventory Account</label>
+                    <select name="invacc" id="invAcc" class="form-control" style="background-color: #2a4964; color: white;">
+                        <option selected disabled value="" >Choose...</option>
+                        <option value="Inventory Assets">Inventory Assets</option>    
+                    </select>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <label style="color: white;">Stock on hand</label>
+                    <input type="number" name="stock" id="stockOnHand" class="form-control" style="background-color: #2a4964; color: white;" value="0">
+                </div>
+                <div class="col-md-3 mt-3">
+                    <label style="color: white;">Stock Rate per Unit</label>
+                    <input type="number" id="stockRate" name="stock_rate" class="form-control" style="background-color: #2a4964; color: white;" value="0">
+                </div>
+            </div>
+
+            <div class="row" >
+                <div class="col-md-3 mt-3">
+                    <label style="color: white;">Minimum Stock to maintain</label>
+                    <input type="number" id="minStock" name="min_stock" class="form-control" style="background-color: #2a4964; color: white;" value="0">
+                </div>
+            </div>
+
+              <div class="row ">
+                <div class="col-md-5"></div>
+                <div class="col-md-3">
+                  <div class="d-flex">
+                    <button class="btn save_btn rounded-pill text-grey w-50 my-4 mx-3"
+                        type="submit" data-dismiss="modal" id="itemSave">Submit
+                    </button> 
+            
+                    <button type="button" class="close btn save_btn rounded-pill text-grey w-50 my-4" 
+                      data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">Cancel</span>
+                    </button>
+                  </div>
+                </div>
+              
+              <div class="form-inline " style="margin-bottom: 200px;"></div>
+              <div class="form-inline " style="margin-bottom: 200px;"></div>
+              <div class="form-inline " style="margin-bottom: 200px;"></div>
+    </form>
+    </div>
+    </div>
+    </div>
+    
+  
+              <div class="row" >
+                <div class="col-md-10">
+                  {% comment %} <label><input type="checkbox" value="trackstate" name="trackstate" onclick="toggleForm()" style="display: none;">
+                 Track Inventory for this item</label> {% endcomment %}
+                  {% comment %} <input type="hidden" name="trackState" id="trackState" value="" unchecked> {% endcomment %}
+                  <label>
+                    <input type="checkbox" name="trackstate" value="trackstate" class=" bg-dark"  onclick="toggleFormFields()">
+                    Track Inventory for this item
+                  </label>
+                  <div id="formFields" style="display: none;"> 
+                    <div class="form-group row" >
+                      <label class="col-sm-2 col-form-label">Inventory Account *</label>
+                      <div class="col-sm-10 col-md-7 col-9" style="margin-left: -1rem;">
+                        <select class="form-select form-select-sm mt-3" name="invacc">
+                          <option>Choose..</option>
+                          <option value="inventory assets">Inventory Asset</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row ">
+                      <label class="col-sm-2 col-form-label">Opening Stock</label>
+                      <div class=" col-md-5">
+                        <input  type="number" class="form-control  bg-dark"  name="openstock" value="0">
+                      </div>
+                      <div class="col-md-5  ">
+                        <div class="row align-items-center">
+                          <label class="col-sm-6 col-form-label">Opening Stock Rate per Unit</label>
+                          <div class="col-sm-6">
+                            <input type="number" class="form-control bg-dark" name="inventoryaccntperunit"  value="0">
+                          </div>
+  
+                        </div>
+                      </div>
+                     
+                      
+                    </div>
+
+                    <div class="row" >
+                        <div class="col-md-3 mt-3">
+                            <label style="color: white;">Minimum Stock to maintain</label>
+                            <input type="number" id="minStock" name="min_stock" class="form-control" style="background-color: #2a4964; color: white;" value="0">
+                        </div>
+                    </div>
+                      <fieldset class="form-group">
+                        <div class="row">
+                          <label class="col-form-label col-sm-2 pt-2">Activation tag<i class="fa fa-question-circle"></i></label>
+                          <div class="col-sm-10 form-inline">
+                            <div class="form-check ">
+                              <input  class="form-check-input" type="radio" name="satus" id="gridRadios1" value="Active"  style="margin-left:5px;" >
+                              <label class="form-check-label" for="gridRadios1">Activate</label>
+                            </div>
+                            <div class="form-check ml-5">
+                              <input  class="form-check-input" type="radio" name="satus" id="gridRadios2" value="Inactive"  style="margin-left:50px;">
+                              <label class="form-check-label" for="gridRadios2">Non-Activate</label>
+                            </div>
+                                        
+                          </div>
+                        </div>
+                      </fieldset>
+  
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <script>
+                function toggleFormFields() {
+                  var formFields = document.getElementById("formFields");
+                  var checkbox = document.querySelector("input[name=trackstate]");
+            
+                  if (checkbox.checked) {
+                    formFields.style.display = "block";
+                  } else {
+                    formFields.style.display = "none";
+                  }
+                }
+              </script>
+              <br><br> <br>
+            
+            
+              <div class="row mt-3">
+                  <div class="col-md-6">
+                    <input type="checkbox" value="" id="invalidCheck" name="invalidCheck" required>
+                    <label for="invalidCheck" style="color: #909091;">Agree to terms and conditions</label>
+                    <div class="invalid-feedback text-warning" >You must agree before submitting.</div>
+                  </div>
+              </div>
+              <div class="row ">
+                <div class="col-md-5"></div>
+                <div class="col-md-3">
+                  <div class="d-flex">
+                    <button class="btn save_btn rounded-pill text-grey w-50 my-4 mx-3"
+                        type="submit" data-dismiss="modal" id="itemSave">Submit
+                    </button> 
+            
+                    <button type="button" class="close btn save_btn rounded-pill text-grey w-50 my-4" 
+                      data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">Cancel</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-4"></div>
+              </div>
+            </form>
+            </div>
+            </div>
+            </div>
+            </div>  
+            </div>  
+            
+            
+            
+            
+            
+      
+<!-- ............................................unit modal............................................ -->
+
+ <div class="modal fade" id="newunit">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
+        <div class="modal-header " style="background: rgb(32, 35, 37);">
+            <h3 class="m-3 text-uppercase">Add Unit</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" style="background: rgb(32, 35, 37);">
+          <div class=" p-3 m-3">
+            <form action="" method="post" class="needs-validation" novalidate autocomplete="off" id="modalUnit">
+              <div class="row mt-2">
+                <div class="col-md-3 mt-2"></div>
+                <div class="col-md-1 mt-2">
+                  <label for="unit" style="color: rgb(230, 219, 219);">Unit</label>
+                </div>
+  
+                <div class="col-md-4 mt-2">
+                  <input type="text" class="form-control text-dark bg-light" id="unit" name="unit" required>
+                </div>
+                <div class="col-md-4 mt-2"></div>
+              </div>
+              
+              <div class="row mt-5">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <div class="d-flex">
+                    <button class="btn save_btn rounded-pill text-grey w-50 my-4 mx-3"
+                    type="submit" data-dismiss="modal" id="unitSave">Save
+                    </button> 
+                    
+  
+                    <button type="button" class="close btn save_btn rounded-pill text-grey w-50 my-4" 
+                      data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">Cancel</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-4"></div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>  
+  </div>  
+  
+  
+  <!-- ............................................  END UNIT MODAL..................................................... -->
+  
+        
 
 <!-- New Cust Payment Term Modal -->
 
@@ -1140,14 +1598,14 @@ input[type="date"] {
 <!-- New Item Modal -->
 
 <div class="modal fade" id="newItem">
-  <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="background-color: #213b52;">
-          <div class="modal-header">
-              <h5 class="m-3">New Item</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="background-color: #191d21;">
+            <div class="modal-header">
+                <h5 class="m-3 text-white">New Customer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
           <div class="modal-body">
               <div class="card p-3">
                   <form method="post" id="newItemForm">
@@ -1330,6 +1788,52 @@ input[type="date"] {
       </div>   
   </div>
 </div>
+<script>
+    function toggleFormFields() {
+      var formFields = document.getElementById("formFields");
+      var checkbox = document.querySelector("input[name=trackstate]");
+
+      if (checkbox.checked) {
+        formFields.style.display = "block";
+      } else {
+        formFields.style.display = "none";
+      }
+    }
+  </script>
+  <br><br> <br>
+
+
+  <div class="row mt-3">
+      <div class="col-md-6">
+        <input type="checkbox" value="" id="invalidCheck" name="invalidCheck" required>
+        <label for="invalidCheck" style="color: #909091;">Agree to terms and conditions</label>
+        <div class="invalid-feedback text-warning" >You must agree before submitting.</div>
+      </div>
+  </div>
+  <div class="row ">
+    <div class="col-md-5"></div>
+    <div class="col-md-3">
+      <div class="d-flex">
+        <button class="btn save_btn rounded-pill text-grey w-50 my-4 mx-3"
+            type="submit" data-dismiss="modal" id="itemSave">Submit
+        </button> 
+
+        <button type="button" class="close btn save_btn rounded-pill text-grey w-50 my-4" 
+          data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">Cancel</span>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-4"></div>
+  </div>
+</form>
+</div>
+</div>
+</div>
+</div>  
+</div>  
+
+
 
 
 
@@ -1350,6 +1854,9 @@ input[type="date"] {
   </section>
   
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
   <script>
       $(document).ready(function () {
           $('#customer').selectize({
@@ -1897,7 +2404,7 @@ $('#items-table-body').append(
                     </div>
                 </div>
                 <a href="#">
-                    <button type="button" class="btn btn-outline-warning ml-1" data-target="#newItem" data-toggle="modal">+</button>
+                    <button type="button" class="btn btn-outline-warning ml-1" data-target="#newitem" data-toggle="modal">+</button>
                 </a>
             </div>
         
@@ -2393,5 +2900,329 @@ function reloadCustomer() {
     }
 }
 </script>
-   
+<!-- Add item -> scripts -->
+
+<script>
+
+    function ShowHideDiv(track) {
+        var inventorytrack = document.getElementById("inventorytrack");
+        inventorytrack.style.display = track.checked ? "flex" : "none";
+    }
+
+    function ShowHideDivi(inclusive) {
+        var inter = document.getElementById("intrastateFiled");
+        inter.style.display = inclusive.checked ? "block" : "none";
+    }
+
+    function validateHSN() {
+        var hsnField = document.getElementById("hsnField");
+        var errorText = document.getElementById("hsnError");
+        var hsnValue = hsnField.value;
+
+        if (hsnValue.length < 6) {
+            errorText.innerText = "HSN must contain at least 6 digits";
+            hsnField.setCustomValidity("HSN must contain at least 6 digits");
+            hsnField.style.borderColor = "red";
+        } else {
+            errorText.innerText = "";
+            hsnField.setCustomValidity(""); 
+            hsnField.style.borderColor = ""; 
+        }
+    }
+
+    function showdiv() {
+        document.getElementById("taxableDiv").style.display = "flex";
+    }
+    
+    function hidediv() {
+        document.getElementById("taxableDiv").style.display = "none";
+    }
+
+    $(document).on("click","#saveItemUnit",function(){
+        var name = $("#unit_name").val();
+        if (name !=""){
+            $.ajax({
+                type : 'POST',
+                url:"{% url 'saveItemUnit' %}",
+                data:{
+                    'name' : name,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                
+                success: function(response) {
+                    if(response.status){
+                        document.getElementById("newUnitForm").reset();
+                        reloadUnits();
+                    }else{
+                        alert(response.message)
+                    }
+                },         
+            });
+        }
+        else{
+            alert('Invalid')
+        }
+    });
+
+    function reloadUnits() {
+        $.ajax({
+            url: "",
+            type: "GET",
+            dataType: "json",
+            data: $(this).serialize(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+
+            success: function(data) {
+                console.log("AJAX Success - Dropdown Data:", data);
+                var dropdown = $('#itemUnit');
+                dropdown.empty()
+                dropdown.append(`<option selected disabled value="">Choose...</option>`);
+                $.each(data, function(key, value) {
+                    for(let i=0; i<value.length; i++){
+                        dropdown.append($('<option></option>').attr('class', 'text-uppercase').text(value[i].name))
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+
+$(document).on("click","#saveNewItem",function(){
+    var name = $("#itemName").val();
+    var type = $("#itemType").val();
+    var unit = $("#itemUnit").val();
+    var hsn = $("#hsnField").val();
+    if($('#inclusive').prop('checked') || $('#check').prop('checked')){
+        if($('#inclusive').prop('checked')){
+            var tax = 'taxable'
+        }else{
+            var tax = 'non taxable'
+        }
+    }else{
+        alert("Should select any of tax reference")
+        return
+    }
+
+    if (name !="" && type !="" && unit != "" && hsn != "" && tax != ""){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'createInvoiceItem' %}",
+            data:{
+                'name' : name,
+                'type' : type,
+                'unit' : unit,
+                'hsn' : hsn,
+                'taxref' : tax,
+                'intra_st' : $("#intraStateTax").val(),
+                'inter_st' : $("#interStateTax").val(),
+                'pcost' : $("#purprice").val(),
+                'pur_account' : $("#purchaseAccount").val(),
+                'pur_desc' : $("#purchaseDescription").val(),
+                'salesprice' : $("#saleprice").val(),
+                'sale_account' : $("#salesAccount").val(),
+                'sale_desc' : $("#salesDescription").val(),
+                'invacc' : $("#invAcc").val(),
+                'stock' : $("#stockOnHand").val(),
+                'stock_rate' : $("#stockRate").val(),
+                'min_stock' : $("#minStock").val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            
+            success: function(response) {
+                if(response.status){
+                    console.log("AJAX Success",response)
+                    document.getElementById("newItemForm").reset();
+
+                    reloadItems();
+                }else{
+                    alert(response.message)
+                }
+            },         
+        });
+    }
+    else{
+        alert('Fill all required fields.!')
+        return;
+    }
+});
+
+function reloadItems() {
+    $.ajax({
+        url: "{% url 'getItems' %}",
+        type: "GET",
+        dataType: "json",
+        data: {},
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+
+        success: function(data) {
+            $('#items-table-body tr').each(function () {
+            var currentRow = $(this);
+            var html = currentRow.html();
+            
+            if (html !== '') {
+                currentRow.find(".items-available").find("li").remove();
+
+                $.each(data, function(key, value) {
+                    for (let i = 0; i < value.length; i++) {
+                        currentRow.find(".items-available").append(`
+                            <li class="dropdown-item items-options" onclick="getItemDetails($(this).parent().prev().attr('id'), '${value[i]}')">
+                                ${value[i]}
+                            </li>`
+                        );
+                    }
+                });
+
+                console.log('Success');
+            }
+        });
+
+
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+
+    });
+    if ($('#createNewAccount').hasClass('show')){
+        $('#createNewAccount').modal('toggle');
+    }
+
+    if ($('#createNewUnit').hasClass('show')){
+        $('#createNewUnit').modal('toggle');
+    }
+}
+</script>
+<script>
+      
+  // item modal
+
+  $(document).ready(function() {
+
+    $("#item-tax1").click(function() {
+      $(".inter-intra").removeClass('d-none');
+      $(".inter-intra").addClass('d-flex');
+
+    });
+    
+    $("#item-tax2").click(function() {
+    
+      $(".inter-intra").removeClass('d-flex');
+      $(".inter-intra").addClass("d-none");
+
+    });
+    });
+    
+    
+    $(document).on("click","#itemSave",function(){
+    
+    if ($('input[name="radioOption"]:checked').val() == 'Goods'){
+    
+        itemtype = $('#item_type1').val();
+      }
+    else{
+      itemtype = $('#item_type2').val();
+    }
+    
+    if ($('input[name="radioOption1"]:checked').val() == 'Taxable'){
+        inter_st = $('#inter').val();
+        intra_st = $('#intra').val();
+        var tax = 'taxable'
+
+      }
+    else{
+      inter_st = 0;
+      intra_st = 0;
+      var tax = 'non taxable'
+
+    }
+    
+    
+    $.ajax({
+        
+
+      
+      type : 'POST',
+      url:"{% url 'invoice_item' %}",
+      
+      data:{
+          type : itemtype,
+          name : $("#item_name").val(),
+          unit : $("#item_units").val(),
+          hsn_number : $("#myInputField").val(),
+          inter : inter_st,
+          intra : intra_st,
+          sell_price : $("#sell_price").val(),
+          cost_price : $("#cost_price").val(),
+          sell_acc : $("#sell_acc").val(),
+          cost_acc : $("#cost_acc").val(),
+          sell_desc : $("#sell_desc").val(),
+          cost_desc : $("#cost_desc").val(),
+          stock : $("#stockOnHand").val(),
+          stock_rate : $("#stockRate").val(),
+          min_stock : $("#minStock").val(),
+          taxref : tax,
+
+
+          
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+          
+        },
+      
+        success: function(response) {
+          // console.log(response)
+          document.getElementById("modalItem").reset();
+          reloadItems();
+        },
+    });        
+    });
+    
+$(document).on("click","#unitSave",function(){
+    var name = $("#unit").val();
+    alert(name)
+    if (name !=""){
+        $.ajax({
+            type : 'POST',
+            url:"{% url 'saveItemUnit' %}",
+            data:{
+                'name' : name,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },    
+      success: function(response) {
+        document.getElementById("modalUnit").reset();
+        reloadUnit();
+      },
+  });        
+}});
+function reloadUnit() {
+
+    $.ajax({
+      url: "{% url 'unit_dropdown' %}",
+      type: "GET",
+      dataType: "json",
+      data: $(this).serialize(),
+      csrfmiddlewaretoken: '{{ csrf_token }}',
+  
+      success: function(data) {
+        var dropdown = $('#item_units');
+        dropdown.empty();
+  
+        $.each(data, function(key, value) {
+            dropdown.append($('<option></option>').attr('value', key).text(value[0]).val(value[1]));
+        });
+      },
+      error: function(xhr, status, error) {
+      console.error(xhr.responseText);
+      }
+    });
+  }
+  
+
+    
+    
+</script>
+
+
 {% endblock %}
