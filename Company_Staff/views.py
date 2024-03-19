@@ -660,34 +660,7 @@ def view(request,pk):
         return render(request,'staff/invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'comments':cmt,'history':hist,'historys':histo,  'created':created})
     else:
        return redirect('/')
-def overview(request,pk):
-    if 'login_id' in request.session:
-        log_id = request.session['login_id']
-        if 'login_id' not in request.session:
-            return redirect('/')
-        log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company
-        invoices = invoice.objects.filter(company = cmp)
 
-   
-        inv = invoice.objects.get(id = pk)
-        # cmt = invoice_Comments.objects.filter(Invoice = inv)
-        hist =invoiceHistory.objects.filter( invoice = inv).last()
-        invItems = invoiceitems.objects.filter( invoice = inv)
-        created = invoiceHistory.objects.filter( invoice = inv,  action = 'Created')
-
-        if log_details.user_type == 'Staff':
-                staff = StaffDetails.objects.get(login_details=log_details)
-                company = staff.company
-                    
-        elif log_details.user_type == 'Company':
-                company = CompanyDetails.objects.get(login_details=log_details)
-        
-        return render(request,'staff/overview_invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'history':hist,  'created':created})
-    else:
-       return redirect('/')
 def convertInvoice(request,id):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
@@ -881,11 +854,12 @@ def updateInvoice(request, id):
         inv = invoice.objects.get(id = id)
         if request.method == 'POST':
             invNum = request.POST['invoice_no']
-            if inv.invoice_number != invNum and invoice.objects.filter(Company = com, invoice_number__iexact = invNum).exists():
+            if inv.invoice_number != invNum and invoice.objects.filter(company = com, invoice_number__iexact = invNum).exists():
                 res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
                 return HttpResponse(res)
 
             inv.customer = Customer.objects.get(id = request.POST['customer'])
+            inv.company=cmp1
             inv.customer_email = request.POST['customerEmail']
             inv.customer_billingaddress = request.POST['bill_address']
             inv.customer_GSTtype = request.POST['gst_type']
@@ -927,8 +901,13 @@ def updateInvoice(request, id):
             itemName = request.POST.getlist("item_name[]")
             print(itemName)
             hsn  = request.POST.getlist("hsn[]")
+            print(hsn)
             qty = request.POST.getlist("qty[]")
+            print(hsn)
+
             price = request.POST.getlist("priceListPrice[]") if 'priceList' in request.POST else request.POST.getlist("price[]")
+            print(hsn)
+
             tax = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == com.company.state else request.POST.getlist("taxIGST[]")
             x=request.POST['place_of_supply']
             y=com.company.state
@@ -977,7 +956,7 @@ def updateInvoice(request, id):
                             itm = Items.objects.get(id = int(ele[0]))
                             print(itm)
 
-                            invoiceitems.objects.create(invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                            invoiceitems.objects.create(invoice = inv,company = cmp1,logindetails = log_details, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
                             
                             itm.current_stock -= int(ele[3])
                             itm.save()
@@ -988,7 +967,7 @@ def updateInvoice(request, id):
                             inItm = invoiceitems.objects.get(id = int(ele[8]))
                             crQty = int(inItm.quantity)
                             
-                            invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                            invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv,logindetails = log_details, Items = itm, company = cmp1,hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
                             
                             
                             if crQty < int(ele[3]):
@@ -1003,7 +982,7 @@ def updateInvoice(request, id):
                         inItm = invoiceitems.objects.get(id = int(ele[8]))
                         crQty = int(inItm.quantity)
 
-                        invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                        invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv,logindetails = log_details,Items = itm,company = cmp1, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
                         print(float(ele[4]))
                         print(ele[5])
 
@@ -1381,36 +1360,6 @@ def getInvItemDetails(request):
         
         itemName = request.GET['item']
         item = Items.objects.get( item_name = itemName)
-
-        # if priceListId != "":
-        #     # priceList = PRIC.objects.get(id = int(priceListId))
-
-        #     # if priceList.item_rate == 'Customized individual rate':
-        #         try:
-        #             priceListPrice = float(Fin_PriceList_Items.objects.get(Company = com, list = priceList, item = item).custom_rate)
-        #         except:
-        #             priceListPrice = item.selling_price
-        #     else:
-        #         mark = priceList.up_or_down
-        #         percentage = float(priceList.percentage)
-        #         roundOff = priceList.round_off
-
-        #         if mark == 'Markup':
-        #             price = float(item.selling_price) + float((item.selling_price) * (percentage/100))
-        #         else:
-        #             price = float(item.selling_price) - float((item.selling_price) * (percentage/100))
-
-        #         if priceList.round_off != 'Never mind':
-        #             if roundOff == 'Nearest whole number':
-        #                 finalPrice = round(price)
-        #             else:
-        #                 finalPrice = int(price) + float(roundOff)
-        #         else:
-        #             finalPrice = price
-
-        #         priceListPrice = finalPrice
-        # else:
-        #     priceListPrice = None
 
         context = {
             'status':True,
