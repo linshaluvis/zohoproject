@@ -78,6 +78,9 @@ urlpatterns = [
     path('Staff/invoice/getItems',views.getItems, name='getItems'),
     path('Staff/invoice/saveItemUnit',views.saveItemUnit, name='saveItemUnit'),
     path('Staff/invoice/unit_dropdown',views.unit_dropdown, name='unit_dropdown'),
+    path('Staff/invoice/createNewAccountFromItems',views.createNewAccountFromItems, name='createNewAccountFromItems'),
+    path('Staff/invoice/checkAccounts',views.checkAccounts, name='checkAccounts'),
+
 
 
 

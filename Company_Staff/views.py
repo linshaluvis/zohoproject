@@ -1225,6 +1225,8 @@ def invoice_create(request):
         item=Items.objects.all()
         payments=Company_Payment_Term.objects.all()
         i = invoice.objects.all()
+        acc = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense') | Q(account_type='Cost Of Goods Sold')).order_by('account_name')
+
 
         if invoice.objects.all().exists():
             invoice_count = invoice.objects.last().id
@@ -1242,7 +1244,9 @@ def invoice_create(request):
             'item':item,
             'payments':payments,
             'count': count,
-            'i':i
+            'i':i,
+            'accounts':acc,
+            
 
 
             
@@ -1264,6 +1268,8 @@ def invoice_createpage(request):
         payments=Company_Payment_Term.objects.filter(company_id = cmp)
         banks = Banking.objects.filter(company_id = cmp)
         unit = Unit.objects.filter(company_id = cmp)
+        acc = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense') | Q(account_type='Cost Of Goods Sold'), company=cmp).order_by('account_name')
+
         latest_inv = invoice.objects.filter(company_id = cmp).order_by('-id').first()
 
         new_number = int(latest_inv.reference_number) + 1 if latest_inv else 1
@@ -1319,6 +1325,7 @@ def invoice_createpage(request):
             'units': unit,
             'ref_no':new_number,
             'invNo':nxtInv,
+            'accounts':acc,
 
 
             
@@ -2076,12 +2083,18 @@ def unit_dropdown(request):
         elif log_details.user_type == 'Company':
                 com = CompanyDetails.objects.get(login_details=log_details) 
 
-        options = {}
-        option_objects = Unit.objects.filter(company = com)
-        for option in option_objects:
-            options[option.id] = [option.unit_name,option.id]
+        
 
-        return JsonResponse(options)
+        list= []
+        option_objects = Unit.objects.filter(company = com)
+
+        for item in option_objects:
+            itemUnitDict = {
+                'name': item.unit_name,
+            }
+            list.append(itemUnitDict)
+
+        return JsonResponse({'units':list},safe=False)
 
 
 def item_dropdown(request):
@@ -2215,6 +2228,10 @@ def createInvoiceItem(request):
         name = request.POST['name']
         type = request.POST['type']
         unit = request.POST.get('unit')
+        print(unit)
+        units=Unit.objects.get(unit_name=unit,company=com)
+        print(units)
+
         hsn = request.POST['hsn']
         tax = request.POST['taxref']
         gstTax = 0 if tax == 'non taxable' else request.POST['intra_st']
@@ -2226,7 +2243,9 @@ def createInvoiceItem(request):
         saleAccount = None if not 'sale_account' in request.POST or request.POST['sale_account'] == "" else request.POST['sale_account']
         saleDesc = request.POST['sale_desc']
         inventory = request.POST.get('invacc')
-        stock = 0 if request.POST.get('openstock') == "" else request.POST.get('openstock')
+        # stock = 0 if request.POST.get('openstock') == "" else request.POST.get('openstock')
+        stock = 0 if request.POST.get('stock') == "" else request.POST.get('stock')
+
         stockUnitRate = 0 if request.POST.get('stock_rate') == "" else request.POST.get('stock_rate')
         minStock = request.POST['min_stock']
         createdDate = date.today()
@@ -2244,7 +2263,7 @@ def createInvoiceItem(request):
                 login_details = log_details,
                 item_name = name,
                 item_type = type,
-                unit = unit,
+                unit = units,
                 hsn_code = hsn,
                 tax_reference = tax,
                 intrastate_tax = gstTax,
@@ -2260,8 +2279,7 @@ def createInvoiceItem(request):
                 inventory_account = inventory,
                 opening_stock = stock,
                 current_stock = stock,
-                stock_in = 0,
-                stock_out = 0,
+              
                 opening_stock_per_unit = stockUnitRate,
                 activation_tag = 'active'
             )
@@ -2272,7 +2290,7 @@ def createInvoiceItem(request):
             Item_Transaction_History.objects.create(
                 company = com,
                 logindetails = log_details,
-                item = item,
+                items = item,
                 action = 'Created'
             )
             
@@ -2303,7 +2321,107 @@ def getItems(request):
         return JsonResponse(items)
     else:
         return redirect('/')
+def checkAccounts(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company       
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                com = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                com = CompanyDetails.objects.get(login_details=log_details)
+
+        if Chart_of_Accounts.objects.filter(company = com, account_type = request.GET['type']).exists():
+            list= []
+            account_objects = Chart_of_Accounts.objects.filter(company = com, account_type = request.GET['type'])
+
+            for account in account_objects:
+                accounts = {
+                    'name': account.account_name,
+                }
+                list.append(accounts)
+
+            return JsonResponse({'status':True,'accounts':list},safe=False)
+        else:
+            return JsonResponse({'status':False})
+def createNewAccountFromItems(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        cmp =dash_details.company       
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                com = staff.company
+                    
+        elif log_details.user_type == 'Company':
+                com = CompanyDetails.objects.get(login_details=log_details)
+
+        if request.method == 'POST':
+            name = request.POST['account_name']
+            type = request.POST['account_type']
+            subAcc = True if request.POST['subAccountCheckBox'] == 'true' else False
+            parentAcc = request.POST['parent_account'] if subAcc == True else None
+            accCode = request.POST['account_code']
+            bankAccNum = None
+            desc = request.POST['description']
+            
+            createdDate = date.today()
+            
+            #save account and transaction if account doesn't exists already
+            if Chart_of_Accounts.objects.filter(company=com, account_name__iexact=name).exists():
+                res = f'<script>alert("{name} already exists, try another!");window.history.back();</script>'
+                return HttpResponse(res)
+            else:
+                account = Chart_of_Accounts(
+                    company = com,
+                    login_details = log_details,
+                    account_type = type,
+                    account_name = name,
+                    account_code = accCode,
+                    account_description = desc,
+                    
+                    sub_account = subAcc,
+                    parent_account = parentAcc,
+                    account_number = bankAccNum,
+                    Create_status = 'added',
+                    status = 'active'
+                )
+                account.save()
+
+                #save transaction
+
+                Chart_of_Accounts_History.objects.create(
+                    company = com,
+                    logindetails = log_details,
+                    chart_of_accounts = account,
+                    Date=createdDate,
+                    action = 'Created'
+                )
                 
+                list= []
+                account_objects = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense'), company=com).order_by('account_name')
+
+                for account in account_objects:
+                    accounts = {
+                        'name': account.account_name,
+                    }
+                    list.append(accounts)
+
+                return JsonResponse({'status':True,'accounts':list},safe=False)
+
+        return JsonResponse({'status':False})
+    else:
+       return redirect('/')                
        
 def company_gsttype_change(request):
     if 'login_id' in request.session:
