@@ -2550,7 +2550,7 @@ $(document).ready(function(){
     
         function reloadUnits() {
             $.ajax({
-                url: "{% url 'unit_dropdown' %}",
+                url: "{% url 'show_unit_dropdown' %}",
                 type: "GET",
                 dataType: "json",
                 data: $(this).serialize(),

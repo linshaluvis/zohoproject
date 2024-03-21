@@ -2444,7 +2444,6 @@ function reloadCustomer() {
                     if(response.status){
                         document.getElementById("newUnitForm").reset();
                         reloadUnits();
-                        alert("ok")
                     }else{
                         alert(response.message)
                     }
@@ -2458,7 +2457,7 @@ function reloadCustomer() {
 
     function reloadUnits() {
         $.ajax({
-            url: "{% url 'unit_dropdown' %}",
+            url: "{% url 'show_unit_dropdown' %}",
             type: "GET",
             dataType: "json",
             data: $(this).serialize(),
@@ -2467,7 +2466,6 @@ function reloadCustomer() {
             success: function(data) {
                 console.log("AJAX Success - Dropdown Data:", data);
                 var dropdown = $('#itemUnit');
-                alert(dropdown)
                 dropdown.empty()
                 dropdown.append(`<option selected disabled value="">Choose...</option>`);
                 $.each(data, function(key, value) {

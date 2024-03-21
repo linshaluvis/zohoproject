@@ -611,24 +611,28 @@ def invoice_list_out(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company
+       
 
         if log_details.user_type == "Company":
-            com = CompanyDetails.objects.get(login_details_id = log_id)
-            inv = invoice.objects.filter(Company = cmp)
-            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+            company=CompanyDetails.objects.get(login_details=log_details)
+            dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
 
-            return render(request,'company/invoicelist.html',{'allmodules':allmodules,'com':com,'data':log_details,'invoices':inv})
-        else:
-            com = StaffDetails.objects.get(login_details_id = log_id)
-            inv = invoice.objects.filter(company = cmp)
-            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+            allmodules= ZohoModules.objects.get(company=company,status='New')
+            
 
-            return render(request,'staff/invoicelist.html',{'allmodules':allmodules,'com':com,'data':log_details,'details': dash_details,'invoices':inv})
+            inv = invoice.objects.filter(login_details=log_details)
+
+        if log_details.user_type=='Staff':
+            staff = StaffDetails.objects.get(login_details_id = log_id)
+            inv = invoice.objects.filter(login_details=log_details)
+            allmodules=ZohoModules.objects.get(company=staff.company)
+            dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+
+
+        return render(request,'staff/invoicelist.html',{'allmodules':allmodules,'data':log_details,'details':dash_details,'invoices':inv})
     else:
        return redirect('/')
+
    
 def view(request,pk):
     if 'login_id' in request.session:
@@ -636,10 +640,21 @@ def view(request,pk):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company
-        invoices = invoice.objects.filter(company = cmp)
+       
+        
+
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
 
    
         inv = invoice.objects.get(id = pk)
@@ -649,15 +664,8 @@ def view(request,pk):
 
         invItems = invoiceitems.objects.filter( invoice = inv)
         created = invoiceHistory.objects.filter( invoice = inv,  action = 'Created')
-
-        if log_details.user_type == 'Staff':
-                staff = StaffDetails.objects.get(login_details=log_details)
-                company = staff.company
-                    
-        elif log_details.user_type == 'Company':
-                company = CompanyDetails.objects.get(login_details=log_details)
         
-        return render(request,'staff/invoice.html',{'allmodules':allmodules,'com':company,'cmp':cmp, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'comments':cmt,'history':hist,'historys':histo,  'created':created})
+        return render(request,'staff/invoice.html',{'allmodules':allmodules,'com':company,'cmp':company, 'data':log_details, 'details': dash_details,'invoice':inv,'invoices':invoices,'invItems':invItems, 'comments':cmt,'history':hist,'historys':histo,  'created':created})
     else:
        return redirect('/')
 
@@ -667,10 +675,19 @@ def convertInvoice(request,id):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company
-        invoices = invoice.objects.filter(company = cmp)
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
+
 
 
         inv = invoice.objects.get(id = id)
@@ -695,16 +712,19 @@ def invoicePdf(request,id):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
                     
         elif log_details.user_type == 'Company':
                 company = CompanyDetails.objects.get(login_details=log_details)
-        cmp =dash_details.company
-        invoices = invoice.objects.filter(company = cmp)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
+
 
         
         inv = invoice.objects.get(id = id)
@@ -738,16 +758,22 @@ def InvoiceHistory(request,id):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
+
         inv = invoice.objects.get(id = id)
         his = invoiceHistory.objects.filter(invoice = inv)
-        if log_details.user_type == "Company":
-            company = CompanyDetails.objects.get(login_details=log_details)
-            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        else:
-            company = StaffDetails.objects.get(login_details=log_details)
-            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+       
         
         return render(request,'staff/invoice_History.html',{'allmodules':allmodules,'com':company,'data':log_details,'history':his, 'invoice':inv})
     else:
@@ -758,16 +784,19 @@ def deleteInvoice(request, id):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
                     
         elif log_details.user_type == 'Company':
                 company = CompanyDetails.objects.get(login_details=log_details)
-        cmp =dash_details.company
-        invoices = invoice.objects.filter(company = cmp)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
+
         inv = invoice.objects.get( id = id)
         print("delete ok")
 
@@ -785,13 +814,13 @@ def deleteInvoice(request, id):
 
         # Storing ref number to deleted table
         # if entry exists and lesser than the current, update and save => Only one entry per company
-        if invoiceReference.objects.filter(company = cmp).exists():
-            deleted = invoiceReference.objects.get(company = cmp)
+        if invoiceReference.objects.filter(company = company).exists():
+            deleted = invoiceReference.objects.get(company = company)
             if int(inv.reference_number) > int(deleted.reference_number):
                 deleted.reference_number = inv.reference_number
                 deleted.save()
         else:
-            invoiceReference.objects.create(company = cmp, reference_number = inv.reference_number)
+            invoiceReference.objects.create(company = company, reference_number = inv.reference_number)
         
         inv.delete()
         return redirect(invoice_list_out)
@@ -801,32 +830,32 @@ def editInvoice(request,id):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company
-        invoices = invoice.objects.filter(company = cmp)       
-        data = LoginDetails.objects.get(id = log_id)
-        if data.user_type == "Company":
-            com = CompanyDetails.objects.get(login_details=log_details)
-            allmodules = ZohoModules.objects.get(Login_Id = log_id,status = 'New')
-            cmp = com
-        else:
-            com = StaffDetails.objects.get(login_details=log_details)
-            allmodules = ZohoModules.objects.get(company_id = com.company_id,status = 'New')
-            cmp = com.company_id
+        
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
 
         inv = invoice.objects.get(id = id)
         invItms = invoiceitems.objects.filter(invoice = inv)
-        cust = Customer.objects.filter(company = cmp, customer_status='Active')
-        itms = Items.objects.filter(company = cmp)
-        trms = Company_Payment_Term.objects.filter(company = cmp)
-        bnk = Banking.objects.filter(company = cmp)
+        cust = Customer.objects.filter(company = company, customer_status='Active')
+        itms = Items.objects.filter(company = company)
+        trms = Company_Payment_Term.objects.filter(company = company)
+        bnk = Banking.objects.filter(company = company)
         # lst = pric.objects.filter(Company = cmp, status = 'Active')
-        units = Unit.objects.filter(company = cmp)
-        acc = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense') | Q(account_type='Cost Of Goods Sold'), company=cmp).order_by('account_name')
+        units = Unit.objects.filter(company = company)
+        acc = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense') | Q(account_type='Cost Of Goods Sold'), company=company).order_by('account_name')
 
         context = {
-            'allmodules':allmodules, 'com':com, 'cmp':cmp, 'data':data,'invoice':inv, 'invItems':invItms, 'customers':cust, 'items':itms, 'pTerms':trms,
+            'allmodules':allmodules, 'com':company, 'cmp':company, 'data':log_details,'invoice':inv, 'invItems':invItms, 'customers':cust, 'items':itms, 'pTerms':trms,
             'banks':bnk,'units':units, 'accounts':acc,'details': dash_details,
         }
         return render(request,'staff/edit_Invoice.html',context)
@@ -837,29 +866,31 @@ def updateInvoice(request, id):
         log_id = request.session['login_id']
         if 'login_id' not in request.session:
             return redirect('/')
-        log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp1 =dash_details.company
-        invoices = invoice.objects.filter(company = cmp1)       
+          
         data = LoginDetails.objects.get(id = log_id)
-        if data.user_type == "Company":
-            com = CompanyDetails.objects.get(login_details=log_details)
-            allmodules = ZohoModules.objects.get(Login_Id = log_id,status = 'New')
-            cmp = com
-        else:
-            com = StaffDetails.objects.get(login_details=log_details)
-            allmodules = ZohoModules.objects.get(company_id = com.company_id,status = 'New')
-            cmp = com.company_id
+        log_details= LoginDetails.objects.get(id=log_id)
+        
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
         inv = invoice.objects.get(id = id)
         if request.method == 'POST':
             invNum = request.POST['invoice_no']
-            if inv.invoice_number != invNum and invoice.objects.filter(company = com, invoice_number__iexact = invNum).exists():
+            if inv.invoice_number != invNum and invoice.objects.filter(company = company, invoice_number__iexact = invNum).exists():
                 res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
                 return HttpResponse(res)
 
             inv.customer = Customer.objects.get(id = request.POST['customer'])
-            inv.company=cmp1
+            inv.company=company
             inv.customer_email = request.POST['customerEmail']
             inv.customer_billingaddress = request.POST['bill_address']
             inv.customer_GSTtype = request.POST['gst_type']
@@ -908,9 +939,9 @@ def updateInvoice(request, id):
             price = request.POST.getlist("priceListPrice[]") if 'priceList' in request.POST else request.POST.getlist("price[]")
             print(hsn)
 
-            tax = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == com.company.state else request.POST.getlist("taxIGST[]")
+            tax = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == company.state else request.POST.getlist("taxIGST[]")
             x=request.POST['place_of_supply']
-            y=com.company.state
+            y=company.state
             print(x)
             print(y)
 
@@ -956,7 +987,7 @@ def updateInvoice(request, id):
                             itm = Items.objects.get(id = int(ele[0]))
                             print(itm)
 
-                            invoiceitems.objects.create(invoice = inv,company = cmp1,logindetails = log_details, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                            invoiceitems.objects.create(invoice = inv,company = company,logindetails = log_details, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
                             
                             itm.current_stock -= int(ele[3])
                             itm.save()
@@ -967,7 +998,7 @@ def updateInvoice(request, id):
                             inItm = invoiceitems.objects.get(id = int(ele[8]))
                             crQty = int(inItm.quantity)
                             
-                            invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv,logindetails = log_details, Items = itm, company = cmp1,hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                            invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv,logindetails = log_details, Items = itm, company = company,hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
                             
                             
                             if crQty < int(ele[3]):
@@ -982,7 +1013,7 @@ def updateInvoice(request, id):
                         inItm = invoiceitems.objects.get(id = int(ele[8]))
                         crQty = int(inItm.quantity)
 
-                        invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv,logindetails = log_details,Items = itm,company = cmp1, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                        invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv,logindetails = log_details,Items = itm,company = company, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
                         print(float(ele[4]))
                         print(ele[5])
 
@@ -997,7 +1028,7 @@ def updateInvoice(request, id):
             # Save transaction
                     
             invoiceHistory.objects.create(
-                company = cmp1,
+                company = company,
                 login_details = log_details,
                 invoice = inv,
                 date = request.POST['invoice_date'],
@@ -1219,8 +1250,21 @@ def invoice_create(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
+        data = LoginDetails.objects.get(id = log_id)
+        log_details= LoginDetails.objects.get(id=log_id)
+        
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
         customers=Customer.objects.all()
         item=Items.objects.all()
         payments=Company_Payment_Term.objects.all()
@@ -1259,23 +1303,35 @@ def invoice_createpage(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company
+        data = LoginDetails.objects.get(id = log_id)
+        log_details= LoginDetails.objects.get(id=log_id)
+        
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
 
-        customers=Customer.objects.filter(company_id = cmp, customer_status = 'Active')
-        item=Items.objects.filter(company_id = cmp)
-        payments=Company_Payment_Term.objects.filter(company_id = cmp)
-        banks = Banking.objects.filter(company_id = cmp)
-        unit = Unit.objects.filter(company_id = cmp)
-        acc = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense') | Q(account_type='Cost Of Goods Sold'), company=cmp).order_by('account_name')
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
 
-        latest_inv = invoice.objects.filter(company_id = cmp).order_by('-id').first()
+        customers=Customer.objects.filter(company_id = company, customer_status = 'Active')
+        item=Items.objects.filter(company_id = company)
+        payments=Company_Payment_Term.objects.filter(company_id = company)
+        banks = Banking.objects.filter(company_id = company)
+        unit = Unit.objects.filter(company_id = company)
+        acc = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense') | Q(account_type='Cost Of Goods Sold'), company=company).order_by('account_name')
+
+        latest_inv = invoice.objects.filter(company_id = company).order_by('-id').first()
 
         new_number = int(latest_inv.reference_number) + 1 if latest_inv else 1
 
-        if invoiceReference.objects.filter(company_id = cmp).exists():
-            deleted = invoiceReference.objects.get(company_id = cmp)
+        if invoiceReference.objects.filter(company_id = company).exists():
+            deleted = invoiceReference.objects.get(company_id = company)
             
             if deleted:
                 while int(deleted.reference_number) >= new_number:
@@ -1283,7 +1339,7 @@ def invoice_createpage(request):
 
         # Finding next invoice number w r t last invoic number if exists.
         nxtInv = ""
-        lastInv = invoice.objects.filter(company_id = cmp).last()
+        lastInv = invoice.objects.filter(company_id = company).last()
         if lastInv:
             inv_no = str(lastInv.invoice_number)
             numbers = []
@@ -1397,30 +1453,38 @@ def createInvoice(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company
+        data = LoginDetails.objects.get(id = log_id)
+        log_details= LoginDetails.objects.get(id=log_id)
+        
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
 
-        print(allmodules)
-        print(cmp)
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
 
-        customers=Customer.objects.filter(company_id = cmp)
-        item=Items.objects.filter(company_id = cmp)
-        payments=Company_Payment_Term.objects.filter(company_id = cmp)
-        banks = Banking.objects.filter(company_id = cmp)
-        unit = Unit.objects.filter(company_id = cmp)
-        if log_details.user_type == "Company":
-            com = CompanyDetails.objects.get(Login_Id = log_id)
-        else:
-            com = StaffDetails.objects.get(login_details=log_details,company_approval=1).company_id
+        
+
+        customers=Customer.objects.filter(company_id = company)
+        item=Items.objects.filter(company_id = company)
+        payments=Company_Payment_Term.objects.filter(company_id = company)
+        banks = Banking.objects.filter(company_id = company)
+        unit = Unit.objects.filter(company_id = company)
+       
         if request.method == 'POST':
             invNum = request.POST['invoice_no']
-            if invoice.objects.filter(company = cmp, invoice_number__iexact = invNum).exists():
+            if invoice.objects.filter(company = company, invoice_number__iexact = invNum).exists():
                res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
                return HttpResponse(res)
 
             inv = invoice(
-                company = cmp,
+                company = company,
                 login_details = log_details,
                 customer = Customer.objects.get(id = request.POST['customer']),
                 customer_email = request.POST['customerEmail'],
@@ -1472,7 +1536,7 @@ def createInvoice(request):
             hsn  = request.POST.getlist("hsn[]")
             quantity = request.POST.getlist("qty[]")
             price = request.POST.getlist("priceListPrice[]") if 'priceList' in request.POST else request.POST.getlist("price[]")
-            tax_rate = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == cmp.state else request.POST.getlist("taxIGST[]")
+            tax_rate = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == company.state else request.POST.getlist("taxIGST[]")
             discount = request.POST.getlist("discount[]")
             total = request.POST.getlist("total[]")
           
@@ -1483,7 +1547,7 @@ def createInvoice(request):
                 for ele in mapped:
                     try:
                         itm = Items.objects.get(item_name=ele[1])
-                        invoiceitems.objects.create(invoice=inv,company = cmp,logindetails = log_details,  Items=itm,hsn=ele[2], quantity=int(ele[3]), price=float(ele[4]), tax_rate=ele[5], discount=float(ele[6]), total=float(ele[7]))
+                        invoiceitems.objects.create(invoice=inv,company = company,logindetails = log_details,  Items=itm,hsn=ele[2], quantity=int(ele[3]), price=float(ele[4]), tax_rate=ele[5], discount=float(ele[6]), total=float(ele[7]))
                         itm.current_stock -= int(ele[3])
 
                         itm.save()
@@ -1493,7 +1557,7 @@ def createInvoice(request):
             # Save transaction
                     
             invoiceHistory.objects.create(
-               company = cmp,
+               company = company,
                 login_details = log_details,
                 invoice = inv,
                 date = request.POST['invoice_date'],
@@ -1640,14 +1704,26 @@ def checkInvoiceNumber(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company
+        data = LoginDetails.objects.get(id = log_id)
+        log_details= LoginDetails.objects.get(id=log_id)
+        
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
         
         invNo = request.GET['invNum']
 
         nxtInv = ""
-        lastInv = invoice.objects.filter(company = cmp).last()
+        lastInv = invoice.objects.filter(company = company).last()
         if lastInv:
             inv_no = str(lastInv.invoice_number)
 
@@ -1676,7 +1752,7 @@ def checkInvoiceNumber(request):
                     nxtInv = st+ str(inv_num)
             else:
                 nxtInv = st+ str(inv_num)
-        if invoice.objects.filter(company = cmp, invoice_number__iexact = invNo).exists():
+        if invoice.objects.filter(company = company, invoice_number__iexact = invNo).exists():
             return JsonResponse({'status':False, 'message':'Invoice No already Exists.!'})
         elif nxtInv != "" and invNo != nxtInv:
             return JsonResponse({'status':False, 'message':'Invoice No is not continuous.!'})
@@ -1707,28 +1783,32 @@ def invoiceoverview(request):
             log_id = request.session['login_id']
             if 'login_id' not in request.session:
                 return redirect('/')
-            log_details = LoginDetails.objects.get(id=log_id)
-
-            if log_details.user_type == 'Staff':
+        data = LoginDetails.objects.get(id = log_id)
+        log_details= LoginDetails.objects.get(id=log_id)
+        
+        if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
                     
-            elif log_details.user_type == 'Company':
+        elif log_details.user_type == 'Company':
                 company = CompanyDetails.objects.get(login_details=log_details)
-            log_details= LoginDetails.objects.get(id=log_id)
-            dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-            customers=Customer.objects.all()
-            item=Items.objects.all()
-            payments=Company_Payment_Term.objects.all()
-            i = invoice.objects.all()
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
+        customers=Customer.objects.all()
+        item=Items.objects.all()
+        payments=Company_Payment_Term.objects.all()
+        i = invoice.objects.all()
 
             
 
 
 
         
-            context={
+        context={
                 'details':dash_details,
                 'allmodules': allmodules,
                 'customers':customers,
@@ -1772,20 +1852,25 @@ def checkCustomerName(request):
         log_id = request.session['login_id']
         if 'login_id' not in request.session:
             return redirect('/')
+        data = LoginDetails.objects.get(id = log_id)
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+        
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
-                com = staff.company
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
                     
         elif log_details.user_type == 'Company':
-                com = CompanyDetails.objects.get(login_details=log_details)
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
         fName = request.POST['fname']
         lName = request.POST['lname']
 
-        if Customer.objects.filter(company = com, first_name__iexact = fName, last_name__iexact = lName).exists():
+        if Customer.objects.filter(company = company, first_name__iexact = fName, last_name__iexact = lName).exists():
             msg = f'{fName} {lName} already exists, Try another.!'
             return JsonResponse({'is_exist':True, 'message':msg})
         else:
@@ -1797,19 +1882,24 @@ def checkCustomerGSTIN(request):
         log_id = request.session['login_id']
         if 'login_id' not in request.session:
             return redirect('/')
+        data = LoginDetails.objects.get(id = log_id)
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+        
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
-                com = staff.company
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
                     
         elif log_details.user_type == 'Company':
-                com = CompanyDetails.objects.get(login_details=log_details)
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
         gstIn = request.POST['gstin']
 
-        if Customer.objects.filter(company = com, GST_number__iexact = gstIn).exists():
+        if Customer.objects.filter(company = company, GST_number__iexact = gstIn).exists():
             msg = f'{gstIn} already exists, Try another.!'
             return JsonResponse({'is_exist':True, 'message':msg})
         else:
@@ -1822,9 +1912,6 @@ def checkCustomerPAN(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -1846,9 +1933,7 @@ def checkCustomerPhone(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+               
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -1870,9 +1955,7 @@ def checkCustomerEmail(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+         
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -1894,9 +1977,7 @@ def newCustomerPaymentTerm(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+           
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -1933,9 +2014,7 @@ def createInvoiceCustomer(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+            
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -2020,9 +2099,7 @@ def getCustomers(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+               
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -2044,9 +2121,7 @@ def saveItemUnit(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+           
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -2066,16 +2141,14 @@ def saveItemUnit(request):
                 return JsonResponse({'status':True})
             else:
                 return JsonResponse({'status':False, 'message':'Unit already exists.!'})
-def unit_dropdown(request):
+def show_unit_dropdown(request):
 
     if 'login_id' in request.session:
         log_id = request.session['login_id']
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+              
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -2097,15 +2170,13 @@ def unit_dropdown(request):
         return JsonResponse({'units':list},safe=False)
 
 
-def item_dropdown(request):
+def show_item_dropdown(request):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+          
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -2126,9 +2197,7 @@ def invoice_item(request):
             if 'login_id' not in request.session:
                 return redirect('/')
             log_details= LoginDetails.objects.get(id=log_id)
-            dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-            allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-            cmp =dash_details.company       
+                
             if log_details.user_type == 'Staff':
                     staff = StaffDetails.objects.get(login_details=log_details)
                     com = staff.company
@@ -2215,9 +2284,7 @@ def createInvoiceItem(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+          
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -2304,9 +2371,7 @@ def getItems(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+           
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -2327,9 +2392,7 @@ def checkAccounts(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+            
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
@@ -2356,9 +2419,7 @@ def createNewAccountFromItems(request):
         if 'login_id' not in request.session:
             return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-        allmodules= ZohoModules.objects.get(company=dash_details.company,status='New')
-        cmp =dash_details.company       
+               
         if log_details.user_type == 'Staff':
                 staff = StaffDetails.objects.get(login_details=log_details)
                 com = staff.company
