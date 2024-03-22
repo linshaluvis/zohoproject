@@ -613,23 +613,21 @@ def invoice_list_out(request):
         log_details= LoginDetails.objects.get(id=log_id)
        
 
-        if log_details.user_type == "Company":
-            company=CompanyDetails.objects.get(login_details=log_details)
-            dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
 
-            allmodules= ZohoModules.objects.get(company=company,status='New')
-            
-
-            inv = invoice.objects.filter(login_details=log_details)
-
-        if log_details.user_type=='Staff':
-            staff = StaffDetails.objects.get(login_details_id = log_id)
-            inv = invoice.objects.filter(login_details=log_details)
-            allmodules=ZohoModules.objects.get(company=staff.company)
-            dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
 
 
-        return render(request,'staff/invoicelist.html',{'allmodules':allmodules,'data':log_details,'details':dash_details,'invoices':inv})
+        return render(request,'staff/invoicelist.html',{'allmodules':allmodules,'data':log_details,'details':dash_details,'invoices':invoices})
     else:
        return redirect('/')
 
@@ -734,8 +732,6 @@ def invoicePdf(request,id):
         
         template_path = 'staff/invoice_Pdf.html'
         fname = 'Invoice_'+inv.invoice_number
-        # return render(request, 'company/Fin_Invoice_Pdf.html',context)
-        # Create a Django response object, and specify content_type as pdftemp_
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] =f'attachment; filename = {fname}.pdf'
         # find the template and render it.
@@ -745,7 +741,6 @@ def invoicePdf(request,id):
         # create a pdf
         pisa_status = pisa.CreatePDF(
         html, dest=response)
-        # if error then show some funny view
         if pisa_status.err:
             return HttpResponse('We had some errors <pre>' + html + '</pre>')
         return response
@@ -858,7 +853,7 @@ def editInvoice(request,id):
             'allmodules':allmodules, 'com':company, 'cmp':company, 'data':log_details,'invoice':inv, 'invItems':invItms, 'customers':cust, 'items':itms, 'pTerms':trms,
             'banks':bnk,'units':units, 'accounts':acc,'details': dash_details,
         }
-        return render(request,'staff/edit_Invoice.html',context)
+        return render(request,'staff/edit_invoice.html',context)
     else:
        return redirect('/')
 def updateInvoice(request, id):
@@ -1196,19 +1191,14 @@ def shareInvoiceToEmail(request,id):
     try:
         if request.method == 'POST':
             emails_string = request.POST['email_ids']
-            print(emails_string)
 
-            # Split the string by commas and remove any leading or trailing whitespace
             emails_list = [email.strip() for email in emails_string.split(',')]
             email_message = request.POST['email_message']
-            print(email_message)
-
-            print(emails_list)
+            
         
             context = {'invoice':inv, 'invItems':itms,'cmp':company}
-            template_path = 'Staff/invoice_pdf.html'
+            template_path = 'staff/invoice_pdf.html'
             template = get_template(template_path)
-            print(template)
 
             
 
@@ -1415,7 +1405,6 @@ def customerdata(request):
     cust = Customer.objects.get(id=customer_id)
     data7 = {'email': cust.customer_email,'gst':cust.GST_treatement,'gstin':cust.GST_number}
     
-    print(data7)
     return JsonResponse(data7)
 def getInvItemDetails(request):
   
@@ -1444,7 +1433,6 @@ def getBankAccount(request):
 
        if bnk:
             return JsonResponse({'status':True, 'account':bnk.bnk_acno})
-            print("ok")
        else:
             return JsonResponse({'status':False, 'message':'Something went wrong..!'})
 def createInvoice(request):
