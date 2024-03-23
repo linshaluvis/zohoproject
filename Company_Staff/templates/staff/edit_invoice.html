@@ -206,7 +206,7 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
                     <input type="text" class="form-control" name="reference_number"  value="{{invoice.reference_number}}" style="background-color: #16191b;" readonly>
                 </div>
                 <div class="col-md-4 mt-3">
-                    <input hidden value="{{cmp.State}}" id="cmpstate">
+                    <input hidden value="{{cmp.state}}" id="cmpstate">
                     <label class="">Place of supply</label>
                     <select type="text" class="form-control" id="placeOfSupply" name="place_of_supply" style="background-color: #141618; color: white;" required>
                         <option value="" selected>--Choose--</option>
@@ -495,6 +495,7 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
                     </div>
                 </div>
                 <div class="col-md-5 mt-3 d-flex">
+                    
                     <input type="submit" class="btn btn-outline-warning w-50 text-light" value="SAVE">
                     <input type="button" class="btn btn-outline-danger w-50 ml-1 text-light" value="CANCEL" onclick="window.location.href=`{% url 'view' invoice.id %}`">
                 </div>
@@ -738,7 +739,7 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
                                 <div class="d-flex">
                                     <select name="payment_terms" id="custPaymentTerms" style="background-color: #060a0e;color: white;" class="form-control">
                                         <option value="" selected>Choose</option>
-                                        {% for p in payments %}
+                                        {% for p in pTerms %}
                                         <option value="{{p.id}}">{{p.term_name}}</option>
                                         {% endfor %}
                                     </select>
@@ -850,6 +851,96 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
                                 <div class="row">
                                     <div class="col-md-6 mt-3">
                                         <div class="form-row">
+                                            <label for="pinco">Pin Code*</label>
+                                            <input type="text" class="form-control" required id="pinco" name="pincode" style="background-color: #060a0e;color: white;" placeholder="PIN code">
+                                            <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="country">Country*</label>
+                                            <input type="text" class="form-control" required id="country" name="country" style="background-color: #060a0e;color: white;" placeholder="Country">
+                                            <div class="invalid-feedback">Please provide a valid Country</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12 d-flex ">
+                                        <h5 style="color: white;">Shipping Address </h5>
+                                        <input class="ml-4 ml-5" type="checkbox" onclick="placeShipAddress()" id="shipAddress" name="ship_address">
+                                        <label class="ml-2 mt-1 ml-2" for="shipAddress"> Same As Billing Address</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipstreet">Street</label>
+                                            <textarea class="form-control" id="shipstreet" name="shipstreet" style="background-color: #060a0e;color: white;"></textarea>
+                                            <div class="invalid-feedback">Please provide a valid Street</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipcity">City</label>
+                                            <input type="text" class="form-control" id="shipcity" name="shipcity" style="background-color: #060a0e;color: white;" placeholder="City">
+                                            <div class="invalid-feedback">Please provide a valid City</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipstate">State</label>
+                                            <select type="text" class="form-control" id="shipState" name="shipstate" style="background-color: #060a0e; color: white;">
+                                                <option value="" selected>Choose</option>
+                                                <option  value="[AN]-Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
+                                                <option value="[AD]-Andhra Predhesh">[AD] Andhra Predhesh</option>
+                                                <option value="[AR]-Arunachal Predesh">[AR] Arunachal Predesh</option>
+                                                <option value="[AS]-Assam">[AS] Assam</option>
+                                                <option value="[BR]-Bihar">[BR] Bihar</option>
+                                                <option value="[CH]-Chandigarh">[CH] Chandigarh</option>
+                                                <option value="[CG]-Chhattisgarh">[CG] Chhattisgarh</option>
+                                                <option value="[DNH]-Dadra and Nagar Haveli">[DNH] Dadra and Nagar Haveli</option>
+                                                <option value="[DD]-Damn anad Diu">[DD] Damn anad Diu</option>
+                                                <option value="[DL]-Delhi">[DL] Delhi</option>
+                                                <option value="[GA]-Goa">[GA] Goa</option>
+                                                <option value="[GJ]-Gujarat">[GJ] Gujarat</option>
+                                                <option value="[HR]-Haryana">[HR] Haryana</option>
+                                                <option value="[HP]-Himachal Predesh">[HP] Himachal Predesh</option>
+                                                <option value="[JK]-Jammu and Kashmir">[JK] Jammu and Kashmir</option>
+                                                <option value="[JH]-Jharkhand">[JH] Jharkhand</option>
+                                                <option value="[KA]-Karnataka">[KA] Karnataka</option>
+                                                <option value="[KL]-Kerala">[KL] Kerala</option>
+                                                <option value="[LA]-Ladakh">[LA] Ladakh</option>
+                                                <option value="[LD]-Lakshadweep">[LD] Lakshadweep</option>
+                                                <option value="[MP]-Madhya Predesh">[MP] Madhya Predesh</option>
+                                                <option value="[MH]-Maharashtra">[MH] Maharashtra</option>
+                                                <option value="[MN]-Manipur">[MN] Manipur</option>
+                                                <option value="[ML]-Meghalaya">[ML] Meghalaya</option>
+                                                <option value="[MZ]-Mizoram">[MZ] Mizoram</option>
+                                                <option value="[NL]-Nagaland">[NL] Nagaland</option>
+                                                <option value="[OD]-Odisha">[OD] Odisha</option>
+                                                <option value="[PY]-Puducherry">[PY] Puducherry</option>
+                                                <option value="[PB]-Punjab">[PB] Punjab</option>
+                                                <option value="[RJ]-Rajasthan">[RJ] Rajasthan</option>
+                                                <option value="[SK]-Sikkim">[SK] Sikkim</option>
+                                                <option value="[TN]-Tamil Nadu">[TN] Tamil Nadu</option>
+                                                <option value="[TS]-Telangana">[TS] Telangana</option>
+                                                <option value="[TR]-Tripura">[TR] Tripura</option>
+                                                <option value="[UP]-Uttar Predesh">[UP] Uttar Predesh</option>
+                                                <option value="[UK]-Uttarakhand">[UK] Uttarakhand</option>
+                                                <option value="[WB]-West Bengal">[WB] West Bengal</option>
+                                                <option value="[OT]-Other Territory">[OT] Other Territory</option>
+                                            </select>
+                                            <div class="invalid-feedback">Please provide a valid State</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
                                             <label for="shippinco">Pin Code</label>
                                             <input type="text" class="form-control" id="shippinco" name="shippincode" style="background-color: #060a0e;color: white;" placeholder="PIN code">
                                             <div class="invalid-feedback">Please provide a valid Pin Code</div>
@@ -879,6 +970,7 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
         </div>   
     </div>
 </div>
+
 
 
 <!-- Item Unit Create Modal -->
@@ -1064,12 +1156,13 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
                                     <input class="form-check-input" name="taxref" type="radio" id="inclusive" value="taxable" onclick="showdiv()" required>
                                     <label style="color: white;" for="inclusive">taxable</label>
                                 </div>
-                            </div>
                             <div class="form-check mt-1">
                                 <input class="form-check-input" name="taxref" type="radio" value="non taxable" id="check" onclick="hidediv()">
                                 <label style="color: white;" for="check">non taxable</label>
                             </div>
                         </div>
+                    </div>
+
                         <div class="row"  id="taxableDiv" style="display: none;">
                             <div class="col-md-6 mt-3">
                                 <label for="intraStateTax" style="color: white;">Intra State Tax Rate</label>
@@ -1322,7 +1415,6 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
                         $('#applyPriceListSection').hide();
                         $('#customerPriceListId').val("");
                     }
-
                     refreshTax();
                     checkPriceList();
                 }
@@ -1421,7 +1513,9 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
 
     function refreshTax(){
         var cmpState = $('#cmpstate').val();
+        
         var plc = $('#placeOfSupply').val();
+
         if(cmpState == plc){
             $('.tax_ref').css('display','none');
             $('.tax_ref_gst').css('display','block');
@@ -1622,12 +1716,12 @@ integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCm
                     if (response.status){
                         $('#'+inpId).val(value);
                         document.getElementById('itemId'+n).value = response.id;
-                        alert( response.id)
                         document.getElementById('hsn'+n).value = response.hsn;
                         document.getElementById('price'+n).value = response.sales_rate;
                         document.getElementById('priceListPrice'+n).value = response.PLPrice;
                         document.getElementById('taxGST'+n).value = response.gst;
                         document.getElementById('taxIGST'+n).value = response.igst;
+
                         document.getElementById('qtyspan'+n).innerHTML = response.avl;
                         document.getElementById('avl'+n).value = response.avl;
                         refreshTax();
@@ -2765,138 +2859,6 @@ $(document).ready(function(){
         }
     }
     </script>
-    <!-- <script>
-          
-      // item modal
-    
-      $(document).ready(function() {
-    
-        $("#item-tax1").click(function() {
-          $(".inter-intra").removeClass('d-none');
-          $(".inter-intra").addClass('d-flex');
-    
-        });
-        
-        $("#item-tax2").click(function() {
-        
-          $(".inter-intra").removeClass('d-flex');
-          $(".inter-intra").addClass("d-none");
-    
-        });
-        });
-        
-        
-        $(document).on("click","#itemSave",function(){
-        
-        if ($('input[name="radioOption"]:checked').val() == 'Goods'){
-        
-            itemtype = $('#item_type1').val();
-          }
-        else{
-          itemtype = $('#item_type2').val();
-        }
-        
-        if ($('input[name="radioOption1"]:checked').val() == 'Taxable'){
-            inter_st = $('#inter').val();
-            intra_st = $('#intra').val();
-            var tax = 'taxable'
-    
-          }
-        else{
-          inter_st = 0;
-          intra_st = 0;
-          var tax = 'non taxable'
-    
-        }
-        
-        
-        $.ajax({
-            
-    
-          
-          type : 'POST',
-          url:"{% url 'invoice_item' %}",
-          
-          data:{
-              type : itemtype,
-              name : $("#item_name").val(),
-              unit : $("#item_units").val(),
-              hsn_number : $("#myInputField").val(),
-              inter : inter_st,
-              intra : intra_st,
-              sell_price : $("#sell_price").val(),
-              cost_price : $("#cost_price").val(),
-              sell_acc : $("#sell_acc").val(),
-              cost_acc : $("#cost_acc").val(),
-              sell_desc : $("#sell_desc").val(),
-              cost_desc : $("#cost_desc").val(),
-              stock : $("#stockOnHand").val(),
-              stock_rate : $("#stockRate").val(),
-              min_stock : $("#minStock").val(),
-              taxref : tax,
-    
-    
-              
-              csrfmiddlewaretoken: '{{ csrf_token }}'
-              
-            },
-          
-            success: function(response) {
-              // console.log(response)
-              document.getElementById("modalItem").reset();
-              reloadItems();
-            },
-        });        
-        });
-        
-        function reloadItems() {
-            $.ajax({
-                url: "{% url 'getItems' %}",
-                type: "GET",
-                dataType: "json",
-                data: {},
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-        
-                success: function(data) {
-                    $('#items-table-body tr').each(function () {
-                    var currentRow = $(this);
-                    var html = currentRow.html();
-                    
-                    if (html !== '') {
-                        currentRow.find(".items-available").find("li").remove();
-        
-                        $.each(data, function(key, value) {
-                            for (let i = 0; i < value.length; i++) {
-                                currentRow.find(".items-available").append(`
-                                    <li class="dropdown-item items-options" onclick="getItemDetails($(this).parent().prev().attr('id'), '${value[i]}')">
-                                        ${value[i]}
-                                    </li>`
-                                );
-                            }
-                        });
-        
-                        console.log('Success');
-                    }
-                });
-        
-        
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-        
-            });
-            if ($('#createNewAccount').hasClass('show')){
-                $('#createNewAccount').modal('toggle');
-            }
-        
-            if ($('#newunit').hasClass('show')){
-                $('#newunit').modal('toggle');
-            }
-        }
-        
-        
-    </script>
-     -->
+   
 
 {% endblock %}

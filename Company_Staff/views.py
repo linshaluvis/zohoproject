@@ -25,6 +25,7 @@ from django.db.models import Max
 from django.db.models import Q
 from django.http import JsonResponse,HttpResponse,HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import EmailMultiAlternatives
 
 
 # Create your views here.
@@ -918,37 +919,29 @@ def updateInvoice(request, id):
                 inv.document=request.FILES.get('file')
 
             inv.save()
+            
+
 
             # Save invoice items.
 
             itemId = request.POST.getlist("item_id[]")
-            print(itemId)
 
             itemName = request.POST.getlist("item_name[]")
-            print(itemName)
             hsn  = request.POST.getlist("hsn[]")
-            print(hsn)
             qty = request.POST.getlist("qty[]")
-            print(hsn)
 
             price = request.POST.getlist("priceListPrice[]") if 'priceList' in request.POST else request.POST.getlist("price[]")
-            print(hsn)
 
             tax = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == company.state else request.POST.getlist("taxIGST[]")
-            x=request.POST['place_of_supply']
-            y=company.state
-            print(x)
-            print(y)
+           
+            
 
-            print(tax)
             discount = request.POST.getlist("discount[]")
             total = request.POST.getlist("total[]")
             inv_item_ids = request.POST.getlist("id[]")
-            print(inv_item_ids)
             
 
             invItem_ids = [int(id) for id in inv_item_ids]
-            print(invItem_ids)
 
 
             inv_items = invoiceitems.objects.filter(invoice = inv)
@@ -1208,7 +1201,8 @@ def shareInvoiceToEmail(request,id):
             pdf = result.getvalue()
             filename = f'Invoice_{inv.invoice_number}'
             subject = f"Invoice_{inv.invoice_number}"
-            email = EmailMessage(subject, f"Hi,\nPlease find the attached Invoice for - INVOICE-{inv.invoice_number}. \n{email_message}\n\n--\nRegards,\n{company.company_name}\n{company.address}\n{company.state} - {company.country}\n{company.contact}", from_email=settings.EMAIL_HOST_USER, to=emails_list)
+
+            email = EmailMultiAlternatives(subject, f"Hi,\nPlease find the attached Invoice for - INVOICE-{inv.invoice_number}. \n{email_message}\n\n--\nRegards,\n{company.company_name}\n{company.address}\n{company.state} - {company.country}\n{company.contact}", from_email=settings.EMAIL_HOST_USER, to=emails_list)
             email.attach(filename, pdf, "application/pdf")
             email.send(fail_silently=False)
 
@@ -1219,23 +1213,63 @@ def shareInvoiceToEmail(request,id):
             messages.error(request, f'{e}')
             return redirect(view, id)
 def filter_invoice_draft(request,pk):
-    invo=invoice.objects.filter(status='draft')
-    invoic=invoice.objects.get(id=pk)
-    item=invoiceitems.objects.filter(invoice=pk)
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        data = LoginDetails.objects.get(id = log_id)
+        log_details= LoginDetails.objects.get(id=log_id)
+        
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
 
-    context={'invoices':invo,'invoice':invoic,'item':item}
-    return render(request,'staff/invoice.html',context)
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
+        invo=invoice.objects.filter(status='draft',company = company)
+        invoic=invoice.objects.get(id=pk)
+        item=invoiceitems.objects.filter(invoice=pk)
+
+        context={'invoices':invo,'invoice':invoic,'item':item}
+        return render(request,'staff/invoice.html',context)
     
     
 def filter_invoice_sent(request,pk):
-    invo=invoice.objects.filter(status='saved')
-    invoic=invoice.objects.get(id=pk)
-    item=invoiceitems.objects.filter(invoice=pk)
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        if 'login_id' not in request.session:
+            return redirect('/')
+        log_details= LoginDetails.objects.get(id=log_id)
+        data = LoginDetails.objects.get(id = log_id)
+        log_details= LoginDetails.objects.get(id=log_id)
+        
+        if log_details.user_type == 'Staff':
+                staff = StaffDetails.objects.get(login_details=log_details)
+                company = staff.company
+                allmodules=ZohoModules.objects.get(company=staff.company)
+                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
+                    
+        elif log_details.user_type == 'Company':
+                company = CompanyDetails.objects.get(login_details=log_details)
+                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
 
-    context={'invoices':invo,'invoice':invoic,'item':item}
-    return render(request,'staff/invoice.html',context)    
+                allmodules= ZohoModules.objects.get(company=company,status='New')
+        invoices = invoice.objects.filter(company = company)
+        invo=invoice.objects.filter(status='saved',company = company)
+        invoic=invoice.objects.get(id=pk)
+        item=invoiceitems.objects.filter(invoice=pk)
+
+        context={'invoices':invo,'invoice':invoic,'item':item}
+        return render(request,'staff/invoice.html',context)    
 def invoice_create(request):
- if 'login_id' in request.session:
+    if 'login_id' in request.session:
         log_id = request.session['login_id']
         if 'login_id' not in request.session:
             return redirect('/')
@@ -1280,6 +1314,7 @@ def invoice_create(request):
             'count': count,
             'i':i,
             'accounts':acc,
+            'company':company,
             
 
 
@@ -1372,6 +1407,8 @@ def invoice_createpage(request):
             'ref_no':new_number,
             'invNo':nxtInv,
             'accounts':acc,
+            'company':company,
+
 
 
             

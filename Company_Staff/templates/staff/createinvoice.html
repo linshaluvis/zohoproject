@@ -294,7 +294,7 @@ input[type="date"] {
 
     <form method="post" action="" enctype="multipart/form-data" class="">
         {% csrf_token %}
-        <input class="hidden"  id="state1" name="hidden_state1" value="{{ details.company.state  }}">
+        <input class="hidden"  id="state1" name="hidden_state1" value="{{ company.state  }}">
                 <input class="hidden"  id="state" name="hidden_state" value="">
 
                 <input class="hidden" type="text" name="samp" id="samp" >
@@ -1197,12 +1197,13 @@ input[type="date"] {
                                     <input class="form-check-input" name="taxref" type="radio" id="inclusive" value="taxable" onclick="showdiv()" required>
                                     <label style="color: white;" for="inclusive">taxable</label>
                                 </div>
-                            </div>
                             <div class="form-check mt-1">
                                 <input class="form-check-input" name="taxref" type="radio" value="non taxable" id="check" onclick="hidediv()">
                                 <label style="color: white;" for="check">non taxable</label>
                             </div>
                         </div>
+                    </div>
+
                         <div class="row"  id="taxableDiv" style="display: none;">
                             <div class="col-md-6 mt-3">
                                 <label for="intraStateTax" style="color: white;">Intra State Tax Rate</label>
@@ -2773,138 +2774,5 @@ function reloadItems() {
     }
 }
 </script>
-<!-- <script>
-      
-  // item modal
-
-  $(document).ready(function() {
-
-    $("#item-tax1").click(function() {
-      $(".inter-intra").removeClass('d-none');
-      $(".inter-intra").addClass('d-flex');
-
-    });
-    
-    $("#item-tax2").click(function() {
-    
-      $(".inter-intra").removeClass('d-flex');
-      $(".inter-intra").addClass("d-none");
-
-    });
-    });
-    
-    
-    $(document).on("click","#itemSave",function(){
-    
-    if ($('input[name="radioOption"]:checked').val() == 'Goods'){
-    
-        itemtype = $('#item_type1').val();
-      }
-    else{
-      itemtype = $('#item_type2').val();
-    }
-    
-    if ($('input[name="radioOption1"]:checked').val() == 'Taxable'){
-        inter_st = $('#inter').val();
-        intra_st = $('#intra').val();
-        var tax = 'taxable'
-
-      }
-    else{
-      inter_st = 0;
-      intra_st = 0;
-      var tax = 'non taxable'
-
-    }
-    
-    
-    $.ajax({
-        
-
-      
-      type : 'POST',
-      url:"{% url 'invoice_item' %}",
-      
-      data:{
-          type : itemtype,
-          name : $("#item_name").val(),
-          unit : $("#item_units").val(),
-          hsn_number : $("#myInputField").val(),
-          inter : inter_st,
-          intra : intra_st,
-          sell_price : $("#sell_price").val(),
-          cost_price : $("#cost_price").val(),
-          sell_acc : $("#sell_acc").val(),
-          cost_acc : $("#cost_acc").val(),
-          sell_desc : $("#sell_desc").val(),
-          cost_desc : $("#cost_desc").val(),
-          stock : $("#stockOnHand").val(),
-          stock_rate : $("#stockRate").val(),
-          min_stock : $("#minStock").val(),
-          taxref : tax,
-
-
-          
-          csrfmiddlewaretoken: '{{ csrf_token }}'
-          
-        },
-      
-        success: function(response) {
-          // console.log(response)
-          document.getElementById("modalItem").reset();
-          reloadItems();
-        },
-    });        
-    });
-    
-    function reloadItems() {
-        $.ajax({
-            url: "{% url 'getItems' %}",
-            type: "GET",
-            dataType: "json",
-            data: {},
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-    
-            success: function(data) {
-                $('#items-table-body tr').each(function () {
-                var currentRow = $(this);
-                var html = currentRow.html();
-                
-                if (html !== '') {
-                    currentRow.find(".items-available").find("li").remove();
-    
-                    $.each(data, function(key, value) {
-                        for (let i = 0; i < value.length; i++) {
-                            currentRow.find(".items-available").append(`
-                                <li class="dropdown-item items-options" onclick="getItemDetails($(this).parent().prev().attr('id'), '${value[i]}')">
-                                    ${value[i]}
-                                </li>`
-                            );
-                        }
-                    });
-    
-                    console.log('Success');
-                }
-            });
-    
-    
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-    
-        });
-        if ($('#createNewAccount').hasClass('show')){
-            $('#createNewAccount').modal('toggle');
-        }
-    
-        if ($('#newunit').hasClass('show')){
-            $('#newunit').modal('toggle');
-        }
-    }
-    
-    
-</script> -->
-
 
 {% endblock %}
