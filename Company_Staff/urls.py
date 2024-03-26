@@ -92,6 +92,26 @@ path('check_customer_phonenumber_exist',views.check_customer_phonenumber_exist,n
     path('customer_payment_terms_add',views.customer_payment_terms_add,name='customer_payment_terms_add'),
     path('customer_check_pan',views.customer_check_pan,name='customer_check_pan'),
         path('customer_check_gst',views.customer_check_gst,name='customer_check_gst'),
+        
+        # edit
+    path('getinvCustomerDetails',views.getinvCustomerDetails,name='getinvCustomerDetails'),
+    path('getinvBankAccountNumber',views.getinvBankAccountNumber,name='getinvBankAccountNumber'),
+    path('newinvPaymentTerm',views.newinvPaymentTerm,name='newinvPaymentTerm'),
+    path('getinvItemDetails',views.getinvItemDetails,name='getinvItemDetails'),
+    path('checkInvoiceNumber',views.checkInvoiceNumber,name='checkInvoiceNumber'),
+    path('addinv_unit',views.addinv_unit,name='addinv_unit'),
+    path('showinvunit_dropdown',views.showinvunit_dropdown,name='showinvunit_dropdown'),
+
+    path('createNewIteminv',views.createNewIteminv,name='createNewIteminv'),
+    path('getAllItemsinv',views.getAllItemsinv,name='getAllItemsinv'),
+
+
+
+
+
+
+
+        
 
 
 

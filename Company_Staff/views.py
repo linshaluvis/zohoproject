@@ -825,38 +825,33 @@ def deleteInvoice(request, id):
 def editInvoice(request,id):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
-        if 'login_id' not in request.session:
-            return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        
-        if log_details.user_type == 'Staff':
-                staff = StaffDetails.objects.get(login_details=log_details)
-                company = staff.company
-                allmodules=ZohoModules.objects.get(company=staff.company)
-                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-                    
-        elif log_details.user_type == 'Company':
-                company = CompanyDetails.objects.get(login_details=log_details)
-                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        if log_details.user_type == 'Company':
+            cmp = CompanyDetails.objects.get(login_details = log_details)
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+        else:
+            cmp = StaffDetails.objects.get(login_details = log_details).company
+            dash_details = StaffDetails.objects.get(login_details=log_details)
 
-                allmodules= ZohoModules.objects.get(company=company,status='New')
-        invoices = invoice.objects.filter(company = company)
+        allmodules= ZohoModules.objects.get(company = cmp)
+        cust = Customer.objects.filter(company = cmp, customer_status = 'Active')
+        trm = Company_Payment_Term.objects.filter(company = cmp)
+        repeat = CompanyRepeatEvery.objects.filter(company = cmp)
+        bnk = Banking.objects.filter(company = cmp)
+        priceList = PriceList.objects.filter(company = cmp, status = 'Active')
+        itms = Items.objects.filter(company = cmp, activation_tag = 'active')
+        units = Unit.objects.filter(company=cmp)
+        accounts=Chart_of_Accounts.objects.filter(company=cmp)
 
-        inv = invoice.objects.get(id = id)
-        invItms = invoiceitems.objects.filter(invoice = inv)
-        cust = Customer.objects.filter(company = company, customer_status='Active')
-        itms = Items.objects.filter(company = company)
-        trms = Company_Payment_Term.objects.filter(company = company)
-        bnk = Banking.objects.filter(company = company)
-        # lst = PRICE.objects.filter(Company = cmp, status = 'Active')
-        
-        units = Unit.objects.filter(company = company)
-        acc = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense') | Q(account_type='Cost Of Goods Sold'), company=company).order_by('account_name')
+        invoices = invoice.objects.get(id = id)
+        invItems = invoiceitems.objects.filter(invoice = invoices)
 
         context = {
-            'allmodules':allmodules, 'com':company, 'cmp':company, 'data':log_details,'invoice':inv, 'invItems':invItms, 'customers':cust, 'items':itms, 'pTerms':trms,
-            'banks':bnk,'units':units, 'accounts':acc,'details': dash_details,
+            'cmp':cmp,'allmodules':allmodules, 'details':dash_details, 'customers': cust,'pTerms':trm, 'repeat':repeat, 'banks':bnk, 'priceListItems':priceList, 'items':itms,
+            'units': units,'accounts':accounts, 'invoice':invoices, 'invItems': invItems,
         }
+    
+        
         return render(request,'staff/edit_invoice.html',context)
     else:
        return redirect('/')
@@ -1328,48 +1323,40 @@ def invoice_create(request):
 def invoice_createpage(request):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
-        if 'login_id' not in request.session:
-            return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        data = LoginDetails.objects.get(id = log_id)
-        log_details= LoginDetails.objects.get(id=log_id)
-        
-        if log_details.user_type == 'Staff':
-                staff = StaffDetails.objects.get(login_details=log_details)
-                company = staff.company
-                allmodules=ZohoModules.objects.get(company=staff.company)
-                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-                    
-        elif log_details.user_type == 'Company':
-                company = CompanyDetails.objects.get(login_details=log_details)
-                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        if log_details.user_type == 'Company':
+            cmp = CompanyDetails.objects.get(login_details = log_details)
+            dash_details = CompanyDetails.objects.get(login_details=log_details)
+        else:
+            cmp = StaffDetails.objects.get(login_details = log_details).company
+            dash_details = StaffDetails.objects.get(login_details=log_details)
 
-                allmodules= ZohoModules.objects.get(company=company,status='New')
-        invoices = invoice.objects.filter(company = company)
+        allmodules= ZohoModules.objects.get(company = cmp)
+        cust = Customer.objects.filter(company = cmp, customer_status = 'Active')
+        trm = Company_Payment_Term.objects.filter(company = cmp)
+        repeat = CompanyRepeatEvery.objects.filter(company = cmp)
+        bnk = Banking.objects.filter(company = cmp)
+        priceList = PriceList.objects.filter(company = cmp, status = 'Active')
+        itms = Items.objects.filter(company = cmp, activation_tag = 'active')
+        units = Unit.objects.filter(company=cmp)
+        accounts=Chart_of_Accounts.objects.filter(company=cmp)
 
-        customers=Customer.objects.filter(company_id = company, customer_status = 'Active')
-        price_lists=PriceList.objects.filter(company=company,status='Active')
-
-        item=Items.objects.filter(company_id = company)
-        payments=Company_Payment_Term.objects.filter(company_id = company)
-        banks = Banking.objects.filter(company_id = company)
-        unit = Unit.objects.filter(company_id = company)
-        acc = Chart_of_Accounts.objects.filter(Q(account_type='Expense') | Q(account_type='Other Expense') | Q(account_type='Cost Of Goods Sold'), company=company).order_by('account_name')
-
-        latest_inv = invoice.objects.filter(company_id = company).order_by('-id').first()
+        # Fetching last rec_invoice and assigning upcoming ref no as current + 1
+        # Also check for if any bill is deleted and ref no is continuos w r t the deleted rec_invoice
+        latest_inv = invoice.objects.filter(company = cmp).order_by('-id').first()
 
         new_number = int(latest_inv.reference_number) + 1 if latest_inv else 1
 
-        if invoiceReference.objects.filter(company_id = company).exists():
-            deleted = invoiceReference.objects.get(company_id = company)
+        if invoiceReference.objects.filter(company = cmp).exists():
+            deleted = invoiceReference.objects.get(company = cmp)
             
             if deleted:
                 while int(deleted.reference_number) >= new_number:
                     new_number+=1
 
-        # Finding next invoice number w r t last invoic number if exists.
+        # Finding next rec_invoice number w r t last rec_invoice number if exists.
         nxtInv = ""
-        lastInv = invoice.objects.filter(company_id = company).last()
+        lastInv = invoice.objects.filter(company = cmp).last()
         if lastInv:
             inv_no = str(lastInv.invoice_number)
             numbers = []
@@ -1397,28 +1384,13 @@ def invoice_createpage(request):
                     nxtInv = st+ str(inv_num)
             else:
                 nxtInv = st+ str(inv_num)
-
-
-       
-
-        context={
-            'details':dash_details,
-            'allmodules': allmodules,
-             'c':customers,
-            'p':item,
-            'payments':payments,
-            'banks':banks,
-            'units': unit,
-            'ref_no':new_number,
-            'invNo':nxtInv,
-            'accounts':acc,
-            'company':company,
-            'pricelists':price_lists
-
-
-
-            
+        else:
+            nxtInv = 'in-01'
+        context = {
+            'cmp':cmp,'allmodules':allmodules, 'details':dash_details, 'customers': cust,'pTerms':trm, 'repeat':repeat, 'banks':bnk, 'priceListItems':priceList, 'items':itms,
+            'invNo':nxtInv, 'ref_no':new_number,'units': units,'accounts':accounts,
         }
+    
         return render(request,'staff/createinvoice.html',context)
     
 def viewInvoice(request):
@@ -1481,70 +1453,52 @@ def getBankAccount(request):
 def createInvoice(request):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
-        if 'login_id' not in request.session:
-            return redirect('/')
         log_details= LoginDetails.objects.get(id=log_id)
-        data = LoginDetails.objects.get(id = log_id)
-        log_details= LoginDetails.objects.get(id=log_id)
-        
-        if log_details.user_type == 'Staff':
-                staff = StaffDetails.objects.get(login_details=log_details)
-                company = staff.company
-                allmodules=ZohoModules.objects.get(company=staff.company)
-                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-                    
-        elif log_details.user_type == 'Company':
-                company = CompanyDetails.objects.get(login_details=log_details)
-                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        if log_details.user_type == 'Company':
+            com = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            com = StaffDetails.objects.get(login_details = log_details).company
 
-                allmodules= ZohoModules.objects.get(company=company,status='New')
-        invoices = invoice.objects.filter(company = company)
-
-        
-
-        customers=Customer.objects.filter(company_id = company)
-        item=Items.objects.filter(company_id = company)
-        payments=Company_Payment_Term.objects.filter(company_id = company)
-        banks = Banking.objects.filter(company_id = company)
-        unit = Unit.objects.filter(company_id = company)
-       
         if request.method == 'POST':
-            invNum = request.POST['invoice_no']
-            if invoice.objects.filter(company = company, invoice_number__iexact = invNum).exists():
-               res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
-               return HttpResponse(res)
+            invNum = request.POST['rec_invoice_no']
+            if invoice.objects.filter(company = com, invoice_number__iexact = invNum).exists():
+                res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
+                return HttpResponse(res)
 
             inv = invoice(
-                company = company,
-                login_details = log_details,
-                customer = Customer.objects.get(id = request.POST['customer']),
-                customer_email = request.POST['customerEmail'],
+                company = com,
+                login_details = com.login_details,
+                customer = Customer.objects.get(id = request.POST['customerId']),
+                customer_email = request.POST['customer_email'],
                 customer_billingaddress = request.POST['bill_address'],
-                customer_GSTtype = request.POST['gst_type'],
-                customer_GSTnumber = request.POST['gstin'],
+                customer_GSTtype = request.POST['customer_gst_type'],
+                customer_GSTnumber = request.POST['customer_gstin'],
                 customer_place_of_supply = request.POST['place_of_supply'],
-                reference_number= request.POST['reference_number'],
-                 invoice_number = invNum,
-                payment_terms =Company_Payment_Term.objects.get(id = request.POST['payment_term']),
-                date = request.POST['invoice_date'],
-                expiration_date = datetime.strptime(request.POST['due_date'], '%d-%m-%Y').date(),
                
+                reference_number = request.POST['reference_number'],
+                invoice_number = invNum,
+                payment_terms = Company_Payment_Term.objects.get(id = request.POST['payment_term']),
+                date = request.POST['start_date'],
+                expiration_date = datetime.strptime(request.POST['end_date'], '%d-%m-%Y').date(),
+                # Order_number = request.POST['order_number'],
+                price_list_applied = True if 'priceList' in request.POST else False,
+                price_list = None if request.POST['price_list_id'] == "" else PriceList.objects.get(id = request.POST['price_list_id']),
                 payment_method = None if request.POST['payment_method'] == "" else request.POST['payment_method'],
-                 cheque_number = None if request.POST['cheque_id'] == "" else request.POST['cheque_id'],
+                cheque_number = None if request.POST['cheque_id'] == "" else request.POST['cheque_id'],
                 UPI_number = None if request.POST['upi_id'] == "" else request.POST['upi_id'],
                 bank_account_number = None if request.POST['bnk_id'] == "" else request.POST['bnk_id'],
                 sub_total = 0.0 if request.POST['subtotal'] == "" else float(request.POST['subtotal']),
                 IGST = 0.0 if request.POST['igst'] == "" else float(request.POST['igst']),
-
                 CGST = 0.0 if request.POST['cgst'] == "" else float(request.POST['cgst']),
                 SGST = 0.0 if request.POST['sgst'] == "" else float(request.POST['sgst']),
                 tax_amount = 0.0 if request.POST['taxamount'] == "" else float(request.POST['taxamount']),
                 adjustment = 0.0 if request.POST['adj'] == "" else float(request.POST['adj']),
-                 shipping_charge = 0.0 if request.POST['ship'] == "" else float(request.POST['ship']),
+                shipping_charge = 0.0 if request.POST['ship'] == "" else float(request.POST['ship']),
                 grand_total = 0.0 if request.POST['grandtotal'] == "" else float(request.POST['grandtotal']),
                 advanced_paid = 0.0 if request.POST['advance'] == "" else float(request.POST['advance']),
                 balance = request.POST['grandtotal'] if request.POST['balance'] == "" else float(request.POST['balance']),
-                description = request.POST['note']
+                description = request.POST['note'],
+                terms_and_condition = request.POST['terms']
             )
 
             inv.save()
@@ -1555,52 +1509,44 @@ def createInvoice(request):
 
             if 'Draft' in request.POST:
                 inv.status = "Draft"
-            elif "Save" in request.POST:
-
+            elif "Saved" in request.POST:
                 inv.status = "Saved" 
             inv.save()
 
-            # Save invoice items.
+            # Save rec_invoice items.
 
-            id = request.POST.getlist("item_id[]")
-            item_name = request.POST.getlist("item_name[]")
+            itemId = request.POST.getlist("item_id[]")
+            itemName = request.POST.getlist("item_name[]")
             hsn  = request.POST.getlist("hsn[]")
-            quantity = request.POST.getlist("qty[]")
+            qty = request.POST.getlist("qty[]")
             price = request.POST.getlist("priceListPrice[]") if 'priceList' in request.POST else request.POST.getlist("price[]")
-            tax_rate = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == company.state else request.POST.getlist("taxIGST[]")
+            tax = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == com.state else request.POST.getlist("taxIGST[]")
             discount = request.POST.getlist("discount[]")
             total = request.POST.getlist("total[]")
-          
 
-            if len(id)==len(item_name)==len(hsn)==len(quantity)==len(price)==len( tax_rate)==len(discount)==len(total) and id and item_name and hsn and quantity and price and tax_rate and discount and total:
-                mapped = zip(id,item_name,hsn,quantity,price, tax_rate,discount,total)
+            if len(itemId)==len(itemName)==len(hsn)==len(qty)==len(price)==len(tax)==len(discount)==len(total) and itemId and itemName and hsn and qty and price and tax and discount and total:
+                mapped = zip(itemId,itemName,hsn,qty,price,tax,discount,total)
                 mapped = list(mapped)
                 for ele in mapped:
-                    try:
-                        itm = Items.objects.get(item_name=ele[1])
-                        invoiceitems.objects.create(invoice=inv,company = company,logindetails = log_details,  Items=itm,hsn=ele[2], quantity=int(ele[3]), price=float(ele[4]), tax_rate=ele[5], discount=float(ele[6]), total=float(ele[7]))
-                        itm.current_stock -= int(ele[3])
+                    itm = Items.objects.get(id = int(ele[0]))
+                    invoiceitems.objects.create(company = com, logindetails = com.login_details, invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+                    itm.current_stock -= int(ele[3])
+                    itm.save()
 
-                        itm.save()
-                        
-                    except ValueError as e:
-                        print("Error converting to int:", e)
             # Save transaction
                     
             invoiceHistory.objects.create(
-               company = company,
-                login_details = log_details,
+                company = com,
+                login_details = com.login_details,
                 invoice = inv,
-                date = request.POST['invoice_date'],
-
                 action = 'Created'
             )
 
-            return redirect(invoice_list_out)
+            return redirect(createInvoice)
         else:
-            return redirect(invoice_list_out)
+            return redirect(createInvoice)
     else:
-       return redirect('/')  
+       return redirect('/')
    
 def invoice_import(request):
     if request.method == 'POST' and 'file' in request.FILES:
@@ -3050,3 +2996,349 @@ def customer_check_gst(request):
             return JsonResponse({'status': 'not_exists'})
     else:
         return JsonResponse({'error': 'Invalid request'})
+    
+    # edited
+def getinvCustomerDetails(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type == 'Company':
+            cmp = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            cmp = StaffDetails.objects.get(login_details = log_details).company
+        
+        custId = request.POST['id']
+        cust = Customer.objects.get(id = custId)
+
+        if cust:
+            context = {
+                'status':True, 'id':cust.id, 'email':cust.customer_email, 'gstType':cust.GST_treatement,'shipState':cust.place_of_supply,'gstin':False if cust.GST_number == "" or cust.GST_number == None else True, 'gstNo':cust.GST_number,
+                'street':cust.billing_address, 'city':cust.billing_city, 'state':cust.billing_state, 'country':cust.billing_country, 'pincode':cust.billing_pincode
+            }
+            return JsonResponse(context)
+        else:
+            return JsonResponse({'status':False, 'message':'Something went wrong..!'})
+    else:
+       return redirect('/')
+def getinvBankAccountNumber(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type == 'Company':
+            cmp = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            cmp = StaffDetails.objects.get(login_details = log_details).company
+        
+        bankId = request.GET['id']
+        bnk = Banking.objects.get(id = bankId)
+
+        if bnk:
+            return JsonResponse({'status':True, 'account':bnk.bnk_acno})
+        else:
+            return JsonResponse({'status':False, 'message':'Something went wrong..!'})
+    else:
+       return redirect('/')
+def newinvPaymentTerm(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type == 'Company':
+            com = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            com = StaffDetails.objects.get(login_details = log_details).company
+
+        term = request.POST['term']
+        days = request.POST['days']
+
+        if not Company_Payment_Term.objects.filter(company = com, term_name__iexact = term).exists():
+            Company_Payment_Term.objects.create(company = com, term_name = term, days =days)
+            
+            list= []
+            terms = Company_Payment_Term.objects.filter(company = com)
+
+            for term in terms:
+                termDict = {
+                    'name': term.term_name,
+                    'id': term.id,
+                    'days':term.days
+                }
+                list.append(termDict)
+
+            return JsonResponse({'status':True,'terms':list},safe=False)
+        else:
+            return JsonResponse({'status':False, 'message':f'{term} already exists, try another.!'})
+
+    else:
+        return redirect('/')
+def getinvItemDetails(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type == 'Company':
+            cmp = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            cmp = StaffDetails.objects.get(login_details = log_details).company
+        
+        itemName = request.GET['item']
+        priceListId = request.GET['listId']
+        item = Items.objects.filter(company = cmp, item_name = itemName).first()
+
+        if priceListId != "":
+            priceList = PriceList.objects.get(id = int(priceListId))
+
+            if priceList.item_rate_type == 'Each Item':
+                try:
+                    priceListPrice = float(PriceListItem.objects.get(company = cmp, price_list = priceList, item = item).custom_rate)
+                except:
+                    priceListPrice = item.selling_price
+            else:
+                mark = priceList.percentage_type
+                percentage = float(priceList.percentage_value)
+                roundOff = priceList.round_off
+
+                if mark == 'Markup':
+                    price = float(item.selling_price) + float((item.selling_price) * (percentage/100))
+                else:
+                    price = float(item.selling_price) - float((item.selling_price) * (percentage/100))
+
+                if priceList.round_off != 'Never Mind':
+                    if roundOff == 'Nearest Whole Number':
+                        finalPrice = round(price)
+                    else:
+                        finalPrice = int(price) + float(roundOff)
+                else:
+                    finalPrice = price
+
+                priceListPrice = finalPrice
+        else:
+            priceListPrice = None
+
+        context = {
+            'status':True,
+            'id': item.id,
+            'hsn':item.hsn_code,
+            'sales_rate':item.selling_price,
+            'purchase_rate':item.purchase_price,
+            'avl':item.current_stock,
+            'tax': True if item.tax_reference == 'taxable' else False,
+            'gst':item.intrastate_tax,
+            'igst':item.interstate_tax,
+            'PLPrice':priceListPrice,
+
+        }
+        return JsonResponse(context)
+    else:
+       return redirect('/')
+def checkInvoiceNumber(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type == 'Company':
+            com = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            com = StaffDetails.objects.get(login_details = log_details).company
+        
+        RecInvNo = request.GET['RecInvNum']
+
+        # Finding next rec_invoice number w r t last rec_invoice number if exists.
+        nxtInv = ""
+        lastInv = invoice.objects.filter(company = com).last()
+        if lastInv:
+            inv_no = str(lastInv.rec_invoice_no)
+            numbers = []
+            stri = []
+            for word in inv_no:
+                if word.isdigit():
+                    numbers.append(word)
+                else:
+                    stri.append(word)
+            
+            num=''
+            for i in numbers:
+                num +=i
+            
+            st = ''
+            for j in stri:
+                st = st+j
+
+            inv_num = int(num)+1
+
+            if num[0] == '0':
+                if inv_num <10:
+                    nxtInv = st+'0'+ str(inv_num)
+                else:
+                    nxtInv = st+ str(inv_num)
+            else:
+                nxtInv = st+ str(inv_num)
+        # else:
+        #     nxtInv = 'RI01'
+
+        PatternStr = []
+        for word in RecInvNo:
+            if word.isdigit():
+                pass
+            else:
+                PatternStr.append(word)
+        
+        pattern = ''
+        for j in PatternStr:
+            pattern += j
+
+        # pattern_exists = checkRecInvNumberPattern(pattern)
+
+        # if pattern !="" and pattern_exists:
+        #     return JsonResponse({'status':False, 'message':'Rec. Invoice No. Pattern already Exists.!'})
+        if invoice.objects.filter(company = com, invoice_number__iexact = RecInvNo).exists():
+            return JsonResponse({'status':False, 'message':'Invoice No. already Exists.!'})
+        elif nxtInv != "" and RecInvNo != nxtInv:
+            return JsonResponse({'status':False, 'message':'Invoice No. is not continuous.!'})
+        else:
+            return JsonResponse({'status':True, 'message':'Number is okay.!'})
+    else:
+       return redirect('/')
+def addinv_unit(request):                                                                #new by tinto mt (item)
+    login_id = request.session['login_id']
+    log_user = LoginDetails.objects.get(id=login_id)
+
+    if log_user.user_type == 'Company':
+        if request.method == 'POST':
+            c = CompanyDetails.objects.get(login_details=login_id)
+            unit_name = request.POST['units']
+            
+            if Unit.objects.filter(unit_name=unit_name, company=c).exists():
+                return JsonResponse({"message": "error"})
+            else:
+                unit = Unit(unit_name=unit_name, company=c)  
+                unit.save()  
+                return JsonResponse({"message": "success"})
+
+    elif log_user.user_type == 'Staff':
+        if request.method == 'POST':
+            staff = LoginDetails.objects.get(id=login_id)
+            sf = StaffDetails.objects.get(login_details=staff)
+            c = sf.company
+            unit_name = request.POST['units']
+            
+            if Unit.objects.filter(unit_name=unit_name, company=c).exists():
+                return JsonResponse({"message": "error"})
+            else:
+                unit = Unit(unit_name=unit_name, company=c)  
+                unit.save()  
+                return JsonResponse({"message": "success"})
+
+    return JsonResponse({"message": "success"})
+# create unit
+
+
+    
+def showinvunit_dropdown(request):                                                               
+   if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type == 'Company':
+            com = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            com = StaffDetails.objects.get(login_details = log_details).company
+
+            options = {}
+            option_objects = Unit.objects.filter(company=com)
+            for option in option_objects:
+                options[option.id] = [option.id,option.unit_name]
+            return JsonResponse(options)
+def createNewIteminv(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type == 'Company':
+            com = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            com = StaffDetails.objects.get(login_details = log_details).company
+
+        name = request.POST['name']
+        type = request.POST['type']
+        unit = request.POST.get('unit')
+        hsn = request.POST['hsn']
+        tax = request.POST['taxref']
+        gstTax = 0 if tax == 'None-Taxable' else request.POST['intra_st']
+        igstTax = 0 if tax == 'None-Taxable' else request.POST['inter_st']
+        purPrice = request.POST['pcost']
+        purAccount = None if not 'pur_account' in request.POST or request.POST['pur_account'] == "" else request.POST['pur_account']
+        purDesc = request.POST['pur_desc']
+        salePrice = request.POST['salesprice']
+        saleAccount = None if not 'sale_account' in request.POST or request.POST['sale_account'] == "" else request.POST['sale_account']
+        saleDesc = request.POST['sale_desc']
+        inventory = request.POST.get('invacc')
+        stock = 0 if request.POST.get('stock') == "" else request.POST.get('stock')
+        stockUnitRate = 0 if request.POST.get('stock_rate') == "" else request.POST.get('stock_rate')
+        minStock = request.POST['min_stock']
+        createdDate = date.today()
+        
+        #save item and transaction if item or hsn doesn't exists already
+        if Items.objects.filter(company=com, item_name__iexact=name).exists():
+            res = f"{name} already exists, try another!"
+            return JsonResponse({'status': False, 'message':res})
+        elif Items.objects.filter(company = com, hsn_code__iexact = hsn).exists():
+            res = f"HSN - {hsn} already exists, try another.!"
+            return JsonResponse({'status': False, 'message':res})
+        else:
+            item = Items(
+                company = com,
+                login_details = com.login_details,
+                item_name = name,
+                item_type = type,
+                unit = None if unit == "" else Unit.objects.get(id = int(unit)),
+                hsn_code = hsn,
+                tax_reference = tax,
+                intrastate_tax = gstTax,
+                interstate_tax = igstTax,
+                sales_account = saleAccount,
+                selling_price = salePrice,
+                sales_description = saleDesc,
+                purchase_account = purAccount,
+                purchase_price = purPrice,
+                purchase_description = purDesc,
+                date = createdDate,
+                minimum_stock_to_maintain = minStock,
+                inventory_account = inventory,
+                opening_stock = stock,
+                current_stock = stock,
+                opening_stock_per_unit = stockUnitRate,
+                track_inventory = int(request.POST['trackInv']),
+                activation_tag = 'active',
+                type = 'Opening Stock'
+            )
+            item.save()
+
+            #save transaction
+
+            Item_Transaction_History.objects.create(
+                company = com,
+                logindetails = com.login_details,
+                items = item,
+                Date = createdDate,
+                action = 'Created'
+
+            )
+            
+            return JsonResponse({'status': True})
+    else:
+       return redirect('/')
+
+def getAllItemsinv(request):
+    if 'login_id' in request.session:
+        log_id = request.session['login_id']
+        log_details= LoginDetails.objects.get(id=log_id)
+        if log_details.user_type == 'Company':
+            com = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            com = StaffDetails.objects.get(login_details = log_details).company
+
+        items = {}
+        option_objects = Items.objects.filter(company = com, activation_tag='active')
+        for option in option_objects:
+            items[option.id] = [option.id,option.item_name]
+
+        return JsonResponse(items)
+    else:
+        return redirect('/')
+

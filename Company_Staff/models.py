@@ -354,12 +354,7 @@ class Holiday(models.Model):
     user = models.ForeignKey(LoginDetails, on_delete=models.CASCADE, null=True, blank=True)
     company=models.ForeignKey(CompanyDetails, on_delete=models.CASCADE, null=True,blank=True)
     
-class CompanyRepeatEvery(models.Model):
-    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE,null=True,blank=True)
-    repeat_every =models.CharField(max_length=100,null=True,blank=True,default='')
-    repeat_type =models.CharField(max_length=100,null=True,blank=True,default='')
-    duration =models.IntegerField(null=True,default=0)
-    days =models.IntegerField(null=True,default=0)
+
     
     
 #---------------- Zoho Final Attendance - Meenu Shaju - Start--------------------
@@ -698,6 +693,9 @@ class invoice(models.Model):
     CGST=models.FloatField(default=0.0, null=True, blank=True)
     SGST=models.FloatField(default=0.0, null=True, blank=True)
     IGST = models.FloatField(default=0.0, null=True, blank=True)
+    price_list_applied = models.BooleanField(null=True, default=False)
+    price_list = models.ForeignKey(PriceList, on_delete = models.SET_NULL,null=True)
+
 
     tax_amount=models.FloatField(default=0.0, null=True, blank=True)
     shipping_charge=models.FloatField(default=0.0, null=True, blank=True)
