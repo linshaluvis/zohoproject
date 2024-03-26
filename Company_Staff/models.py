@@ -185,7 +185,333 @@ class payroll_employee_comment(models.Model):
     login_details=models.ForeignKey(LoginDetails,on_delete=models.CASCADE,null=True)
     employee=models.ForeignKey(payroll_employee,on_delete=models.CASCADE,null=True)
     
+class PriceList(models.Model):
     
+    name = models.CharField(max_length=255, null=True)
+    type_choices = [
+        ('Sales', 'Sales'),('Purchase', 'Purchase'),]
+    type = models.CharField(max_length=10, choices=type_choices, null=True)
+    item_rate_choices = [('Percentage', 'Percentage'),('Each Item', 'Each Item'),]
+    item_rate_type = models.CharField(max_length=15, choices=item_rate_choices, null=True)
+    description = models.TextField(null=True)
+    percentage_type_choices = [('Markup', 'Markup'),('Markdown', 'Markdown'),]
+    percentage_type = models.CharField(max_length=10, choices=percentage_type_choices, null=True, blank=True)
+    percentage_value = models.IntegerField(null=True, blank=True)
+    round_off_choices = [
+        ('Never Mind', 'Never Mind'),
+        ('Nearest Whole Number', 'Nearest Whole Number'),
+        ('0.99', '0.99'),
+        ('0.50', '0.50'),
+        ('0.49', '0.49'),
+    ]
+    round_off = models.CharField(max_length=20, choices=round_off_choices, null=True)
+    currency_choices = [('Indian Rupee', 'Indian Rupee')]
+    currency = models.CharField(max_length=20, choices=currency_choices, null=True)
+    date = models.DateField(auto_now_add=True, null=True)
+    STATUS_CHOICES = [('Active', 'Active'),('Inactive', 'Inactive'),]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Active')
+    attachment = models.FileField(upload_to='price_list_attachment/', null=True, blank=True)
+
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE)
+
+class PriceListItem(models.Model):
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE)
+    price_list = models.ForeignKey(PriceList, on_delete=models.CASCADE)
+    item = models.ForeignKey(Items, on_delete=models.CASCADE)  
+    standard_rate = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
+    custom_rate = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
+
+class PriceListTransactionHistory(models.Model):
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE)
+    price_list = models.ForeignKey(PriceList, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True,null=True)
+    action_choices = [
+        ('Created', 'Created'), 
+        ('Edited', 'Edited')
+        ]
+    action = models.CharField(max_length=10, choices=action_choices,null=True)
+
+class PriceListComment(models.Model):
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE)
+    price_list = models.ForeignKey(PriceList, on_delete=models.CASCADE)
+    comment = models.TextField()
+    date_added = models.DateField(auto_now_add=True)
+
+#----------------------------------------------------------akshay--end--------------------------------------------------------
+
+#-----------------Arya E.R----------------------------------------
+
+class Vendor(models.Model):
+    title = models.CharField(max_length=255,null=True,blank=True)
+    first_name = models.CharField(max_length=255,null=True,blank=True)
+    last_name = models.CharField(max_length=255,null=True,blank=True)
+    vendor_display_name = models.CharField(max_length=255,null=True,blank=True)
+    vendor_email = models.EmailField()
+    mobile = models.CharField(max_length=15,default='')
+    phone = models.CharField(max_length=15,default='')
+    company_name = models.CharField(max_length=255,null=True,blank=True)
+    skype_name_number = models.CharField(max_length=255,null=True,blank=True)
+    designation = models.CharField(max_length=255,null=True,blank=True)
+    department = models.CharField(max_length=255,null=True,blank=True)
+    website = models.URLField(blank=True, null=True,default='')
+    gst_treatment = models.CharField(max_length=255,null=True,blank=True)
+    gst_number = models.CharField(max_length=20,null=True,blank=True)
+    pan_number = models.CharField(max_length=20,null=True,blank=True)
+    currency = models.CharField(max_length=255,null=True,blank=True)
+    opening_balance_type = models.CharField(max_length=255,null=True,blank=True)
+    opening_balance = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
+    current_balance = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
+    credit_limit = models.DecimalField(max_digits=10, decimal_places=2,default=0.00)
+    source_of_supply = models.CharField(max_length=255,null=True,blank=True)
+    payment_term = models.ForeignKey(Company_Payment_Term, on_delete=models.SET_NULL,null=True,blank=True)
+    billing_attention = models.CharField(max_length=255,null=True,blank=True)
+    billing_address = models.TextField(null=True,blank=True)
+    billing_city = models.CharField(max_length=255,null=True,blank=True)
+    billing_state = models.CharField(max_length=255,null=True,blank=True)
+    billing_country = models.CharField(max_length=255,null=True,blank=True)
+    billing_pin_code = models.CharField(max_length=10,null=True,blank=True)
+    billing_phone = models.CharField(max_length=15,null=True,blank=True)
+    billing_fax = models.CharField(max_length=15,null=True,blank=True)
+    shipping_attention = models.CharField(max_length=255,null=True,blank=True)
+    shipping_address = models.TextField(null=True,blank=True)
+    shipping_city = models.CharField(max_length=255,null=True,blank=True)
+    shipping_state = models.CharField(max_length=255,null=True,blank=True)
+    shipping_country = models.CharField(max_length=255,null=True,blank=True)
+    shipping_pin_code = models.CharField(max_length=10,null=True,blank=True)
+    shipping_phone = models.CharField(max_length=15,null=True,blank=True)
+    shipping_fax = models.CharField(max_length=15,null=True,blank=True)
+    remarks = models.TextField(null=True,blank=True)
+    vendor_status = models.CharField(max_length=10,null=True,blank=True)
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE,null=True,blank=True)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE,null=True,blank=True)
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+class VendorContactPerson(models.Model):
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    work_phone = models.CharField(max_length=15)
+    mobile = models.CharField(max_length=15)
+    skype_name_number = models.CharField(max_length=255)
+    designation = models.CharField(max_length=255)
+    department = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+class VendorHistory(models.Model):
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    date = models.DateField()
+    action = models.CharField(max_length=200,null=True,blank=True)
+
+    def __str__(self):
+        return f"{self.vendor} - {self.action}"
+    
+class Vendor_remarks_table(models.Model):
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
+    remarks=models.CharField(max_length=500)
+
+class Vendor_comments_table(models.Model):
+    login_details=models.ForeignKey(LoginDetails,on_delete=models.CASCADE,null=True)
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
+    comment=models.TextField(max_length=500)
+
+class Vendor_mail_table(models.Model):
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
+    mail_from=models.TextField(max_length=300)
+    mail_to=models.TextField(max_length=300)
+    subject=models.TextField(max_length=250)
+    content=models.TextField(max_length=900)
+    mail_date=models.DateTimeField(auto_now_add=True)
+
+class Vendor_doc_upload_table(models.Model):
+    login_details=models.ForeignKey(LoginDetails,on_delete=models.CASCADE,null=True)
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE)
+    vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
+    title=models.TextField(max_length=200)
+    document=models.FileField(upload_to='doc/')
+
+#--------------------------------------end-----------------------------------------------------------
+
+class Holiday(models.Model):
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    holiday_name = models.CharField(max_length=255, null=True, blank=True)
+    user = models.ForeignKey(LoginDetails, on_delete=models.CASCADE, null=True, blank=True)
+    company=models.ForeignKey(CompanyDetails, on_delete=models.CASCADE, null=True,blank=True)
+    
+class CompanyRepeatEvery(models.Model):
+    company = models.ForeignKey(CompanyDetails, on_delete=models.CASCADE,null=True,blank=True)
+    repeat_every =models.CharField(max_length=100,null=True,blank=True,default='')
+    repeat_type =models.CharField(max_length=100,null=True,blank=True,default='')
+    duration =models.IntegerField(null=True,default=0)
+    days =models.IntegerField(null=True,default=0)
+    
+    
+#---------------- Zoho Final Attendance - Meenu Shaju - Start--------------------
+
+class Attendance(models.Model):
+    company=models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True)
+    login_details=models.ForeignKey(LoginDetails,on_delete=models.CASCADE,null=True)
+    employee=models.ForeignKey(payroll_employee,on_delete=models.CASCADE,null=True)
+    holiday=models.ForeignKey(Holiday,on_delete=models.CASCADE,null=True)
+    date=models.DateField(null=True)
+    status=models.CharField(max_length=255,null=True)
+    reason=models.CharField(max_length=255,null=True)
+
+    
+class Attendance_History(models.Model):
+    company=models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True)
+    login_details=models.ForeignKey(LoginDetails,on_delete=models.CASCADE,null=True)
+    attendance=models.ForeignKey(Attendance,on_delete=models.CASCADE,null=True)
+    date=models.DateField(null=True)
+    action=models.CharField(max_length=100,null=True)
+
+class Attendance_comment(models.Model):
+    company=models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True)
+    login_details=models.ForeignKey(LoginDetails,on_delete=models.CASCADE,null=True)
+    employee=models.ForeignKey(payroll_employee,on_delete=models.CASCADE,null=True)
+    comment = models.TextField(null=True) 
+    month = models.IntegerField(null=True)  
+    year = models.IntegerField(null=True)  
+
+#---------------- Zoho Final Attendance - Meenu Shaju - End--------------------
+
+
+# ------------------------------- GOKUL KRISHNA UR -----------------------------------------
+
+class SalaryDetails(models.Model):
+    company=models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True)
+    employee=models.ForeignKey(payroll_employee,on_delete=models.CASCADE,null=True)
+    attendance=models.ForeignKey(Attendance,on_delete=models.CASCADE,null=True)
+    holiday=models.IntegerField(default=0,blank=True,null=True)
+    salary_date =models.DateField(null=True)
+    casual_leave = models.IntegerField(default=0,blank=True,null=True)
+    month =  models.CharField(max_length=100,null=True)
+    year = models.IntegerField(default=0,blank=True,null=True)
+    basic_salary = models.IntegerField(default=0,blank=True,null=True)
+    conveyance_allowance = models.IntegerField(default=0,blank=True,null=True)
+    hra = models.IntegerField(default=0,blank=True,null=True)
+    other_allowance = models.IntegerField(default=0,blank=True,null=True)
+    total_working_days = models.IntegerField(default=0,blank=True,null=True)
+    other_cuttings = models.IntegerField(default=0,blank=True,null=True)
+    add_bonus = models.IntegerField(default=0,blank=True,null=True)
+    salary = models.FloatField(default=0,blank=True,null=True)
+    description = models.CharField(max_length=100,null=True)
+    status = models.CharField(max_length=100,null=True,default='Active')
+    DraftorSave = models.CharField(max_length=100,null=True)
+    total_amount= models.FloatField(default=0,blank=True,null=True)
+    
+
+class CommentSalaryDetails(models.Model):
+    employee=models.ForeignKey(payroll_employee,on_delete=models.CASCADE,null=True)
+    comment=models.CharField(max_length=100,null=True)
+    salary_details = models.ForeignKey(SalaryDetails,on_delete=models.CASCADE,null=True)
+    company=models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True)
+    
+
+class HistorySalaryDetails(models.Model):
+    company=models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True)
+    login_details=models.ForeignKey(LoginDetails,on_delete=models.CASCADE,null=True)
+    salary_details = models.ForeignKey(SalaryDetails,on_delete=models.CASCADE,null=True)
+    date = models.DateField(auto_now_add=True)
+    ADD = 'add'
+    EDIT = 'edit'
+    ACTION_CHOICES = [
+        (ADD, 'Add'),
+        (EDIT, 'Edit'), 
+    ]
+    action = models.CharField(max_length=7, choices=ACTION_CHOICES, default=ADD)
+
+# ------------------------------- GOKUL KRISHNA UR -----------------------------------------
+
+#---------------------EMPLOYEE_LOAN------------------------------------------#by haripriya
+
+class LoanDuration(models.Model):
+    company=models.ForeignKey(CompanyDetails,on_delete=models.CASCADE)
+    logindetails=models.ForeignKey(LoginDetails,on_delete=models.CASCADE)
+    day = models.IntegerField(null=True, blank=True)
+    duration = models.CharField(max_length=50, choices=(
+        ('Months', 'Months'),
+        ('Month', 'Month'),
+        ('Years', 'Years'),
+        ('Year', 'Year'),
+    ))
+
+class EmployeeLoan(models.Model):
+    Employee = models.ForeignKey(payroll_employee,on_delete=models.CASCADE,null=True,blank=True)
+    
+    Loandate = models.DateField(null=True)
+    LoanAmount =  models.IntegerField(null=True, blank=True)
+    duration = models.CharField(max_length=255, blank=True)
+    Expiry_date = models.DateField(null=True)
+    payment_method = models.CharField(max_length=220,null=True,blank=True)
+    cheque_number = models.CharField(max_length=220,null=True,blank=True)
+    upi_id =models.CharField(max_length=220,null=True,blank=True)
+    bank_acc_number =models.CharField(max_length=220,null=True,blank=True)
+    Monthly_payment_type =models.CharField(max_length=220,null=True,blank=True)
+    MonthlyCut_percentage = models.IntegerField(null=True,blank=True)
+    MonthlyCut_Amount =models.IntegerField(null=True,blank=True)
+    note = models.CharField(max_length=220,null=True,blank=True)
+    file = models.FileField(upload_to="images/",null=True)
+    status =models.CharField(max_length=200,null=True,blank=True,default='')
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE,null=True,blank=True)
+    company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True,blank=True)
+    balance=models.IntegerField(null=True,blank=True)
+    active = models.BooleanField(default=True)
+    emp_name= models.CharField(max_length=220,null=True,blank=True)
+    emp_no= models.IntegerField(null=True,blank=True)
+    join_date = models.DateField(null=True)
+    salary = models.IntegerField(null=True,blank=True)
+    email= models.EmailField(max_length=255,null=True)
+ 
+
+class Employeeloan_history(models.Model):
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE,null=True,blank=True)
+    company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True,blank=True)
+    employeeloan =models.ForeignKey(EmployeeLoan,on_delete=models.CASCADE,null=True,blank=True)
+    
+    Date = models.DateField(null=True,auto_now=True)
+    action = models.CharField(max_length=220,null=True,blank=True)
+
+class employeeloan_comments(models.Model):                                         
+    company=models.ForeignKey(CompanyDetails,on_delete=models.CASCADE)
+    logindetails=models.ForeignKey(LoginDetails,on_delete=models.CASCADE)
+    employee=models.ForeignKey(EmployeeLoan,on_delete=models.CASCADE)
+    comments = models.CharField(max_length=255,null=True,blank=True)
+
+class EmployeeLoanRepayment(models.Model):
+    employee = models.ForeignKey(payroll_employee, on_delete=models.CASCADE, null=True)
+    principal_amount = models.IntegerField(null=True)
+    interest_amonut = models.IntegerField(null=True)
+    payment_date = models.DateField(null=True)
+    payment_method = models.CharField(max_length=255,null=True)
+    cheque_id=models.CharField(null=True,blank=True,max_length=255)
+    upi_id=models.CharField(null=True,blank=True,max_length=255)
+    bank_id=models.CharField(null=True,blank=True,max_length=255)
+    total_payment = models.IntegerField(null=True)
+    balance = models.IntegerField(null=True)
+    particular = models.CharField(max_length=255,null=True)
+    emp = models.ForeignKey(EmployeeLoan, on_delete=models.CASCADE, null=True)
+    company=models.ForeignKey(CompanyDetails,on_delete=models.CASCADE)
+    logindetails=models.ForeignKey(LoginDetails,on_delete=models.CASCADE)
+
+#..........................Employeeloan end...........................#
+
 #----------------- Banking -----------------------------#
 
 class Banking(models.Model):

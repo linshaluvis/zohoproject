@@ -24,8 +24,8 @@ crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/274ee977b7.js" crossorigin="anonymous"></script>
 
 
-<div class="body-wrapper">
-  <div class="container-fluid">
+<div class="body-wrapper"style="background-color: black; border-radius: 1vh;" >
+  <div class="container-fluid" >
       <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">Dashboard</a></li>
@@ -34,13 +34,13 @@ crossorigin="anonymous"></script>
           </ol>
       </nav>
 
-      <div class="row mt-3">
+      <div class="row mt-3" style="background-color: black; border-radius: 1vh;">
           <div class="container">
               
           </div>
       </div>
       
-<div class="page-content">
+<div class="page-content" style="background-color: black; border-radius: 1vh;">
   <div class="radius-15 h-20">
     <div class="row">
       <div class="col-md-12">
@@ -52,7 +52,7 @@ crossorigin="anonymous"></script>
 
   <div class=" radius-15">
     <div >
-      <div class="container-fluid">
+      <div class="container-fluid" style="background-color: black; border-radius: 1vh;">
         <div class="row">
           <div class="col-md-4">
             <div class="d-flex">
@@ -69,13 +69,8 @@ crossorigin="anonymous"></script>
           </div>
           <div class="col-md-3">
           </div>
+          
           <div class="col-md-5 d-flex justify-content-end">
-            <button type="button" class="btn btn-outline-warning text-grey" id="exportBtn"><i class="fa fa-cloud-upload"></i> Export </button>
-            <button type="button" class="btn btn-outline-warning text-grey" id="importExcel" data-toggle="modal" data-target="#importModal" onclick="excelmodel()"><i class="fa fa-cloud-download" aria-hidden="true"></i>
-              Import</button>
-            
-            
-
             <div class="dropdown ml-1">
               <button type="button" class="btn btn-outline-warning dropdown-toggle text-grey" data-toggle="dropdown"><i class="fa fa-filter"></i> </button>
               <div class="dropdown-menu" style="background-color: black">
@@ -85,6 +80,14 @@ crossorigin="anonymous"></script>
                 
               </div>
             </div>
+            <button type="button" class="btn btn-outline-warning text-grey" id="importExcel" data-toggle="modal" data-target="#importModal" onclick="excelmodel()"><i class="fa fa-cloud-download" aria-hidden="true"></i>
+              Import</button>
+            
+            <button type="button" class="btn btn-outline-warning text-grey" id="exportBtn"><i class="fa fa-cloud-upload"></i> Export </button>
+           
+            
+
+           
             <a href="{% url 'invoice_createpage' %}" class="ml-1"></i><button type="button" class="btn btn-outline-warning text-grey"><i class="fa fa-plus font-weight-light"></i> New</button></a>
           </div>
         </div>

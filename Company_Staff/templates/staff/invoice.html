@@ -133,7 +133,7 @@
     }
 
     .th{
-        color: rgb(12, 79, 234);
+        color: rgb(229, 155, 37);
     }
 
     @media print{
@@ -294,8 +294,8 @@
         transform: rotate(-45deg); */
     }
     .ribbon .ribbon-open {
-        background-color: #268ddd;
-        border-color: #1c72b4;
+        background-color:chocolate;
+        border-color: chocolate;
     }
     :root {
         --body-bg: rgb(204, 204, 204);
@@ -548,7 +548,7 @@
              <div class="col-md-3 scrollable-container" style="border-right: 1px solid white; overflow-y: scroll; height: 84vh;width: 25%;">
                <div class="row">
              
-                 <a class="text-white" style="font-size: 1.5rem;color: white; padding-left: 20px; padding-top: 20px;">Items</a>
+                 <a class="text-white" style="font-size: 1.5rem;color: white; padding-left: 20px; padding-top: 20px;">Invoices</a>
               
                  <br>      
                  <div class="col-md-2">
@@ -608,8 +608,7 @@
                  {% for i in invoices %}
                    <tr class="clickable" id="{{i.id}}">
                      <td class="justify-content-between align-items-center ">
-                        <label class="text-left d-block " ><a class="text-white hidden"  href="{% url 'view' i.id %}">{{ i.customer.first_name}} {{ i.customer.last_name}}</a></label>
-                        <label class="text-left d-block"><a class="text-white"  href="{% url 'view' i.id %}"> {{ i.date }}
+                        <label class="text-left d-block"><a class="text-white"  href="{% url 'view' i.id %}"> {{ i.date }}</a></label>
 
                         <br>
 
@@ -623,9 +622,13 @@
                        <label class="text-end d-block"><a class="text-white"  href="{% url 'view' i.id %}">{{ i.invoice_number }}</a></label>
                        <br>
                        <label class="text-end d-block"><a class="text-white"  href=" {% url 'view' i.id %}">{{ i.status }} </a></label>
+                       <br>
+                       <label class="text-end d-block " ><a class="text-white hidden"  href="{% url 'view' i.id %}">{{ i.customer.first_name}} {{ i.customer.last_name}}</a></label>
+
                      </td>
                     
                    </tr></a>
+                   
                  {% endfor %}
                </tbody>
              </table>
@@ -661,12 +664,13 @@
   
         
           {% if invoice.status == 'Draft' %}
-          <div class="dropdown p-0 nav-item"  id="convertBtn" style="margin-left: 4px;">
-              <li  class="dropdown-toggle btn btn-outline-warning text-warning fa fa-exchange" data-toggle="dropdown"> {{invoice.status}}</li>
+          <a href="{% url 'convertInvoice' invoice.id %}" class="ml-2 fa fa-exchange btn btn-outline-warning text-grey"  id="convertBtn" role="button"style="margin-left: 4px;">convert</a>
+          <!-- <div class="dropdown p-0 nav-item"  id="convertBtn" style="margin-left: 4px;">
+              <li  class="dropdown-toggle btn btn-outline-warning text-warning fa fa-exchange ml-2" data-toggle="dropdown"> convert</li>
               <ul class="dropdown-menu" style="background-color: black;" id="">
                   <a class="dropdown-item" href="{% url 'convertInvoice' invoice.id %}">Saved</a>
               </ul>
-          </div>
+          </div> -->
           {% endif %}
          
       
@@ -691,8 +695,18 @@
                                     {% endif %}
                             </ul>
                         </div>
-       
-          <a class=" ml-2 btn btn-outline-warning" href="" data-toggle="modal" data-target="#commentModal"  id="commentsBtn" style="margin-left: 4px;" data-toggle="tooltip" title="comment"> <i class="far fa-comment"></i> </a>
+        <!-- Comment Button -->
+                <div class="dropdown">
+                    <a href=" " class="btn btn-outline-warning py-2 fas fa-comment-dots dropdown-toggle text-warning"
+                        data-bs-toggle="dropdown" id="attachmentDropdown" aria-haspopup="true" aria-expanded="false" style="margin-left: 4px;"></a>
+                    <div class="dropdown-menu" aria-labelledby="attachmentDropdown" style="background-color: rgb(46, 45, 45); color: white;margin-left: 4px;">
+                        <a class="dropdown-item text-white" style="cursor: pointer;" data-toggle="modal" data-target="#cmnts"><i
+                                class="fa-solid fa fa-plus"></i>Add</a>
+                        <a class="dropdown-item text-white" style="cursor: pointer;" data-toggle="modal" data-target="#cmt_list"><i
+                                class="fas fa-list"></i>&nbsp;View List</a>
+                    </div>
+                </div> 
+          <!-- <a class=" ml-2 btn btn-outline-warning" href="" data-toggle="modal" data-target="#commentModal"  id="commentsBtn" style="margin-left: 4px;" data-toggle="tooltip" title="comment"> <i class="far fa-comment"></i> </a> -->
 
           <a class=" ml-2 btn btn-outline-warning" href="{% url 'InvoiceHistory' invoice.id %}" data-toggle="modal" style="margin-left: 4px;" data-target="#commentModal2" id="historyBtn"data-toggle="tooltip" title="history"> <i class="fa-solid fa-clock-rotate-left"></i></a>
 
@@ -918,7 +932,7 @@
 
                                 <div class="row mb-4 d-flex justify-content-between align-items-center">
                                     <div class="col-md-4 mt-3">
-                                        <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Billing Details</h5>
+                                        <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">invoice Details</h5>
                                     </div>
                                     <div class="col-md-4 mt-3"></div>
                                     <div class="col-md-4 mt-3"></div>
@@ -1047,20 +1061,17 @@
                     <div class="col-lg-4 bg-dark">
 
                         <div class="px-3">
-                            <h4 class="fw-bold mb-2 mt-4 pt-1 text-white">Bill Details</h4>
+                            <h4 class="fw-bold mb-2 mt-4 pt-1 text-white">Invoice  Details</h4>
                             <hr class="my-4">
                             <div class="d-flex justify-content-between mb-4">
-                                <h6 class=" text-white">Bill Status</h6>
+                                <h6 class=" text-white">Invoice Status</h6>
                                 {% if invoice.status == 'Draft' %} <span class="text-info h5 font-weight-bold">DRAFT</span> {% else %} <span class="text-warning h5 font-weight-bold">SAVED</span> {% endif %}
                             </div>
                             <div class="d-flex justify-content-between mb-4">
                                 <h6 class="text-white">Sub Total</h6>
                                 {{ invoice.sub_total }}
                             </div>
-                            <div class="d-flex justify-content-between mb-4">
-                                <h6 class=" text-white">Tax Amount</h6>
-                                {{invoice.tax_amount }}
-                            </div>
+                           
                             {%if invoice.IGST != 0 %}
                             <div class="d-flex justify-content-between mb-4">
                                 <h6 class=" text-white">IGST</h6>
@@ -1079,6 +1090,10 @@
                                 {{ invoice.SGST }}
                             </div>
                             {%endif%}
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class=" text-white">Tax Amount</h6>
+                                {{invoice.tax_amount }}
+                            </div>
                             {% if invoice.shipping_charge != 0 %}
                             <div class="d-flex justify-content-between mb-4">
                                 <h6 class=" text-white">Shipping Charge</h6>
@@ -1321,7 +1336,7 @@
                     <div  id="whatToPrint2"  class="printTemplates template2" style="display: none;">
                         <div class="my-5 page" size="A4" >
                             <div id="printdiv2">
-                                <div class="row px-5 py-4" style="background-color:#268ddd;" >
+                                <div class="row px-5 py-4 bg-warning"  >
                                     <div id="ember2512" class="col-md-4 d-flex justify-content-start tooltip-container ember-view ribbon text-ellipsis">
                                       <div class="text-white d-flex align-items-center px-5" style="border-radius: 1vh; background-color:#999999">{{invoice.status}}<!----></div>
                                   </div>
@@ -1357,7 +1372,7 @@
                                               <div class="col-4"></div>
                                               <div class="col-4 pr-0">
                                                   <label class="text-white w-100 p-1" style="border-top-right-radius: 4vh; border-bottom-right-radius: 4vh; background-color: #999999;" ><b>SHIPPING ADDRESS</b></label>
-                                                  <h5 class="text-secondary" style="font-weight: bold;">{{invoice.customer.title}} {{invoice.customer.first_name}} {{invoice.customer.last_name}}</h5>
+                                                  <h5 class="text-warning" style="font-weight: bold;">{{invoice.customer.title}} {{invoice.customer.first_name}} {{invoice.customer.last_name}}</h5>
                                                   <p class="address" style="font-weight: bold;color: #000;">{{ invoice.customer.billing_address | linebreaksbr}} </p>
                                               </div>
                                           </div>
@@ -1367,18 +1382,18 @@
                       
                                   <section class="product-area mt-2">
                                       <table class="table table-hover table-bordered  template2table" id="table2">
-                                          <thead >
+                                          <thead style="background-color:chocolate;" >
                                               <tr class="template3tablehead">
-                                                  <th class="text-center bg-dark" style="color:black">Items</th>
-                                                  <th class="text-center bg-dark" style="color:black">HSN</th>
-                                                  <th class="text-center bg-dark" style="color:black">Quantity</th>
-                                                  <th class="text-center bg-dark" style="color:black">Rate</th>
-                                                  <th class="text-center bg-dark" style="color:black">Tax</th>
-                                                  <th class="text-center bg-dark" style="color:black">Discount</th>
-                                                  <th class="text-center bg-dark" style="color:black">Total</th>
+                                                  <th class="text-center bg-warning" style="color:black">Items</th>
+                                                  <th class="text-center bg-warning" style="color:black">HSN</th>
+                                                  <th class="text-center bg-warning" style="color:black">Quantity</th>
+                                                  <th class="text-center bg-warning" style="color:black">Rate</th>
+                                                  <th class="text-center bg-warning" style="color:black">Tax</th>
+                                                  <th class="text-center bg-warning" style="color:black">Discount</th>
+                                                  <th class="text-center bg-warning" style="color:black">Total</th>
                                               </tr>
                                           </thead>
-                                          <tbody  style="background-color: #999999;">
+                                          <tbody  style="background-color: #b7a65a;">
                                               {% for itm in invItems %}
                                                   <tr>
                                                       <td class="text-center" style="color:black">{{ itm.Items.item_name}}</td>
@@ -1488,7 +1503,7 @@
                         <div class="my-5 page"  size="A3" >
                             <div class="" id="printdiv3">
                                 <div class="row">
-                                    <div class="col-sm-12" style="background-image: linear-gradient(#1b83e8, black); color: white;">
+                                    <div class="col-sm-12" style="background-image: linear-gradient(#cb972f, black); color: white;">
                                         <p style="font-size: 4vh; text-align: center;">INVOICE</p>
                                         <p style=" text-align: center;"> {{cmp.Company_name}} <br>
                                             {{cmp.address}} <br>
@@ -1548,13 +1563,13 @@
                                         <table class="table table-hover table-bordered  template3table" id="table3">
                                             <thead >
                                                 <tr class="template3tablehead">
-                                                    <th class="text-center bg-dark"  style="color:black">Items</th>
-                                                    <th class="text-center bg-dark"  style="color:black">HSN</th>
-                                                    <th class="text-center bg-dark"  style="color:black">Quantity</th>
-                                                    <th class="text-center bg-dark"  style="color:black">Rate</th>
-                                                    <th class="text-center bg-dark"  style="color:black">Tax</th>
-                                                    <th class="text-center bg-dark"  style="color:black">Discount</th>
-                                                    <th class="text-center bg-dark"  style="color:black">Total</th>
+                                                    <th class="text-center bg-warning"  style="color:black">Items</th>
+                                                    <th class="text-center bg-warning"  style="color:black">HSN</th>
+                                                    <th class="text-center bg-warning"  style="color:black">Quantity</th>
+                                                    <th class="text-center bg-warning"  style="color:black">Rate</th>
+                                                    <th class="text-center bg-warning"  style="color:black">Tax</th>
+                                                    <th class="text-center bg-warning"  style="color:black">Discount</th>
+                                                    <th class="text-center bg-warning"  style="color:black">Total</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1659,6 +1674,7 @@
             <div id="slip" style="display: none;" >
 
                 <div class="slip-container bg-white" id="slip_container">
+                    
                     <div class="slip text-dark">
                         <h5 class="font-weight-bold text-center text-dark">{{cmp.company_name}}</h5>
                         <div class="address text-center">
@@ -1750,10 +1766,7 @@
                                 <span>Subtotal</span>
                                 <span><span>&#8377; </span>{{invoice.sub_total}}</span>
                             </div>
-                            <div class="subtot-item d-flex justify-content-between">
-                                <span>Tax Amount</span>
-                                <span><span>&#8377; </span>{{invoice.tax_amount}}</span>
-                            </div>
+                           
                             {% if invoice.IGST == 0 %}
                             <div class="subtot-item d-flex justify-content-between">
                                 <span>CGST</span>
@@ -1769,6 +1782,10 @@
                                 <span><span>&#8377; </span>{{invoice.IGST}}</span>
                             </div>
                             {% endif %}
+                            <div class="subtot-item d-flex justify-content-between">
+                                <span>Tax Amount</span>
+                                <span><span>&#8377; </span>{{invoice.tax_amount}}</span>
+                            </div>
                             {% if invoice.adjustment != 0 %}
                             <div class="subtot-item d-flex justify-content-between">
                                 <span>Adjustment</span>
@@ -1821,7 +1838,7 @@
 <!-- Share To Email Modal -->
 <div class="modal fade" id="shareToEmail">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="background-color: #213b52;">
+        <div class="modal-content" style="background-color:black">
             <div class="modal-header">
                 <h5 class="m-3 text-white text-center">Share Invoice </h5>
                 <button type="button" class="close btn btn-outline-warning" data-dismiss="modal" aria-label="Close">
@@ -1849,22 +1866,99 @@
         </div>   
     </div>
 </div>
+<div class="modal fade" id="cmnts">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
+        <div class="modal-header" style="background: rgb(32, 35, 37);">
+          <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #fefefe;">Comments</h5>
+          <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body" style="background: rgb(32, 35, 37);">
+          <div class="card p-3 m-3">
+            <form action="{% url 'addInvoiceComment' invoice.id %}" method="post" class="needs-validation"
+              id="share_to_email_form" autocomplete="off">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="emailIds" style="color: #000;">Enter Comment</label>
+                <textarea class="form-control text-dark"  style="color: #000;" name="comment" id="comment" rows="5"
+                  placeholder="MEnter your comment here" required></textarea>
+              </div>
+             
+       
+          </div>
+          <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffff;">
+            <!-- <button type="submit">submit</button> -->
+            <input type="submit" id="share_with_email"
+              class="submitShareEmailBtn rounded-pill text-grey w-50 my-4 mx-3"  style="background-color: #222121; color: #e1e1e1;" value="Save">
+          </div>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="modal fade" id="cmt_list">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
+        <div class="modal-header" style="background: rgb(32, 35, 37);">
+          <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #eeeaea;">Comments</h5>
+          <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body" style="background: rgb(32, 35, 37);">
+          <div class="card p-3 m-3" style="background-color: #000;">
+            
+            <table style="background-color: #000; margin-right: 10px; border-radius: 5px;">
+              <thead class="text-white">
+                  <tr>
+                      <th style="color: rgb(250, 247, 242); padding-bottom: 10px;"><b>Comments</b></th>
+                      <th style="color: rgb(244, 244, 244); padding-bottom: 10px;"><b></b></th>
+                      <th style="color: rgb(250, 247, 242); padding-bottom: 10px;"><b>Delete</b></th>
+                  </tr>
+                  <tr>
+                      <td colspan="3" style="border-bottom: 2px solid white; margin-bottom: 10px;"></td>
+                  </tr>
+              </thead>
+          
+              <tbody style="background-color: black; padding-top: 20px;"> <!-- Adjusted padding-top for spacing -->
+                {% for i in comments %}
+                      <tr style="background-color: black;height: 40px;">
+                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ i.comments }}</td>            
+                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;"><a class="text-danger" href="{% url 'deleteInvoiceComment' i.id %}" onclick="return confirm('Are you sure you want to delete.?')"><i class="fa fa-trash" style="font-size: 1.1rem;"></i></a></td>
+                         
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+   
+  
+  
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+<!-- 
+<div class="modal fade "id="commentModal"
+ style="width: 750px; margin-left: 350px; justify-content: center; overflow: hidden;">
+ <div class="modal-dialog modal-xl m-5 p-5">
+     <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
+         <div class="modal-header " style="background: rgb(32, 35, 37);">
+             <h5 class="m-3 text-uppercase text-light">Enter Comment</h5>
+             <button type="button" class="close text-dark bg-none" data-dismiss="modal"
+                 aria-label="Close">&times;</button>
 
-<!-- Add Comments Modal -->
-<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="background-color: #222d36;">
-            <div class="modal-header">
-                <h3 class="modal-title text-white" id="exampleModalLabel">Add Comments</h3>
-                <button type="button" class="btn  btn-outline-danger close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+         </div>
+         <div class="modal-body" style="background: rgb(32, 35, 37); justify-content: center; overflow: hidden;">
+
             </div>
 
             <form action="{% url 'addInvoiceComment' invoice.id %}" method="post">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <textarea type="text" class="form-control" name="comment" placeholder="Add Comments.." required></textarea>
+                    <textarea type="text" class="form-control text-dark bg-light" name="comment" placeholder="Add Comments.." required></textarea>
                     {% if not comments %}
                     <span class="my-2 font-weight-bold d-flex justify-content-center">No Comments.!</span>
                     {% else %}
@@ -1898,7 +1992,7 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->
 
 
 
@@ -2545,21 +2639,60 @@
       // You can add any additional logic or calculations here
     }
   </script>
- 
-  
-  
-  <div class="modal fade" id="commentModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"  aria-hidden="true" style="margin-top: 8vh;width: 100%;">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content" style="background-color: #3b3b3b;">
-        <div class="modal-header">
-          <h3 class="modal-title text-light" id="exampleModalLabel"></h3>
-          <button type="button" class="btn btn-outline-warning close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true" style="font-size: x-large;">&times;</span>
-          </button>
+  <div class="modal fade" id="commentModal2" >
+    <div class="modal-dialog modal-xl" >
+      <div class="modal-content" style="background: #1f1f1ffd;border-radius: 20px;">
+        <div class="modal-header" style="background: #1f1f1ffd;">
+          <h5 class="m-3 text-uppercase" id="shareBillEmailLabel" style="color: #e1e1e1;"># {{ invoice.invoice_number }} -  HISTORY</h5>
+          <button type="button" class="close" style="width: 30px;" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
         </div>
-        <div class="modal-body">
-            <div class=" card-registration card-registration-2" style="border-radius: 15px;">
-                <div class=" p-0">
+        <div class="modal-body" style="background: #1f1f1ffd;;">
+          <div class="card p-3 m-3" style="background-color: #000;">
+          
+            <table style="background-color: #000; margin-right: 10px; border-radius: 5px;">
+              <thead class="text-white">
+                  <tr>
+                      <th style="color: rgb(250, 247, 242); padding-bottom: 10px;"><b>Action</b></th>
+                      <th style="color: rgb(244, 244, 244); padding-bottom: 10px;"><b>Date</b></th>
+                      <th style="color: rgb(250, 247, 242); padding-bottom: 10px;"><b>DONE BY</b></th>
+                  </tr>
+                  <tr>
+                      <td colspan="3" style="border-bottom: 2px solid white; margin-bottom: 10px;"></td>
+                  </tr>
+              </thead>
+          
+              <tbody style="background-color: black; padding-top: 20px;"> <!-- Adjusted padding-top for spacing -->
+                  {% for i in historys %}
+                      <tr style="background-color: black;height: 40px;">
+                        {% if i.action == 'Created' %}<td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ i.action }}</td> {% else %}<td class="text-warning" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{i.action}}</td>{% endif %}           
+                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ i.date }}</td>
+                          <td class="text-white" style="color: rgb(0, 0, 0); background-color: black; padding-bottom: 10px;">{{ i.login_details.first_name }}&nbsp;{{ i.login_details.last_name }}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          
+          </div>
+      </div>
+      
+  </div>
+  </div></div>
+<!--  
+  <div class="modal fade " id="commentModal2"
+  style="width: 750px; margin-left: 350px; justify-content: center; overflow: hidden;">
+  <div class="modal-dialog modal-xl m-5 p-5">
+      <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
+          <div class="modal-header " style="background: rgb(32, 35, 37);">
+            <center><h3 class="mt-3 text-white text-uppercase"># {{ invoice.invoice_number }} -  HISTORY</h3></center>
+            <button type="button" class="close text-dark bg-none" data-dismiss="modal"
+                  aria-label="Close">&times;</button>
+ 
+          </div>
+          <div class="modal-body" style="background: rgb(32, 35, 37); justify-content: center; overflow: hidden;">
+              <div class="card p-0 m-0">
+  
+ 
                     <div id="history">
                         <center><h3 class="mt-3 text-white text-uppercase"># {{ invoice.invoice_number }} -  HISTORY</h3></center>
                         <div class="table-responsive px-2">
@@ -2598,6 +2731,6 @@
     </div>
     
   </div>
-  </div>
+  </div> -->
 {% endblock %}
 

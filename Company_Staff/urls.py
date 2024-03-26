@@ -80,6 +80,19 @@ urlpatterns = [
     path('Staff/invoice/show_unit_dropdown',views.show_unit_dropdown, name='show_unit_dropdown'),
     path('Staff/invoice/createNewAccountFromItems',views.createNewAccountFromItems, name='createNewAccountFromItems'),
     path('Staff/invoice/checkAccounts',views.checkAccounts, name='checkAccounts'),
+    path('Staff/invoice/add_customer_invoice',views.add_customer_invoice, name='add_customer_invoice'),
+        path('Staff/invoice/create_item_invoice',views.create_item_invoice, name='create_item_invoice'),
+    path('Staff/invoice/getAllAccounts',views.getAllAccounts, name='getAllAccounts'),
+
+
+path('check_customer_phonenumber_exist',views.check_customer_phonenumber_exist,name='check_customer_phonenumber_exist'),
+    path('check_customer_work_phone_exist',views.check_customer_work_phone_exist,name='check_customer_work_phone_exist'),
+    path('check_customer_email_exist',views.check_customer_email_exist,name='check_customer_email_exist'),
+    path('check_customer_term_exist',views.check_customer_term_exist,name='check_customer_term_exist'),
+    path('customer_payment_terms_add',views.customer_payment_terms_add,name='customer_payment_terms_add'),
+    path('customer_check_pan',views.customer_check_pan,name='customer_check_pan'),
+        path('customer_check_gst',views.customer_check_gst,name='customer_check_gst'),
+
 
 
 
