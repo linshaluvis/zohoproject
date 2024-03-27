@@ -858,45 +858,40 @@ def editInvoice(request,id):
 def updateInvoice(request, id):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
-        if 'login_id' not in request.session:
-            return redirect('/')
-          
-        data = LoginDetails.objects.get(id = log_id)
         log_details= LoginDetails.objects.get(id=log_id)
-        
-        if log_details.user_type == 'Staff':
-                staff = StaffDetails.objects.get(login_details=log_details)
-                company = staff.company
-                allmodules=ZohoModules.objects.get(company=staff.company)
-                dash_details = StaffDetails.objects.get(login_details=log_details,company_approval=1)
-                    
-        elif log_details.user_type == 'Company':
-                company = CompanyDetails.objects.get(login_details=log_details)
-                dash_details = CompanyDetails.objects.get(login_details=log_details,superadmin_approval=1,Distributor_approval=1)
+        if log_details.user_type == 'Company':
+            com = CompanyDetails.objects.get(login_details = log_details)
+        else:
+            com = StaffDetails.objects.get(login_details = log_details).company
 
-                allmodules= ZohoModules.objects.get(company=company,status='New')
-        invoices = invoice.objects.filter(company = company)
         inv = invoice.objects.get(id = id)
         if request.method == 'POST':
-            invNum = request.POST['invoice_no']
-            if inv.invoice_number != invNum and invoice.objects.filter(company = company, invoice_number__iexact = invNum).exists():
-                res = f'<script>alert("Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
+            invNum = request.POST['rec_invoice_no']
+            if inv.invoice_number != invNum and invoice.objects.filter(company = com, invoice_number__iexact = invNum).exists():
+
+                res = f'<script>alert(" Invoice Number `{invNum}` already exists, try another!");window.history.back();</script>'
                 return HttpResponse(res)
 
-            inv.customer = Customer.objects.get(id = request.POST['customer'])
-            inv.company=company
-            inv.customer_email = request.POST['customerEmail']
+            inv.customer = Customer.objects.get(id = request.POST['customerId'])
+            inv.customer_email = request.POST['customer_email']
             inv.customer_billingaddress = request.POST['bill_address']
-            inv.customer_GSTtype = request.POST['gst_type']
-            inv.customer_GSTnumber = request.POST['gstin']
+            inv.customer_GSTtype = request.POST['customer_gst_type']
+            y=request.POST['customer_gst_type']
+            print(y)
+            inv.customer_GSTnumber = request.POST['customer_gstin']
             inv.customer_place_of_supply = request.POST['place_of_supply']
+            x=request.POST['place_of_supply']
+            print(x)
+           
+            inv.reference_number = request.POST['reference_number']
             inv.invoice_number = invNum
             inv.payment_terms = Company_Payment_Term.objects.get(id = request.POST['payment_term'])
-            inv.date = request.POST['invoice_date']
-            inv.expiration_date = datetime.strptime(request.POST['due_date'], '%d-%m-%Y').date()
-            # inv.salesOrder_no = request.POST['order_number']
-            # inv.exp_ship_date = None
-            #  inv.price_list_applied = True if 'priceList' in request.POST else False
+            inv.date = request.POST['start_date']
+            inv.expiration_date = datetime.strptime(request.POST['end_date'], '%d-%m-%Y').date()
+            # inv.order_no = request.POST['order_number']
+            inv.price_list_applied = True if 'priceList' in request.POST else False
+            inv.price_list = None if request.POST['price_list_id'] == "" else PriceList.objects.get(id = request.POST['price_list_id'])
+            # inv.repeat_every = CompanyRepeatEvery.objects.get(id = request.POST['repeat_every'])
             inv.payment_method = None if request.POST['payment_method'] == "" else request.POST['payment_method']
             inv.cheque_number = None if request.POST['cheque_id'] == "" else request.POST['cheque_id']
             inv.UPI_number = None if request.POST['upi_id'] == "" else request.POST['upi_id']
@@ -912,113 +907,81 @@ def updateInvoice(request, id):
             inv.advanced_paid = 0.0 if request.POST['advance'] == "" else float(request.POST['advance'])
             inv.balance = request.POST['grandtotal'] if request.POST['balance'] == "" else float(request.POST['balance'])
             inv.description = request.POST['note']
+            inv.terms_and_condition = request.POST['terms']
 
             if len(request.FILES) != 0:
                 inv.document=request.FILES.get('file')
-
             inv.save()
-            
 
 
-            # Save invoice items.
+            # Save rec_invoice items.
 
             itemId = request.POST.getlist("item_id[]")
-
             itemName = request.POST.getlist("item_name[]")
             hsn  = request.POST.getlist("hsn[]")
             qty = request.POST.getlist("qty[]")
-
             price = request.POST.getlist("priceListPrice[]") if 'priceList' in request.POST else request.POST.getlist("price[]")
-
-            tax = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == company.state else request.POST.getlist("taxIGST[]")
-           
-            
-
+            tax = request.POST.getlist("taxGST[]") if request.POST['place_of_supply'] == com.state else request.POST.getlist("taxIGST[]")
             discount = request.POST.getlist("discount[]")
             total = request.POST.getlist("total[]")
             inv_item_ids = request.POST.getlist("id[]")
-            
-
             invItem_ids = [int(id) for id in inv_item_ids]
-
 
             inv_items = invoiceitems.objects.filter(invoice = inv)
             object_ids = [obj.id for obj in inv_items]
-            print(object_ids)
-
-            
 
             ids_to_delete = [obj_id for obj_id in object_ids if obj_id not in invItem_ids]
             for itmId in ids_to_delete:
                 invItem = invoiceitems.objects.get(id = itmId)
-                item = Items.objects.get(id = invItem.Items.id)
+                item = Items.objects.get(id = invItem.item.id)
                 item.current_stock += invItem.quantity
                 item.save()
 
             invoiceitems.objects.filter(id__in=ids_to_delete).delete()
             
             count = invoiceitems.objects.filter(invoice = inv).count()
-            print(count)
-
 
             if len(itemId)==len(itemName)==len(hsn)==len(qty)==len(price)==len(tax)==len(discount)==len(total)==len(invItem_ids) and invItem_ids and itemId and itemName and hsn and qty and price and tax and discount and total:
                 mapped = zip(itemId,itemName,hsn,qty,price,tax,discount,total,invItem_ids)
                 mapped = list(mapped)
-                print("ifok")
-
                 for ele in mapped:
                     if int(len(itemId))>int(count):
-                        print(itemId)
                         if ele[8] == 0:
                             itm = Items.objects.get(id = int(ele[0]))
-                            print(itm)
-
-                            invoiceitems.objects.create(invoice = inv,company = company,logindetails = log_details, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
-                            
+                            invoiceitems.objects.create(company = com, logindetails = com.login_details, invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
                             itm.current_stock -= int(ele[3])
                             itm.save()
-                            print("ifokok")
-
                         else:
                             itm = Items.objects.get(id = int(ele[0]))
                             inItm = invoiceitems.objects.get(id = int(ele[8]))
                             crQty = int(inItm.quantity)
                             
-                            invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv,logindetails = log_details, Items = itm, company = company,hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
-                            
-                            
+                            invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
+
                             if crQty < int(ele[3]):
                                 itm.current_stock -=  abs(crQty - int(ele[3]))
                             elif crQty > int(ele[3]):
                                 itm.current_stock += abs(crQty - int(ele[3]))
                             itm.save()
-                            print("ifokokok")
-
                     else:
                         itm = Items.objects.get(id = int(ele[0]))
                         inItm = invoiceitems.objects.get(id = int(ele[8]))
                         crQty = int(inItm.quantity)
 
-                        invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv,logindetails = log_details,Items = itm,company = company, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
-                        print(float(ele[4]))
-                        print(ele[5])
+                        invoiceitems.objects.filter( id = int(ele[8])).update(invoice = inv, Items = itm, hsn = ele[2], quantity = int(ele[3]), price = float(ele[4]), tax_rate = ele[5], discount = float(ele[6]), total = float(ele[7]))
 
                         if crQty < int(ele[3]):
                             itm.current_stock -=  abs(crQty - int(ele[3]))
                         elif crQty > int(ele[3]):
                             itm.current_stock += abs(crQty - int(ele[3]))
                         itm.save()
-                        print("ifokokokelse")
-
             
             # Save transaction
                     
             invoiceHistory.objects.create(
-                company = company,
-                login_details = log_details,
+                company = com,
+                login_details = com.login_details,
                 invoice = inv,
-                date = request.POST['invoice_date'],
-
                 action = 'Edited'
             )
 
@@ -1027,6 +990,7 @@ def updateInvoice(request, id):
             return redirect(editInvoice, id)
     else:
        return redirect('/')
+    
 def filter_invoice_name(request, pk):
     if 'login_id' not in request.session:
                 return redirect('/')

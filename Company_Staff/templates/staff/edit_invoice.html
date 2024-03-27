@@ -251,7 +251,7 @@
             <div class="card mb-5 px-3 py-4" style="background-color: black; border-radius: 1vh;">
               <h1 class="mb-0 text-uppercase text-right" style="color: white; font-weight: bolder;">EDIT  INVOICE</h1><br>
               <hr class="text-warning">
-              <form action="#" method="post" enctype="multipart/form-data"id="myForm" onsubmit="return validateForm()">
+              <form action="{% url 'updateInvoice' invoice.id %}" method="post" enctype="multipart/form-data"id="myForm" onsubmit="return validateForm()">
                 {% csrf_token %}
                 <div class="row">
                   <div class="col-md-3">
@@ -480,7 +480,7 @@
                         <label for="" class="labels">Cheque No.</label>
                       </div>
                       <div class="col-md-9">
-                        <input type="text" class="form-control bg-black text-white" name="cheque_id" id="cheque_id" placeholder="Enter Cheque No">
+                        <input type="text" class="form-control bg-black text-white"value="{{invoice.cheque_number}}" name="cheque_id" id="cheque_id" placeholder="Enter Cheque No">
                       </div>
                     </div>
 
@@ -489,7 +489,7 @@
                         <label for="" class="labels">UPI No.</label>
                       </div>
                       <div class="col-md-9">
-                        <input type="text" class="form-control bg-black text-white" name="upi_id" id="upi_id" placeholder="Enter UPI ID">
+                        <input type="text" class="form-control bg-black text-white" value="{{invoice.UPI_number}}" name="upi_id" id="upi_id" placeholder="Enter UPI ID">
                       </div>
                     </div>
 
@@ -498,7 +498,7 @@
                         <label for="" class="labels">Bank Acc No.</label>
                       </div>
                       <div class="col-md-9">
-                        <input type="text" class="form-control bg-black text-white" name="bnk_id" id="bnk_id" readonly>
+                        <input type="text" class="form-control bg-black text-white" value="{{invoice.bank_account_number}}" name="bnk_id" id="bnk_id" readonly>
                       </div>
                     </div>
 
@@ -564,7 +564,7 @@
                                 <div class="d-flex">
                                     <div class="w-100">
                                         <div class="p-0 border-0 bg-none position-relative drop-box" style="display: block;">
-                                            <input required type="text" id="item{{forloop.counter}}" value="{{i.item.item_name}}" name="item_name[]" class="dropdown-toggle form-control text-white item-display" onkeyup="filterFunction($(this).attr('id'))"  data-bs-toggle="dropdown" aria-expanded="false" placeholder="Items.." autocomplete="off">
+                                            <input required type="text" id="item{{forloop.counter}}" value="{{i.Items.item_name}}" name="item_name[]" class="dropdown-toggle form-control text-white item-display" onkeyup="filterFunction($(this).attr('id'))"  data-bs-toggle="dropdown" aria-expanded="false" placeholder="Items.." autocomplete="off">
                                             <ul class="dropdown-menu w-100 items-available position-absolute bg-black text-white" id="menu{{forloop.counter}}"  style="overflow-y: auto; height: fit-content;max-height: 40vh; border: 1px solid gray;"> 
                                                 {% for i in items %}
                                                 <li class="dropdown-item items-options text-white" onclick="getItemDetails($(this).parent().prev().attr('id'),`{{i.item_name}}`)">{{i.item_name}}</li>
@@ -580,17 +580,17 @@
                             
                             </td>
                             <td>
-                                <input type="hidden" name="item_id[]" value="{{i.item.id}}" id="itemId{{forloop.counter}}">
+                                <input type="hidden" name="item_id[]" value="{{i.Items.id}}" id="itemId{{forloop.counter}}">
                                 <input type="hidden" name="id[]" value="{{i.id}}" >
                                 <input type="text" name='hsn[]' id="hsn{{forloop.counter}}" value="{{i.hsn}}" placeholder='HSN' class="form-control bg-black text-white HSNCODE" readonly />
                             </td>
                             <td >
                                 <input type="number" name='qty[]' id="qty{{forloop.counter}}"  class="form-control bg-black text-white qty mb-1" step=0 min=1 value={{i.quantity}} onchange="changeItemQty(this.id)" required/>
                                 <input type="text" id="avl{{forloop.counter}}" value="{{i.item.current_stock}}" style="display: none;">
-                                <div class="d-flex text-white" style="font-size: 0.7rem;"><span>Available Qty:</span><span id="qtyspan{{forloop.counter}}" class=''>{{i.item.current_stock}}</span></div>
+                                <div class="d-flex text-white" style="font-size: 0.7rem;"><span>Available Qty:</span><span id="qtyspan{{forloop.counter}}" class=''>{{i.Items.current_stock}}</span></div>
                             </td>
                             <td>
-                                <input type="number" name='price[]' id="price{{forloop.counter}}" class="form-control bg-black text-white price" step="0.00" min="0" style="display: block;" value={{i.item.selling_price}} readonly />
+                                <input type="number" name='price[]' id="price{{forloop.counter}}" class="form-control bg-black text-white price" step="0.00" min="0" style="display: block;" value={{i.Items.selling_price}} readonly />
                                 <input type="number" name='priceListPrice[]' id="priceListPrice{{forloop.counter}}" class="form-control bg-black text-white priceListPrice" step="0.00" min="0" style="display: none;" value={{i.price}} readonly />
                             </td>
                             
@@ -650,22 +650,22 @@
                         <div class="row container-fluid p-2 m-0">
                             <div class="col-sm-4 mt-2"><label class="text-center text-white">Sub Total</label></div>
                             <div class="col-sm-1 mt-2">:</div>
-                            <div class="col-sm-7 mt-2"><input type="number" step="any" name='subtotal' value={{invoice.subtotal}} readonly class="form-control bg-black text-white" id="sub_total"></div>
+                            <div class="col-sm-7 mt-2"><input type="number" step="any" name='subtotal' value={{invoice.sub_total}} readonly class="form-control bg-black text-white" id="sub_total"></div>
                         </div>
                         <div class="row container-fluid p-2 m-0" id="taxamountIGST" style="display: flex;">
                             <div class="col-sm-4 mt-2"><label for="a" class="text-center text-white">IGST</label></div>
                             <div class="col-sm-1 mt-2">:</div>
-                            <div class="col-sm-7 mt-2"><input type="number" name='igst' step="any" id="igstAmount" value={{invoice.igst}} readonly class="form-control bg-black text-white"/></div>
+                            <div class="col-sm-7 mt-2"><input type="number" name='igst' step="any" id="igstAmount" value={{invoice.IGST}} readonly class="form-control bg-black text-white"/></div>
                         </div>
                         <div class="row container-fluid p-2 m-0" style="display: none;" id="taxamountCGST">
                             <div class="col-sm-4 mt-2"><label for="a" class="text-center text-white">CGST</label></div>
                             <div class="col-sm-1 mt-2">:</div>
-                            <div class="col-sm-7 mt-2"><input type="number" name='cgst' step="any" id="cgstAmount" value={{invoice.cgst}} readonly class="form-control bg-black text-white"/></div>
+                            <div class="col-sm-7 mt-2"><input type="number" name='cgst' step="any" id="cgstAmount" value={{invoice.CGST}} readonly class="form-control bg-black text-white"/></div>
                         </div>
                         <div class="row container-fluid p-2 m-0" style="display: none;" id="taxamountSGST">
                             <div class="col-sm-4 mt-2"><label for="a" class="text-cente text-white">SGST</label></div>
                             <div class="col-sm-1 mt-2">:</div>
-                            <div class="col-sm-7 mt-2"><input type="number" name='sgst' step="any" id="sgstAmount" value={{invoice.sgst}} readonly class="form-control bg-black text-white"/></div>
+                            <div class="col-sm-7 mt-2"><input type="number" name='sgst' step="any" id="sgstAmount" value={{invoice.SGST}} readonly class="form-control bg-black text-white"/></div>
                         </div>
                         <div class="row container-fluid p-2 m-0">
                             <div class="col-sm-4 mt-2"><label for="a" class="text-center text-white">Tax Amount</label></div>
@@ -686,7 +686,7 @@
                         <div class="row container-fluid p-2 m-0">
                             <div class="col-sm-4 mt-2"><label for="a" class="text-center text-white">Grand Total</label></div>
                             <div class="col-sm-1 mt-2">:</div>
-                            <div class="col-sm-7 mt-2"><input type="number" name='grandtotal' id="grandtotal" value={{invoice.grandtotal}} readonly class="form-control bg-black text-white"/></div>
+                            <div class="col-sm-7 mt-2"><input type="number" name='grandtotal' id="grandtotal" value={{invoice.grand_total}} readonly class="form-control bg-black text-white"/></div>
                         </div>
                     </div>
                 </div>
@@ -698,7 +698,7 @@
                         <div class="row container-fluid p-2 m-0">
                             <div class="col-sm-4 mt-2"><label for="a" class="text-center text-white">Paid Off</label></div>
                             <div class="col-sm-1 mt-2">:</div>
-                            <div class="col-sm-7 mt-2"><input type="number" step="any" name='advance' id="advance"  value={{invoice.advance_paid}} class="form-control bg-black text-white"/></div>
+                            <div class="col-sm-7 mt-2"><input type="number" step="any" name='advance' id="advance"  value={{invoice.advanced_paid}} class="form-control bg-black text-white"/></div>
                         </div>
                         <div class="row container-fluid p-2 m-0">
                             <div class="col-sm-4 mt-2"><label for="a" class="text-center text-white">Balance</label></div>
@@ -2524,7 +2524,7 @@
         var paymentMeth = `{{invoice.payment_method}}`;
         // var entryType = `{{invoice.entry_type}}`;
 
-        document.querySelector('#placeOfSupply').value = `{{invoice.place_of_supply}}`;
+        document.querySelector('#placeOfSupply').value = `{{invoice.customer_place_of_supply}}`;
         paymentMeth == 'None' ? document.querySelector('#paymentMethod').value = "" : document.querySelector('#paymentMethod').value = `{{invoice.payment_method}}`;
         // entryType == 'None' ? document.querySelector('#entryType').value ="" : document.querySelector('#entryType').value = `{{recInvoice.entry_type}}`;
 
@@ -2605,6 +2605,11 @@
                   document.getElementById('customerId').value = data.id;
                   document.getElementById('customerEmail').value = data.email;
                   document.getElementById('placeOfSupply').value = data.shipState;
+                  var placeOfSupplySelect = document.getElementById('placeOfSupply');
+                  var newOption = new Option(data.shipState, data.shipState); // Create a new option element
+                  placeOfSupplySelect.appendChild(newOption); // Append the new option to the select element
+                  placeOfSupplySelect.value = data.shipState; // Set the value of the select element to the desired value
+                 
                   document.getElementById('customerGstType').value = data.gstType;
                   document.getElementById('billAddress').value = data.street + ',' + data.city + '\n' + data.state + '\n' + data.country  + '\n' + data.pincode ;
                   if(data.gstin){
@@ -3226,8 +3231,10 @@
               </td>
           </tr>
             `);
+            reloadItems();
             checkPriceList();
         });
+        reloadItems();
     });
  
   
