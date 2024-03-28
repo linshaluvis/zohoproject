@@ -4012,20 +4012,7 @@ $('#mphone').on('input', function() {
             tDepartment.push(dep);
         }
     })
-    var cols = [tSalutation,tFirstName,tLastName,tEmail,tWork,tMobile,tSkype,tDesignation,tDepartment]
-    var cntactTableLength = $('#tbl tbody tr').length
-    var nullExists = false
-    for(i=0; i<cols.length; i++){
-        for(j=0; j<cols[i].length; j++){
-            if(cols[i][j] == ''){
-                nullExists = true
-            }
-        }
-    }
-    if(nullExists){
-        alert('Fill All Fields of Contact persons table')
-        return
-    }
+
 
       if(fName != "" && lName != "" && placeSupply != "" && gstType != "" && panNo != "" && Email != "" && Mob != "" && street != "" && city != "" && state != "" && pin != "" && country != "" && tax_ref != undefined){
           $.ajax({

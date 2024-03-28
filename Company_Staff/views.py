@@ -796,7 +796,6 @@ def deleteInvoice(request, id):
         invoices = invoice.objects.filter(company = company)
 
         inv = invoice.objects.get( id = id)
-        print("delete ok")
 
 
   
@@ -808,7 +807,6 @@ def deleteInvoice(request, id):
             item.save()
         
         invoiceitems.objects.filter(invoice = inv).delete()
-        print("delete item")
 
         # Storing ref number to deleted table
         # if entry exists and lesser than the current, update and save => Only one entry per company
@@ -1506,7 +1504,7 @@ def createInvoice(request):
                 action = 'Created'
             )
 
-            return redirect(createInvoice)
+            return redirect(invoice_list_out)
         else:
             return redirect(createInvoice)
     else:

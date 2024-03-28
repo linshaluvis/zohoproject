@@ -1,47 +1,51 @@
-  path('Staff/invoice_listout',views.invoice_list_out,name='invoice_list_out'),
-    path('Staff/invoice/create',views.invoice_create,name='invoice_create'),
-    path('Staff/invoice/invoice_createpage',views.invoice_createpage,name='invoice_createpage'),
-    path('Staff/invoice/itemdata',views.itemdata,name='itemdata'),
-    path('Staff/invoice/viewInvoice',views.viewInvoice,name='viewInvoice'),
-    path('Staff/invoice/customerdata',views.customerdata,name='customerdata'),
-    path('Staff/invoice/getInvoiceCustomerData',views.getInvoiceCustomerData,name='getInvoiceCustomerData'),
-    path('Staff/invoice/getInvItemDetails',views.getInvItemDetails,name='getInvItemDetails'),
-    path('Staff/invoice/getBankAccount',views.getBankAccount,name='getBankAccount'),
-    path('Staff/invoice/createInvoice',views.createInvoice,name='createInvoice'),
-    path('Staff/invoice/checkInvoiceNumber',views.checkInvoiceNumber,name='checkInvoiceNumber'),
-    path('Staff/invoice/invoice_import',views.invoice_import,name='invoice_import'),
-    path('Staff/invoice/view/<int:pk>',views.view,name='view'),
+path('getinvCustomerDetails',views.getinvCustomerDetails,name='getinvCustomerDetails'),
+    path('getinvBankAccountNumber',views.getinvBankAccountNumber,name='getinvBankAccountNumber'),
+    path('newinvPaymentTerm',views.newinvPaymentTerm,name='newinvPaymentTerm'),
+    path('getinvItemDetails',views.getinvItemDetails,name='getinvItemDetails'),
+    path('checkInvoiceNumber',views.checkInvoiceNumber,name='checkInvoiceNumber'),
+    path('addinv_unit',views.addinv_unit,name='addinv_unit'),
+    path('showinvunit_dropdown',views.showinvunit_dropdown,name='showinvunit_dropdown'),
 
-    path('Staff/invoice/filter_invoice_draft/<int:pk>',views.filter_invoice_draft,name='filter_invoice_draft'),
-    path('Staff/invoice/filter_invoice_sent/<int:pk>',views.filter_invoice_sent,name='filter_invoice_sent'),
-    path('Staff/invoice/filter_invoice_name/<int:pk>',views.filter_invoice_name,name='filter_invoice_name'),
-    path('Staff/invoice/filter_invoice_number/<int:pk>',views.filter_invoice_number,name='filter_invoice_number'),
-     path('Staff/invoice/edit_invoice/<int:id>',views.editInvoice, name='editInvoice'),
-    path('Staff/invoice/update_invoice/<int:id>',views.updateInvoice, name='updateInvoice'),
-    path('Staff/invoice/convert_invoice/<int:id>',views.convertInvoice, name='convertInvoice'),
-    path('Staff/invoice/invoicePdf/<int:id>',views.invoicePdf, name='invoicePdf'),
-    path('Staff/invoice/delete_invoice/<int:id>',views.deleteInvoice, name= 'deleteInvoice'),
-    path('Staff/invoice/Invoice_history/<int:id>',views.InvoiceHistory, name='InvoiceHistory'),
-    path('Staff/invoice/add_attach/<int:id>',views.add_attach, name='add_attach'),
-    path('Staff/invoice/share_invoice_to_email/<int:id>',views.shareInvoiceToEmail, name='shareInvoiceToEmail'),
-    path('Staff/invoice/addInvoiceComment/<int:id>',views.addInvoiceComment, name='addInvoiceComment'),
-    path('Staff/invoice/deleteInvoiceComment/<int:id>',views.deleteInvoiceComment, name='deleteInvoiceComment'),
-    path('Staff/invoice/newCustomerPaymentTerm',views.newCustomerPaymentTerm, name='newCustomerPaymentTerm'),
-    path('Staff/invoice/checkCustomerName',views.checkCustomerName, name='checkCustomerName'),
-    path('Staff/invoice/checkCustomerGSTIN',views.checkCustomerGSTIN, name='checkCustomerGSTIN'),
-    path('Staff/invoice/checkCustomerPAN',views.checkCustomerPAN, name='checkCustomerPAN'),
-    path('Staff/invoice/checkCustomerPhone',views.checkCustomerPhone, name='checkCustomerPhone'),
-    path('Staff/invoice/checkCustomerEmail',views.checkCustomerEmail, name='checkCustomerEmail'),
-    path('Staff/invoice/createInvoiceCustomer',views.createInvoiceCustomer, name='createInvoiceCustomer'),
-    path('Staff/invoice/invoice_item',views.invoice_item, name='invoice_item'),
+    path('createNewIteminv',views.createNewIteminv,name='createNewIteminv'),
+    path('getAllItemsinv',views.getAllItemsinv,name='getAllItemsinv'),
+    
+    
+    
+    # models
+    class invoice(models.Model):
+    company = models.ForeignKey(CompanyDetails,on_delete=models.CASCADE,null=True,blank=True)
+    login_details = models.ForeignKey(LoginDetails, on_delete=models.CASCADE,null=True,blank=True)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True,blank=True)
+    payment_terms = models.ForeignKey(Company_Payment_Term,on_delete=models.CASCADE,null=True,blank=True)
 
-    path('Staff/invoice/getCustomers',views.getCustomers, name='getCustomers'),
-    path('Staff/invoice/createInvoiceItem',views.createInvoiceItem, name='createInvoiceItem'),
-    path('Staff/invoice/getItems',views.getItems, name='getItems'),
-    path('Staff/invoice/saveItemUnit',views.saveItemUnit, name='saveItemUnit'),
-    path('Staff/invoice/show_unit_dropdown',views.show_unit_dropdown, name='show_unit_dropdown'),
-    path('Staff/invoice/createNewAccountFromItems',views.createNewAccountFromItems, name='createNewAccountFromItems'),
-    path('Staff/invoice/checkAccounts',views.checkAccounts, name='checkAccounts'),
-    path('Staff/invoice/add_customer_invoice',views.add_customer_invoice, name='add_customer_invoice'),
-        path('Staff/invoice/create_item_invoice',views.create_item_invoice, name='create_item_invoice'),
-    path('Staff/invoice/getAllAccounts',views.getAllAccounts, name='getAllAccounts'),
+    customer_email=models.EmailField(max_length=220,null=True,blank=True)
+    customer_billingaddress=models.CharField(max_length=220,null=True,blank=True)
+    customer_GSTtype=models.CharField(max_length=220,null=True,blank=True)
+    customer_GSTnumber=models.CharField(max_length=220,null=True,blank=True)
+    customer_place_of_supply=models.CharField(max_length=220,null=True,blank=True)
+    date = models.DateField(auto_now_add=True, null=True, blank=True) 
+    expiration_date = models.DateField(auto_now_add=True, null=True, blank=True) 
+    reference_number=models.IntegerField(blank=True,null=True,)
+    invoice_number=models.CharField(max_length=220,null=True,blank=True) 
+    payment_method=models.CharField(max_length=220,null=True,blank=True) 
+    cheque_number=models.CharField(max_length=220,null=True,blank=True) 
+    UPI_number=models.CharField(max_length=220,null=True,blank=True) 
+    bank_account_number=models.CharField(max_length=220,null=True,blank=True) 
+    description=models.CharField(max_length=220,null=True,blank=True) 
+    terms_and_condition=models.CharField(max_length=220,null=True,blank=True) 
+    document=models.FileField(upload_to="images/",null=True)
+    sub_total=models.FloatField(default=0.0, null=True, blank=True)
+    CGST=models.FloatField(default=0.0, null=True, blank=True)
+    SGST=models.FloatField(default=0.0, null=True, blank=True)
+    IGST = models.FloatField(default=0.0, null=True, blank=True)
+    price_list_applied = models.BooleanField(null=True, default=False)
+    price_list = models.ForeignKey(PriceList, on_delete = models.SET_NULL,null=True)
+
+
+    tax_amount=models.FloatField(default=0.0, null=True, blank=True)
+    shipping_charge=models.FloatField(default=0.0, null=True, blank=True)
+    adjustment=models.FloatField(default=0.0, null=True, blank=True)
+    grand_total=models.FloatField(default=0.0, null=True, blank=True)
+    advanced_paid=models.FloatField(default=0.0, null=True, blank=True)
+    balance=models.FloatField(default=0.0, null=True, blank=True)
+    status=models.CharField(max_length=220,null=True,blank=True) 
