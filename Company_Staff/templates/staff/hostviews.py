@@ -1,4 +1,4 @@
-def createNewIteminv(request):
+def checkInvoiceNumber(request):
     if 'login_id' in request.session:
         log_id = request.session['login_id']
         log_details= LoginDetails.objects.get(id=log_id)
@@ -6,91 +6,136 @@ def createNewIteminv(request):
             com = CompanyDetails.objects.get(login_details = log_details)
         else:
             com = StaffDetails.objects.get(login_details = log_details).company
-
-        name = request.POST['name']
-        type = request.POST['type']
-        unit = request.POST.get('unit')
-        hsn = request.POST['hsn']
-        tax = request.POST['taxref']
-        gstTax = 0 if tax == 'None-Taxable' else request.POST['intra_st']
-        igstTax = 0 if tax == 'None-Taxable' else request.POST['inter_st']
-        purPrice = request.POST['pcost']
-        purAccount = None if not 'pur_account' in request.POST or request.POST['pur_account'] == "" else request.POST['pur_account']
-        purDesc = request.POST['pur_desc']
-        salePrice = request.POST['salesprice']
-        saleAccount = None if not 'sale_account' in request.POST or request.POST['sale_account'] == "" else request.POST['sale_account']
-        saleDesc = request.POST['sale_desc']
-        inventory = request.POST.get('invacc')
-        stock = 0 if request.POST.get('stock') == "" else request.POST.get('stock')
-        stockUnitRate = 0 if request.POST.get('stock_rate') == "" else request.POST.get('stock_rate')
-        minStock = request.POST['min_stock']
-        createdDate = date.today()
         
-        #save item and transaction if item or hsn doesn't exists already
-        if Items.objects.filter(company=com, item_name__iexact=name).exists():
-            res = f"{name} already exists, try another!"
-            return JsonResponse({'status': False, 'message':res})
-        elif Items.objects.filter(company = com, hsn_code__iexact = hsn).exists():
-            res = f"HSN - {hsn} already exists, try another.!"
-            return JsonResponse({'status': False, 'message':res})
-        else:
-            item = Items(
-                company = com,
-                login_details = com.login_details,
-                item_name = name,
-                item_type = type,
-                unit = None if unit == "" else Unit.objects.get(id = int(unit)),
-                hsn_code = hsn,
-                tax_reference = tax,
-                intrastate_tax = gstTax,
-                interstate_tax = igstTax,
-                sales_account = saleAccount,
-                selling_price = salePrice,
-                sales_description = saleDesc,
-                purchase_account = purAccount,
-                purchase_price = purPrice,
-                purchase_description = purDesc,
-                date = createdDate,
-                minimum_stock_to_maintain = minStock,
-                inventory_account = inventory,
-                opening_stock = stock,
-                current_stock = stock,
-                opening_stock_per_unit = stockUnitRate,
-                track_inventory = int(request.POST['trackInv']),
-                activation_tag = 'active',
-                type = 'Opening Stock'
-            )
-            item.save()
+        RecInvNo = request.GET['RecInvNum']
 
-            #save transaction
+        # Finding next rec_invoice number w r t last rec_invoice number if exists.
+        nxtInv = ""
+        lastInv = invoice.objects.filter(company = com).last()
 
-            Item_Transaction_History.objects.create(
-                company = com,
-                logindetails = com.login_details,
-                items = item,
-                Date = createdDate,
-                action = 'Created'
+        if lastInv:
+            inv_no = str(lastInv.invoice_number)
 
-            )
+            numbers = []
+            stri = []
+            for word in inv_no:
+                if word.isdigit():
+                    numbers.append(word)
+                else:
+                    stri.append(word)
             
-            return JsonResponse({'status': True})
+            num=''
+            for i in numbers:
+                num +=i
+            
+            st = ''
+            for j in stri:
+                st = st+j            
+
+
+            inv_num = int(num)+1
+           
+
+            
+            padding_length = len(num) - 1
+
+                    
+            nxtInv = f"{st}{num[0]}{inv_num:0{padding_length}d}"
+            print(nxtInv)
+            
+
+        PatternStr = []
+        for word in RecInvNo:
+            if word.isdigit():
+                pass
+            else:
+                PatternStr.append(word)
+        
+        pattern = ''
+        for j in PatternStr:
+            pattern += j
+            print("patern")
+            print(pattern)
+
+
+        # pattern_exists = checkRecInvNumberPattern(pattern)
+
+        # if pattern !="" and pattern_exists:
+        #     return JsonResponse({'status':False, 'message':'Rec. Invoice No. Pattern already Exists.!'})
+        if invoice.objects.filter(company = com, invoice_number__iexact = RecInvNo).exists():
+            return JsonResponse({'status':False, 'message':'Invoice No. already Exists.!'})
+        elif nxtInv != "" and RecInvNo != nxtInv:
+            return JsonResponse({'status':False, 'message':'Invoice No. is not continuous.!'})
+        else:
+            return JsonResponse({'status':True, 'message':'Number is okay.!'})
     else:
        return redirect('/')
-
-def getAllItemsinv(request):
-    if 'login_id' in request.session:
-        log_id = request.session['login_id']
-        log_details= LoginDetails.objects.get(id=log_id)
-        if log_details.user_type == 'Company':
-            com = CompanyDetails.objects.get(login_details = log_details)
-        else:
-            com = StaffDetails.objects.get(login_details = log_details).company
-
-        items = {}
-        option_objects = Items.objects.filter(company = com, activation_tag='active')
-        for option in option_objects:
-            items[option.id] = [option.id,option.item_name]
-
-        return JsonResponse(items)
-    else:
-        return redirect('/')
+def invoice_createpage(request):
+       if 'login_id' in request.session:
+           log_id = request.session['login_id']
+           log_details= LoginDetails.objects.get(id=log_id)
+           if log_details.user_type == 'Company':
+               cmp = CompanyDetails.objects.get(login_details = log_details)
+               dash_details = CompanyDetails.objects.get(login_details=log_details)
+           else:
+               cmp = StaffDetails.objects.get(login_details = log_details).company
+               dash_details = StaffDetails.objects.get(login_details=log_details)
+   
+           allmodules= ZohoModules.objects.get(company = cmp)
+           cust = Customer.objects.filter(company = cmp, customer_status = 'Active')
+           trm = Company_Payment_Term.objects.filter(company = cmp)
+           repeat = CompanyRepeatEvery.objects.filter(company = cmp)
+           bnk = Banking.objects.filter(company = cmp)
+           priceList = PriceList.objects.filter(company = cmp, status = 'Active')
+           itms = Items.objects.filter(company = cmp, activation_tag = 'active')
+           units = Unit.objects.filter(company=cmp)
+           accounts=Chart_of_Accounts.objects.filter(company=cmp)
+   
+           # Fetching last rec_invoice and assigning upcoming ref no as current + 1
+           # Also check for if any bill is deleted and ref no is continuos w r t the deleted rec_invoice
+           latest_inv = invoice.objects.filter(company = cmp).order_by('-id').first()
+   
+           new_number = int(latest_inv.reference_number) + 1 if latest_inv else 1
+   
+           if invoiceReference.objects.filter(company = cmp).exists():
+               deleted = invoiceReference.objects.get(company = cmp)
+               
+               if deleted:
+                   while int(deleted.reference_number) >= new_number:
+                       new_number+=1
+   
+           # Finding next rec_invoice number w r t last rec_invoice number if exists.
+           nxtInv = ""
+           lastInv = invoice.objects.filter(company = cmp).last()
+           if lastInv:
+               inv_no = str(lastInv.invoice_number)
+               numbers = []
+               stri = []
+               for word in inv_no:
+                   if word.isdigit():
+                       numbers.append(word)
+                   else:
+                       stri.append(word)
+               
+               num=''
+               for i in numbers:
+                   num +=i
+               
+               st = ''
+               for j in stri:
+                   st = st+j
+   
+               inv_num = int(num)+1
+   
+               padding_length = len(num) - 1
+   
+                       
+               nxtInv = f"{st}{num[0]}{inv_num:0{padding_length}d}"
+           else:
+               nxtInv = 'in-01'
+           context = {
+               'cmp':cmp,'allmodules':allmodules, 'details':dash_details, 'customers': cust,'pTerms':trm, 'repeat':repeat, 'banks':bnk, 'priceListItems':priceList, 'items':itms,
+               'invNo':nxtInv, 'ref_no':new_number,'units': units,'accounts':accounts,
+           }
+       
+           return render(request,'staff/createinvoice.html',context)

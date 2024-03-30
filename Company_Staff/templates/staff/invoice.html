@@ -745,12 +745,12 @@
       <div class="col-md-6 d-flex justify-content-between align-items-center">
   
           <!-- Edit Button -->
-          <a href="{% url 'editInvoice' invoice.id %}" class="ml-2 fa fa-pencil btn btn-outline-warning text-grey" id="editBtn" role="button"style="margin-left: 4px;"></a>
+          <a href="{% url 'editInvoice' invoice.id %}" class="ml-2 fa fa-pencil btn btn-outline-warning text-grey" id="editBtn"title="edit" role="button"style="margin-left: 4px;"></a>
 
   
         
           {% if invoice.status == 'Draft' %}
-          <a href="{% url 'convertInvoice' invoice.id %}" class="ml-2 fa fa-exchange btn btn-outline-warning text-grey"  id="convertBtn" role="button"style="margin-left: 4px;">convert</a>
+          <a href="{% url 'convertInvoice' invoice.id %}" class="ml-2 fa fa-exchange btn btn-outline-warning text-grey"  id="convertBtn" title="convert" role="button"style="margin-left: 4px;"></a>
           <!-- <div class="dropdown p-0 nav-item"  id="convertBtn" style="margin-left: 4px;">
               <li  class="dropdown-toggle btn btn-outline-warning text-warning fa fa-exchange ml-2" data-toggle="dropdown"> convert</li>
               <ul class="dropdown-menu" style="background-color: black;" id="">
@@ -805,9 +805,9 @@
           <a class="ml-2 btn btn-outline-warning text-grey fa fa-file" role="button" id="pdfBtn" style="display: none;margin-left: 4px; " onclick="convertToPDF('whatToPrint')"></a>
 
 
-          <a href="{% url 'deleteInvoice' invoice.id %}"  style="margin-left: 4px;" class="ml-2 btn btn-outline-warning text-grey fa fa-trash" id="deleteBtn" role="button" onclick="return confirm('Are you ok sure you want to delete Invoice - {{invoice.invoice_number}}.?')"></a>
+          <a href="{% url 'deleteInvoice' invoice.id %}"  style="margin-left: 4px;" title="Delete" class="ml-2 btn btn-outline-warning text-grey fa fa-trash" id="deleteBtn" role="button" onclick="return confirm('Are you ok sure you want to delete Invoice - {{invoice.invoice_number}}.?')"></a>
         
-          <span class="d-flex justify-content-end p-2" style="cursor: pointer;" onclick="window.location.href=`{% url 'invoice_list_out' %}`"><i class="fa fa-times-circle ml-2 btn btn-outline-warning text-grey" style="font-size: 1.2rem;"></i></span>
+          <span class="d-flex justify-content-end p-2" style="cursor: pointer;" title="back" onclick="window.location.href=`{% url 'invoice_list_out' %}`"><i class="fa fa-times-circle ml-2 btn btn-outline-warning text-grey" style="font-size: 1.2rem;"></i></span>
 
       
       </div>
@@ -2020,6 +2020,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
         document.getElementById('page-content').scrollIntoView();
     }
 </script>
+
   
 <!-- Share To Email Modal -->
 <div class="modal fade" id="shareToEmail">
@@ -2053,8 +2054,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
                     <div class="col-md-4"></div>
                     <div class="col-md-4">
                       <div class="d-flex">
-                        <button class="btn save_btn btn-outline-warning mt-2 my-4 mx-2 w-50 text-white" type="submit">Send</button> 
-                        <input class="btn save_btn btn-outline-warning mt-2 my-4 mx-2 w-50 text-white" type="reset" value="Reset">
+                        <button type="submit" id="share_with_email" class="submitShareEmailBtn btn btn-outline-warning w-50 text-uppercase">SEND </button>
                       </div>
                     </div>
                     <div class="col-md-4"></div>
@@ -2615,30 +2615,15 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
    
    </script>
   
+  
+ 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
   <script>
     $(document).ready(function() {
-      $('#searchInput').on('keyup', function() {
+      $('#search').on('keyup', function() {
         var searchText = $(this).val().toLowerCase();
         $('#table2 tbody tr').each(function() {
-          var itemData = $(this).text().toLowerCase();
-          if (itemData.indexOf(searchText) === -1) {
-            $(this).hide();
-          } else {
-            $(this).show();
-          }
-        });
-      });
-    });
-  </script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
-  <script>
-    $(document).ready(function() {
-      $('#searchInput2').on('keyup', function() {
-        var searchText = $(this).val().toLowerCase();
-        $('#table1 tbody tr').each(function() {
           var itemData = $(this).text().toLowerCase();
           if (itemData.indexOf(searchText) === -1) {
             $(this).hide();
@@ -2653,6 +2638,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
   
   <script>
     function cleardropdown(index) {
+
       document.getElementById('filterInput' + index).value = '';
     }
   
@@ -2810,10 +2796,13 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
     var $rows = $('#invoiceTable tbody tr');
     $('#search').keyup(function() {
       var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
       
       $rows.show().filter(function() {
+
         var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
         return !~text.indexOf(val);
+
       }).hide();
     });
     
@@ -2836,7 +2825,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
         switching = false;
         rows = table.rows;
   
-        for (i = 1; i < (rows.length - 1); i++) {
+        for (i = 0; i < (rows.length - 1); i++) {
           shouldSwitch = false;
           x = rows[i].getElementsByTagName("td")[columnIndex].textContent.toLowerCase();
           y = rows[i + 1].getElementsByTagName("td")[columnIndex].textContent.toLowerCase();

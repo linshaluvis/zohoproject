@@ -361,7 +361,7 @@
                   <div class="col-md-6 mt-2">
                     <div class="row">
                       <div class="col-md-3">
-                        <label for="" class="labels">Invoice No.</label>
+                        <label for="" class="labels" >Invoice No.</label>
                       </div>
                       <div class="col-md-9">
                         <input type="text" class="form-control bg-black text-white" name="rec_invoice_no"  id="recInvoiceNumber" placeholder="{{invNo}}" required>
@@ -2524,6 +2524,10 @@
                   document.getElementById('customerId').value = data.id;
                   document.getElementById('customerEmail').value = data.email;
                   document.getElementById('placeOfSupply').value = data.shipState;
+                  var placeOfSupplySelect = document.getElementById('placeOfSupply');
+                  var newOption = new Option(data.shipState, data.shipState); // Create a new option element
+                  placeOfSupplySelect.appendChild(newOption); // Append the new option to the select element
+                  placeOfSupplySelect.value = data.shipState;
                   document.getElementById('customerGstType').value = data.gstType;
                   document.getElementById('billAddress').value = data.street + ',' + data.city + '\n' + data.state + '\n' + data.country  + '\n' + data.pincode ;
                   if(data.gstin){
@@ -2786,6 +2790,7 @@
   $(document).on('change','#recInvoiceNumber', function() {
         $('#invNoErr').text('');
         var inv_num = $(this).val();
+
         if(inv_num != ""){
             console.log(inv_num);
             $.ajax({
@@ -3060,6 +3065,28 @@
           slNo++;
       }
     }
+    $(document).on('change','#invoiceNumber', function() {
+        alert("ok")
+        $('#invNoErr').text('');
+        var inv_num = $(this).val();
+        if(inv_num != ""){
+            console.log(inv_num);
+            $.ajax({
+                type: "GET",
+                url: "{% url 'checkInvoiceNumber' %}",
+                data: {
+                    invNum : inv_num,
+                },
+                success: function (response) {
+                    if (response.status){
+                        $('#invNoErr').text('');
+                    }else{
+                        $('#invNoErr').text(response.message);
+                    }
+                }
+            })
+        }
+    });
 
     $(document).on('click','.remove_row',function(){
       var row_id = $(this).attr("id");

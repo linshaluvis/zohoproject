@@ -1339,13 +1339,10 @@ def invoice_createpage(request):
 
             inv_num = int(num)+1
 
-            if num[0] == '0':
-                if inv_num <10:
-                    nxtInv = st+'0'+ str(inv_num)
-                else:
-                    nxtInv = st+ str(inv_num)
-            else:
-                nxtInv = st+ str(inv_num)
+            padding_length = len(num) - 1
+
+                    
+            nxtInv = f"{st}{num[0]}{inv_num:0{padding_length}d}"
         else:
             nxtInv = 'in-01'
         context = {
@@ -1660,6 +1657,7 @@ def checkInvoiceNumber(request):
         invoices = invoice.objects.filter(company = company)
         
         invNo = request.GET['invNum']
+        
 
         nxtInv = ""
         lastInv = invoice.objects.filter(company = company).last()
@@ -2589,6 +2587,7 @@ def createInvoiceItem(request):
         stockUnitRate = 0 if request.POST.get('stock_rate') == "" else request.POST.get('stock_rate')
         minStock = request.POST['min_stock']
         createdDate = date.today()
+        print("ok")
         
         #save item and transaction if item or hsn doesn't exists already
         if Items.objects.filter(company=com, item_name__iexact=name).exists():
@@ -3105,8 +3104,10 @@ def checkInvoiceNumber(request):
         # Finding next rec_invoice number w r t last rec_invoice number if exists.
         nxtInv = ""
         lastInv = invoice.objects.filter(company = com).last()
+
         if lastInv:
-            inv_no = str(lastInv.rec_invoice_no)
+            inv_no = str(lastInv.invoice_number)
+
             numbers = []
             stri = []
             for word in inv_no:
@@ -3121,19 +3122,19 @@ def checkInvoiceNumber(request):
             
             st = ''
             for j in stri:
-                st = st+j
+                st = st+j            
+
 
             inv_num = int(num)+1
+           
 
-            if num[0] == '0':
-                if inv_num <10:
-                    nxtInv = st+'0'+ str(inv_num)
-                else:
-                    nxtInv = st+ str(inv_num)
-            else:
-                nxtInv = st+ str(inv_num)
-        # else:
-        #     nxtInv = 'RI01'
+            
+            padding_length = len(num) - 1
+
+                    
+            nxtInv = f"{st}{num[0]}{inv_num:0{padding_length}d}"
+            print(nxtInv)
+            
 
         PatternStr = []
         for word in RecInvNo:
@@ -3145,6 +3146,9 @@ def checkInvoiceNumber(request):
         pattern = ''
         for j in PatternStr:
             pattern += j
+            print("patern")
+            print(pattern)
+
 
         # pattern_exists = checkRecInvNumberPattern(pattern)
 
@@ -3158,7 +3162,7 @@ def checkInvoiceNumber(request):
             return JsonResponse({'status':True, 'message':'Number is okay.!'})
     else:
        return redirect('/')
-def addinv_unit(request):                                                                #new by tinto mt (item)
+def addinv_unit(request):                                                               
     login_id = request.session['login_id']
     log_user = LoginDetails.objects.get(id=login_id)
 
