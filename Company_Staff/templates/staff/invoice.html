@@ -560,21 +560,33 @@
                     </a>
                     <div class="dropdown-menu ">
                         <a class="dropdown-item text-black" href="" >All</a>
-                        <a class="dropdown-item" style="height: 40px; font-size: 15px;cursor: pointer;" onclick="sortTable(0)">Customer Name</a>
-                        <a class="dropdown-item" style="height: 40px; font-size: 15px;cursor: pointer;" onclick="sortTable(1)">Invoice Number</a>
+                        <a class="dropdown-item" style="height: 40px; font-size: 15px;cursor: pointer;" onclick="sortByName()">Customer Name</a>
+                        <a class="dropdown-item" style="height: 40px; font-size: 15px;cursor: pointer;" onclick="sortinvno()">Invoice Number</a> 
+
                     </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-warning small_btn mt-4 dropdown-toggle" type="button" id="statusFilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-filter" style="font-size: small;"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="statusFilter">
+                          <a class="dropdown-item" href="#" onclick="filterByStatus('all')">All</a>
+                          <a class="dropdown-item" href="#" onclick="filterByStatus('saved')">Saved</a>
+                          <a class="dropdown-item" href="#" onclick="filterByStatus('draft')">Draft</a>
+                        </div>
+                      </div>
     
-                    <a class="btn btn-outline-warning small_btn mt-4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                    {% comment %} <a class="btn btn-outline-warning small_btn mt-4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                       <i class="fa fa-filter" style="font-size: small;"></i>
                     </a>
                     <div class="dropdown-menu">
                       <a class="dropdown-item text-black"  href="{% url 'view' invoice.id %}">All</a>
                       <a class="dropdown-item text-black" href="{% url 'filter_invoice_sent' invoice.id %}">Saved</a>
                       <a class="dropdown-item text-black" href="{% url 'filter_invoice_draft' invoice.id %}">Draft</a>
-                    </div>
+                    </div> {% endcomment %}
                     <a class="btn btn-outline-warning small_btn mt-4" role="button" href="{% url 'invoice_createpage' %}">
                       <i class="fa fa-plus"></i>
                     </a>
+                    
                   </div>
         
                   <div class="row">
@@ -603,112 +615,60 @@
                 </div>
               </div>
 
-                                                       
-<!-- <div class="body-wrapper">
-    <div class="container-fluid">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="{% url 'company_dashboard' %}" class="text-warning-emphasis">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="" class="text-warning-emphasis">Items</a></li>
-              <li class="breadcrumb-item" aria-current="page">Overview</li>
-            </ol>
-        </nav> -->
-         <!-- ADD ITEM FORM -->
-         <!-- <div class="card mb-3 bg-black shadow p-3 mb-5 rounded" style="max-width: 1400px;">
-       
-            
-                                                            
-          <div class="col-md-12" style="width: 120%;">
-           <div class="row">
-             <div class="col-md-3 scrollable-container" style="border-right: 1px solid white; overflow-y: scroll; height: 84vh;width: 25%;">
-               <div class="row">
-             
-                 <a class="text-white" style="font-size: 1.5rem;color: white; padding-left: 20px; padding-top: 20px;">Invoices</a>
+              <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+              <script>
+                function sortinvno() {
+                  var table = $('#table2');
+                  var rows = table.find('tr').toArray().slice(1); // Skip the header row
+                  rows.sort(function(a, b) {
+                    var invANum = $(a).find('.invNo').text().toLowerCase();
+                    var invBNum = $(b).find('.invNo').text().toLowerCase();
+                    return invANum.localeCompare(invBNum);
+                  });
+                  table.find('tbody').empty().append(rows);
+                }
+              </script>
+              <script>
+                function sortByName() {
+                  var table = $('#table2');
+                  var rows = table.find('tr').toArray().slice(1); // Skip the header row
+                  rows.sort(function(a, b) {
+                    var nameA = $(a).find('.name').text().toLowerCase();
+                    var nameB = $(b).find('.name').text().toLowerCase();
+                    return nameA.localeCompare(nameB);
+                  });
+                  table.find('tbody').empty().append(rows);
+                }
+              </script>
+              <script>
+                function filterByStatus(status) {
+                  $('#table2 tbody tr').each(function() {
+                    var rowStatus = $(this).find('.stat').text().toLowerCase();
+                    if (status === 'all' || rowStatus === status) {
+                      $(this).show();
+                    } else {
+                      $(this).hide();
+                    }
+                  });
+                }
+              </script>
+              <script>
+                $(document).ready(function() {
+                  $('#search').on('keyup', function() {
+                    var searchText = $(this).val().toLowerCase();
+                    $('#table2 tbody tr').each(function() {
+                      var itemData = $(this).text().toLowerCase();
+                      if (itemData.indexOf(searchText) === -1) {
+                        $(this).hide();
+                      } else {
+                        $(this).show();
+                      }
+                    });
+                  });
+                });
+              </script>
               
-                 <br>      
-                 <div class="col-md-2">
-                   <div class="dropdown">
-                       <a class="btn text-center mt-2 btn-outline-warning" id="sortbutton" data-bs-toggle="dropdown" role="button" style="margin-left: 20px; height: 38px;">
-                           <i class="fas fa-sort m-1"></i>
-                       </a>
-                       
-                       <div class="dropdown-menu m-1" style="background-color: black; color: white;">
-                        <a class="dropdown-item text-white" href="{% url 'view' invoice.id %}">All</a>
-                        <a class="dropdown-item" style="height: 40px; font-size: 15px; color: white;cursor: pointer;" onclick="sortTable(0)">Customer Name</a>
-                        <a class="dropdown-item" style="height: 40px; font-size: 15px; color: white;cursor: pointer;" onclick="sortTable(1)">Invoice Number</a>
-                       </div>
-                   </div>
-               </div>
-               
-               <div class="col-md-3" style="padding-left: 40px;">
-                   <div class="col-md-2 mt-2 mx-1">
-                       <a class="btn text-center btn-outline-warning" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="height: 38px;">
-                           <i class="fa fa-filter"></i>
-                       </a>
-               
-                       <div class="dropdown-menu m-1" style="background-color: #000;">
-                       <a class="dropdown-item text-white" href="{% url 'view' invoice.id %}">All</a>
-                        <a class="dropdown-item text-white" href="{% url 'filter_invoice_draft' invoice.id %}">draft</a>
-                        <a class="dropdown-item text-white" href="{% url 'filter_invoice_sent' invoice.id %}">saved</a>
-                        
-                            </div>
-                   </div>
-               </div>
- 
-               <div class="col-md-3" style="padding-left: 120PX;">
-                   <a class="btn btn btn-outline-warning text-right mt-2" style="height: 38px; padding-top: 12px; padding-left: 17px;"  href="{% url 'invoice_createpage' %}">
-                       <i class="fa fa-plus"></i>
-                   </a>
-               </div>
-               
-               <div class="col-md-6"></div>
-               
-   
-               </div>
-               <br>
-               <div class="scrollable-table" style="width: 85%;margin-left: 20px;">
-                 <div class="row">
-                   <div class="col-md-12">
-                     <input type="text"  id="searchInput" class="form-control text-black" style="border-color: rgb(201, 200, 199);background-color: #fefefe;" placeholder="Search...">
- 
- 
-                   </div>
-               </div> -->
-   
-<!--           
-             
-             <br>
-             <table class="table  text-white" id="table2">
-               <tbody>
-                 {% for i in invoices %}
-                   <tr class="clickable" id="{{i.id}}">
-                     <td class="justify-content-between align-items-center ">
-                        <label class="text-left d-block"><a class="text-white"  href="{% url 'view' i.id %}"> {{ i.date }}</a></label>
 
-                        <br>
-
-                      
-                       <label class="text-left d-block"><a class="text-white"  href="{% url 'view' i.id %}"> {{ i.balance }}
-                       </a></label>
-                  
-                     </td>
-                     
-                     <td>
-                       <label class="text-end d-block"><a class="text-white"  href="{% url 'view' i.id %}">{{ i.invoice_number }}</a></label>
-                       <br>
-                       <label class="text-end d-block"><a class="text-white"  href=" {% url 'view' i.id %}">{{ i.status }} </a></label>
-                       <br>
-                       <label class="text-end d-block " ><a class="text-white hidden"  href="{% url 'view' i.id %}">{{ i.customer.first_name}} {{ i.customer.last_name}}</a></label>
-
-                     </td>
-                    
-                   </tr></a>
-                   
-                 {% endfor %}
-               </tbody>
-             </table>
-            
-   </div> -->
    <div class="col-md-12 col-lg-8">
     <div style="background-color: black; border-radius: 1vh;">
       <div class="card-header p-4">
@@ -2582,123 +2542,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
   
   
  
-  
-  
-  
-  <script>
-    function sortTable(columnIndex) {
-        alert("invoiceTable")
-       const table = document.getElementById("invoiceTable");
-       const tbody = table.getElementsByTagName('tbody')[0];
-       const rows = Array.from(tbody.rows);
-   
-       rows.sort((row1, row2) => {
-           const cellValue1 = row1.cells[columnIndex].textContent.toLowerCase();
-           const cellValue2 = row2.cells[columnIndex].textContent.toLowerCase();
-   
-           if (cellValue1 < cellValue2) {
-               return -1;
-           } else if (cellValue1 > cellValue2) {
-               return 1;
-           } else {
-               return 0;
-           }
-       });
-   
-       while (tbody.firstChild) {
-           tbody.removeChild(tbody.firstChild);
-       }
-   
-       rows.forEach(row => tbody.appendChild(row));
-   }
-   
-   
-   </script>
-  
-  
  
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
-  <script>
-    $(document).ready(function() {
-      $('#search').on('keyup', function() {
-        var searchText = $(this).val().toLowerCase();
-        $('#table2 tbody tr').each(function() {
-          var itemData = $(this).text().toLowerCase();
-          if (itemData.indexOf(searchText) === -1) {
-            $(this).hide();
-          } else {
-            $(this).show();
-          }
-        });
-      });
-    });
-  </script>
-  
-  
-  <script>
-    function cleardropdown(index) {
-
-      document.getElementById('filterInput' + index).value = '';
-    }
-  
-    function toggleDropdown(index) {
-      var dropdownContent = document.getElementById('dropdownContent' + index);
-      var isVisible = dropdownContent.style.display === 'block';
-      var allDropdowns = document.querySelectorAll('.dropdown-content');
-      allDropdowns.forEach(function (dropdown) {
-        dropdown.style.display = 'none';
-      });
-      dropdownContent.style.display = isVisible ? 'none' : 'block';
-    }
-  
-    function filterTable(index) {
-      var input;
-      document.getElementById('dropdownContent' + index).style.display = 'none';
-  
-      if (index === 3) {
-        input = document.getElementById('filterInput' + index).valueAsDate;
-      } else {
-        input = document.getElementById('filterInput' + index).value.toUpperCase();
-      }
-  
-      var table = document.getElementById('table1');
-      var rows = table.getElementsByTagName('tr');
-      var emptyMessage = document.getElementById('emptyMessage');
-      var isEmpty = true;
-  
-      for (var i = 1; i < rows.length; i++) {
-        var cells = rows[i].getElementsByTagName('td');
-        var cell = cells[index];
-  
-        if (cell) {
-          var textValue = cell.textContent || cell.innerText;
-  
-          if (index === 3) {
-            var dateVal = new Date(textValue);
-            var inputDate = new Date(input);
-  
-            if (dateVal.toISOString().split('T')[0] === inputDate.toISOString().split('T')[0]) {
-              rows[i].style.display = 'table-row';
-              isEmpty = false;
-            } else {
-              rows[i].style.display = 'none';
-            }
-          } else {
-            if (textValue.toUpperCase().includes(input)) {
-              rows[i].style.display = 'table-row';
-              isEmpty = false;
-            } else {
-              rows[i].style.display = 'none';
-            }
-          }
-        }
-      }
-  
-      emptyMessage.style.display = isEmpty ? 'block' : 'none';
-      // You can add any additional logic or calculations here
-    }
-  </script>
   <div class="modal fade" id="commentModal2" >
     <div class="modal-dialog modal-xl" >
       <div class="modal-content" style="background: #1f1f1ffd;border-radius: 20px;">
@@ -2738,73 +2582,8 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
       
   </div>
   </div></div>
-<!--  
-  <div class="modal fade " id="commentModal2"
-  style="width: 750px; margin-left: 350px; justify-content: center; overflow: hidden;">
-  <div class="modal-dialog modal-xl m-5 p-5">
-      <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
-          <div class="modal-header " style="background: rgb(32, 35, 37);">
-            <center><h3 class="mt-3 text-white text-uppercase"># {{ invoice.invoice_number }} -  HISTORY</h3></center>
-            <button type="button" class="close text-dark bg-none" data-dismiss="modal"
-                  aria-label="Close">&times;</button>
- 
-          </div>
-          <div class="modal-body" style="background: rgb(32, 35, 37); justify-content: center; overflow: hidden;">
-              <div class="card p-0 m-0">
-  
- 
-                    <div id="history">
-                        <center><h3 class="mt-3 text-white text-uppercase"># {{ invoice.invoice_number }} -  HISTORY</h3></center>
-                        <div class="table-responsive px-2">
-                            <table class="table text-light table-borderless " style="margin:3px; background-color: #000000;width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">SL NO.</th>
-                                        <th class="text-center">DATE</th>
-                                        <th class="text-center">ACTION</th>
-                                        <th class="text-center">DONE BY</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for h in historys %}
-                                    <tr>
-                                        <td style="text-align: center;">{{forloop.counter}}</td>
-                                        <td style="text-align: center;">{{h.date}}</td>
-                                        {% if h.action == 'Created' %}<td class="text-success text-center">{{h.action}}</td>{% else %}<td class="text-warning text-center">{{h.action}}</td>{% endif %}
-                                        <td style="text-align: center;">{{h.login_details.first_name}} {{h.login_details.last_name}}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-       
-      </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-         
-  
-        </div>
-      </div>
-    </div>
-    
-  </div>
-  </div> -->
+
   <script>
-    var $rows = $('#invoiceTable tbody tr');
-    $('#search').keyup(function() {
-      var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-
-      
-      $rows.show().filter(function() {
-
-        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-        return !~text.indexOf(val);
-
-      }).hide();
-    });
     
   
     
@@ -2815,69 +2594,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
       });
     });
   
-    function sortTable(columnIndex) {
-
-      var table, rows, switching, i, x, y, shouldSwitch;
-      table = document.getElementById("table2");
-      switching = true;
-  
-      while (switching) {
-        switching = false;
-        rows = table.rows;
-  
-        for (i = 0; i < (rows.length - 1); i++) {
-          shouldSwitch = false;
-          x = rows[i].getElementsByTagName("td")[columnIndex].textContent.toLowerCase();
-          y = rows[i + 1].getElementsByTagName("td")[columnIndex].textContent.toLowerCase();
-  
-          if (x > y) {
-              shouldSwitch = true;
-              break;
-          }
-        }
-  
-        if (shouldSwitch) {
-          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-          switching = true;
-        }
-      }
-    }
-  
-    function filterTable(row,filterValue) {
-      var table = document.getElementById("invoiceTable");
-      var rows = table.getElementsByTagName("tr");
-  
-      for (var i = 1; i < rows.length; i++) {
-        var statusCell = rows[i].getElementsByTagName("td")[row];
-  
-        if (filterValue == "all" || statusCell.textContent.toLowerCase() == filterValue) {
-          rows[i].style.display = "";
-        } else {
-          rows[i].style.display = "none";
-        }
-      }
-    }
-  
-    function sortBalAsc() {
-      var table = document.getElementById("invoiceTable");
-      var rows = Array.from(table.rows).slice(1);
-  
-      rows.sort(function (a, b) {
-        var balA = parseFloat(a.cells[7].textContent);
-        var balB = parseFloat(b.cells[7].textContent);
-        return balA - balB;
-      });
-  
-      // Remove existing rows from the table
-      for (var i = table.rows.length - 1; i > 0; i--) {
-          table.deleteRow(i);
-      }
-  
-      // Append the sorted rows back to the table
-      rows.forEach(function (row) {
-          table.tBodies[0].appendChild(row);
-      });
-    }
+   
   </script>
   
 <!-- Add Document  -->

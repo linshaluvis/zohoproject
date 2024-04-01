@@ -1300,6 +1300,7 @@ def invoice_createpage(request):
         bnk = Banking.objects.filter(company = cmp)
         priceList = PriceList.objects.filter(company = cmp, status = 'Active')
         itms = Items.objects.filter(company = cmp, activation_tag = 'active')
+        
         units = Unit.objects.filter(company=cmp)
         accounts=Chart_of_Accounts.objects.filter(company=cmp)
 
@@ -2451,26 +2452,6 @@ def show_unit_dropdown(request):
 
 
 
-def show_item_dropdown(request):
-    if 'login_id' in request.session:
-        log_id = request.session['login_id']
-        if 'login_id' not in request.session:
-            return redirect('/')
-        log_details= LoginDetails.objects.get(id=log_id)
-          
-        if log_details.user_type == 'Staff':
-                staff = StaffDetails.objects.get(login_details=log_details)
-                com = staff.company
-                    
-        elif log_details.user_type == 'Company':
-                com = CompanyDetails.objects.get(login_details=log_details) 
-
-        options = {}
-        option_objects = Items.objects.filter(user = request.user)
-        for option in option_objects:
-            options[option.id] = [option.Name,option.id]
-
-        return JsonResponse(options)
 def invoice_item(request):   
 
     if 'login_id' in request.session:
@@ -3303,8 +3284,10 @@ def getAllItemsinv(request):
         option_objects = Items.objects.filter(company = com, activation_tag='active')
         for option in option_objects:
             items[option.id] = [option.id,option.item_name]
+        print(items)
 
         return JsonResponse(items)
+    
     else:
         return redirect('/')
 

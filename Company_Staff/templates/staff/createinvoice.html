@@ -1402,10 +1402,7 @@
 
             </fieldset6>
 
-            <!---------------------Contact Person Section End -------------->
 
-
-            <!------------------ Remark Section Start------------- -->
 
             <fieldset7 class="remarks" style="display: none;">
                 <div class="row">
@@ -3168,10 +3165,10 @@
               </td>
           </tr>
             `);
-            reloadItems()
+            reloadItems();
             checkPriceList();
         });
-        reloadItems()
+        reloadItems();
     });
  
   
@@ -3930,14 +3927,14 @@ $('#mphone').on('input', function() {
             var dep = row.find('.department').val();
             var des = row.find('.designation').val();
             console.log(sal,fn,ln, eml,wrk, mob, sky, dep, des)
-            if(sal == "" && fn == "" && ln == "" && eml == "" && wrk == "" && mob == "" && sky == "" && dep == "" && des == ""){
-                console.log('No table data')
-            }else{
-                if(sal == "" || fn == "" || ln == "" || eml == "" || wrk == "" || mob == "" || sky == "" || dep == "" || des == ""){
-                    // alert('Fill All Fields of Contact persons table')
+            //if(sal == "" && fn == "" && ln == "" && eml == "" && wrk == "" && mob == "" && sky == "" && dep == "" && des == ""){
+             //   console.log('No table data')
+            //}else{
+             //   if(sal == "" || fn == "" || ln == "" || eml == "" || wrk == "" || mob == "" || sky == "" || dep == "" || des == ""){
+             //       // alert('Fill All Fields of Contact persons table')
                     // return
-                }
-            }
+             //   }
+            //}
             tSalutation.push(sal);
             tFirstName.push(fn);
             tLastName.push(ln);
@@ -4241,6 +4238,7 @@ $(document).on("click","#saveNewItem",function(){
                         $('#newItem .close_item_modal').click()
                     }
                     reloadItems();
+
                 }else{
                     alert(response.message)
                 }
@@ -4272,13 +4270,13 @@ function reloadItems() {
                 $.each(data, function(key, value) {
                     currentRow.find(".items-available").append(`
                         <li class="dropdown-item items-options text-white" onclick="getItemDetails($(this).parent().prev().attr('id'),'${value[1]}')">${value[1]}</li>`
+                        
                     );
                 });
 
                 console.log('Success');
             }
         });
-
 
         },
         error: function(xhr, status, error) {
