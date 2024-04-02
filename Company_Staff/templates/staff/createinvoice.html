@@ -3948,7 +3948,7 @@ $('#mphone').on('input', function() {
     })
   
 
-    if(fName != "" && lName != "" && placeSupply != "" && gstType != "" && panNo != "" && Email != "" && Mob != "" && street != "" && city != "" && state != "" && pin != "" && country != "" && tax_ref != undefined){
+    if(fName != "" && lName != "" && placeSupply != "" && gstType != "" && panNo != "" && Email != "" && Mob != "" ){
           $.ajax({
               type : 'POST',
               url:"{% url 'createInvoiceCustomer' %}",
