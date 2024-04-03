@@ -2843,47 +2843,47 @@
       });
       console.log('status',exists);
 
-      if(!exists){
-          if(plc != ""){
-              if($('#applyPriceList').prop('checked') && PLId ==""){
-                  alert('Select a Price List from the dropdown..!')
-              }else{
-                  var n = inpId.slice(4);
-                  $.ajax({
-                      url: "{% url 'getinvItemDetails' %}",
-                      type : 'GET',
-                      data:{
-                          item : value,
-                          listId : PLId,
-                          csrfmiddlewaretoken: '{{ csrf_token }}'
-                          },
-                      
-                      success: function(response) {
-                          if (response.status){
-                              $('#'+inpId).val(value);
-                              document.getElementById('itemId'+n).value = response.id;
-                              document.getElementById('hsn'+n).value = response.hsn;
-                              document.getElementById('qtyspan'+n).innerHTML = response.avl;
-                              document.getElementById('avl'+n).innerHTML = response.avl;
-                              document.getElementById('price'+n).value = response.sales_rate;
-                              document.getElementById('priceListPrice'+n).value = response.PLPrice;
-                              document.getElementById('taxGST'+n).value = response.gst;
-                              document.getElementById('taxIGST'+n).value = response.igst;
-                              refreshTax();
-                              calc();
-                          }
-                      },
-                  });
-              }
-              
-          }else{
-              alert('Select Place of Supply.!')
-          }
-      }else{
-          alert('Item already exists in the INVOICE, choose another or change quantity.!')
-      }
+        if(!exists){
+            if(plc != ""){
+                if($('#applyPriceList').prop('checked') && PLId ==""){
+                    alert('Select a Price List from the dropdown..!')
+                }else{
+                    var n = inpId.slice(4);
+                    $.ajax({
+                        url: "{% url 'getinvItemDetails' %}",
+                        type : 'GET',
+                        data:{
+                            item : value,
+                            listId : PLId,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                        
+                        success: function(response) {
+                            if (response.status){
+                                $('#'+inpId).val(value);
+                                document.getElementById('itemId'+n).value = response.id;
+                                document.getElementById('hsn'+n).value = response.hsn;
+                                document.getElementById('qtyspan'+n).innerHTML = response.avl;
+                                document.getElementById('avl'+n).innerHTML = response.avl;
+                                document.getElementById('price'+n).value = response.sales_rate;
+                                document.getElementById('priceListPrice'+n).value = response.PLPrice;
+                                document.getElementById('taxGST'+n).value = response.gst;
+                                document.getElementById('taxIGST'+n).value = response.igst;
+                                refreshTax();
+                                calc();
+                            }
+                        },
+                    });
+                }
+                
+            }else{
+                alert('Select Place of Supply.!')
+            }
+        }else{
+            alert('Item already exists in the INVOICE, choose another or change quantity.!')
+        }
 
-    }
+        }
 
     function changeItemQty(id){
         id_val = id.slice(3)
@@ -3114,8 +3114,8 @@
                           </div>
                       </div>
                       <a href="#">
-                          <button type="button" class="btn btn-outline-warning ms-1" data-bs-target="#newItem" data-bs-toggle="modal">+</button>
-                      </a>
+                        <button type="button" class="btn btn-outline-warning ms-1" data-target="#newItem" data-toggle="modal">+</button>
+                    </a>
                   </div>
               
               </td>

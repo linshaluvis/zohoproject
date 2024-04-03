@@ -1571,7 +1571,7 @@ def invoice_import(request):
                     sub_total=row[19],
                     CGST=row[20],
                     SGST=row[21],
-                    IGST=row[22],
+                    IGST=row[29],
 
                     
                     tax_amount=row[22],
@@ -1599,7 +1599,7 @@ def invoice_import(request):
         
             for row in sheet2.iter_rows(min_row=2, values_only=True):
                 try:
-                    item = Items.objects.get(item_name=row[1])
+                    item = Items.objects.get(item_name=row[1],company=company)
                 except ObjectDoesNotExist:
                     print(f"Item with name '{row[1]}' does not exist in the database.")
                     continue

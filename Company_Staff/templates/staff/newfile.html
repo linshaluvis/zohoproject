@@ -133,7 +133,7 @@
     }
 
     .th{
-        color: rgb(247, 227, 100);
+        color: rgb(12, 79, 234);
     }
 
     @media print{
@@ -294,8 +294,8 @@
         transform: rotate(-45deg); */
     }
     .ribbon .ribbon-open {
-        background-color: #eeae24;
-        border-color: #664f11;
+        background-color: #268ddd;
+        border-color: #1c72b4;
     }
     :root {
         --body-bg: rgb(204, 204, 204);
@@ -510,6 +510,338 @@
     .scrollable-container::-webkit-scrollbar {
         width: 0; /* Set width to 0 to hide the scrollbar */
     }
+    .hidden-option {
+        display: none;
+      }
+    
+      a {
+        list-style: none;
+        color: azure;
+      }
+    
+      a:hover {
+        color: rgb(218, 164, 48);
+        text-decoration: none;
+      }
+    
+      .tab {
+        overflow: hidden;
+        background-color: transparent;
+        width: 300px;
+      }
+    
+      .tab a {
+        font-family: inherit;
+        background-color: inherit;
+        float: left;
+        outline: none;
+        cursor: pointer;
+        padding: 10px 5px;
+        transition: 0.3s;
+        color: azure;
+        border: none;
+      }
+    
+      .tab a:hover {
+        background-color: #ddd;
+        color: rgb(56, 54, 54);
+      }
+    
+      .tab a.active {
+        background-color: #ccc;
+        color: rgb(56, 54, 54);
+      }
+    
+      .tabcontent {
+        display: none;
+        border-top: none;
+      }
+    
+      .page {
+        background: white;
+        display: block;
+        box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+      }
+    
+      .print-only {
+        /* display: none; */
+        height: auto;
+        width: auto;
+        overflow-y: auto;
+        border: none;
+        /* box-shadow: inset 2px 2px 5px 2px rgba(0, 0, 0, 0.3),
+              inset -2px -2px 5px 2px rgba(0, 0, 0, 0.3),
+              inset 2px -2px 5px 2px rgba(0, 0, 0, 0.3),
+              inset -2px 2px 5px 2px rgba(0, 0, 0, 0.3); */
+      }
+    
+      .card-custom {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+    
+      .card-text {
+        margin-bottom: 0.5rem;
+      }
+    
+      .info-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+    
+      .info-item {
+        display: flex;
+        align-items: center;
+      }
+    
+      .label {
+        margin: 0;
+        width: 130px; 
+      }
+    
+      .value {
+        margin: 0;
+        flex: 1;
+      }
+    
+      .info-container {
+        display: flex;
+        justify-content: space-between;
+      }
+    
+      .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+    
+     .info-item h6.label {
+        margin-left: 10px;
+        display: inline-block;
+      } 
+    
+      .info-item p.value {
+        margin-left: 10px;
+      }
+    
+      .bank-info {
+        margin-bottom: 10px;
+      }
+    
+      .bank-info span {
+        padding: 5px; 
+      }
+    
+      .modal{
+        z-index: 9999;
+        overflow: scroll;
+      }
+    
+      .btn-outline-warning:hover{
+        color: black;
+        font-weight:bolder;
+      }
+    
+    
+      #Overview tbody tr td{
+        border: none;
+      }
+    
+      .medium_btn{
+        font-size: 12px; 
+        padding: 10px 20px;
+        margin-left: 1px;
+      }
+    
+      #overview_btn{
+        background-color: #ffae1f; 
+        color: black; 
+        font-weight: bold;
+      }
+    
+      .modal .btn-outline-warning:hover{
+        color: black !important;
+      }
+    
+      .modal{
+        margin-top: 3.5%;
+      }
+      
+      .dropdown-item:hover{
+        cursor: pointer;
+      }
+    
+      .info-label {
+        flex: 0 0 50%;
+      }
+    
+      .info-value {
+        flex: 1;
+      }
+    
+      ::-webkit-scrollbar{
+        display: none;
+      }
+    
+      .page[size="A4"] {
+        overflow: hidden;
+      }
+      
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+    
+        header {
+          display: none;
+        }
+    
+        .print-only * {
+          visibility: visible;
+        }
+    
+        .print-only {
+          position: fixed;
+          left: 0;
+          top: 0;
+          right: 0;
+          height:auto;
+          page-break-before: always;
+          page-break-inside: avoid;
+        }
+      }
+    
+      .small_btn{
+        padding: 5px 9px;
+        height: 50%;
+        margin-top: 1%;
+      }
+    
+      .xsmall_btn{
+        padding: 6px;
+        margin-top: 1%;
+      }
+    
+      .comments-table-container {
+        max-height: 30vh;
+        overflow-y: scroll;
+      }
+    
+      .history-table-container {
+        max-height: 50vh;
+        overflow-y: scroll;
+      }
+    
+      .comments-table-container table, .history-table-container table {
+        width: 100%;
+        /* border-collapse: collapse; */
+      }
+    
+    .comments-table-container td, .history-table-container td {
+        /* border: 1px solid #ddd; */
+        padding: 8px;
+        color: white;
+        text-align: center;
+      }
+    
+      .comments-table-container th, .history-table-container th {
+        border-bottom: 1px solid #ddd;
+        padding: 8px;
+        color: white;
+        text-align: center;
+      }
+    
+      @media print {
+        body{
+            visibility: hidden !important;
+    
+            background-color: white;
+        }
+    
+        #slip{
+            margin-left: 2vh;
+            margin-right: 2vh;
+        }
+    
+        .printContainer {
+            visibility: visible !important;
+            position: absolute;
+            z-index: 99999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: large;
+        }
+    
+    }
+    
+      /* SLIP VIEW STYLINGS */
+      .slip h5{
+            font-family: serif;
+        }
+        p {
+            font-size: 1.2em;
+        }
+        .address{
+            display: flex;
+            flex-direction: column;
+        }
+        .address p,.slip-footer p{
+            font-size: 1rem;
+            margin: 0;
+        }
+        .slip-container{
+            width: 105mm;
+            margin: 2rem auto;
+            padding: 2rem;
+            border: 1px dotted black;
+            box-shadow: rgba(60, 64, 67, 0.5) 0px 1px 2px 0px, rgba(60, 64, 67, 0.35) 0px 2px 6px 2px;
+        }
+        .divider{
+            margin: 1rem 0;
+            border-bottom: 3px dotted black;
+        }
+        .trns-id p,.datetime p, .createdby p{
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .equal-length-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            margin-left: 2vh;
+            margin-right: 2vh;
+        }
+    
+        .equal-length-item {
+            flex: 1;
+            text-align: center;
+        }
+    
+        .fw-bold{
+          font-weight: 600 !important;
+        }
+        .extra-info p span {
+            font-weight: 400;
+        }
+    
+        /* Balance Info Section */
+        .balance-info .table td,
+        .balance-info .table th {
+            padding: 0;
+            border: 0;
+        }
+    
+        .balance-info tr td:first-child {
+            font-weight: 600;
+        }
+    
+        .whatsapp-this a {
+          color: black;
+          padding-left: 15px;
+        }
     </style>
     <body>
 
@@ -531,6 +863,7 @@
                                               
         
                                               
+        
 <div class="body-wrapper">
     <div class="container-fluid">
       <nav aria-label="breadcrumb">
@@ -709,7 +1042,7 @@
           <a class="btn btn-outline-warning small_btn mt-2 ms-1" title="EDIT" id="edit_btn" href="{% url 'editInvoice' invoice.id %}">
             <i class="fa fa-pencil"></i>
           </a>
-          <a class="btn btn-outline-warning small_btn mt-2 ms-1" href="{% url 'deleteInvoice' invoice.id %}" onclick="return confirm('Are you sure you want to delete this  Invoice - {{invoice.invoice_number}} ?')" title="DELETE" id="delete_btn">
+          <a class="btn btn-outline-warning small_btn mt-2 ms-1" href="{% url 'deleteInvoice' invoice.id %}" onclick="return confirm('Are you sure you want to delete this  Invoice - {{invoice.rec_invoice_no}} ?')" title="DELETE" id="delete_btn">
             <i class="fa fa-trash"></i>
           </a>
           <a class="btn btn-outline-warning small_btn mt-2 ms-1" style="display: none;" title="SHARE" id="shareBtn" data-bs-toggle="dropdown" aria-expanded="false">
@@ -745,79 +1078,128 @@
           <a class="btn btn-outline-warning small_btn mt-2 ms-1" title="Back" id="close_btn" onclick="window.location.href=`{% url 'invoice_list_out' %}`">
             <i class="fa fa-times-circle"></i>
           </a>
+         
+         
+      
+                  
+  
+                        {% comment %} <div class=" ml-2 dropdown p-0 nav-item"  style="margin-left: 4px;">
+                            <li  class="ml-2 dropdown-toggle btn btn-outline-warning text-grey fa-solid fa-file-pen" data-toggle="dropdown"></li>
+                            <ul class="dropdown-menu" style="background-color: black;" id="listdiv">
+                                <li style="text-align: center;color: #e19d16; cursor: pointer;" >
+                                   </li> 
+                                <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#attachmentModal">
+                                    <i class="fas fa-paperclip text-grey"></i> Upload Attachment
+                                </button>
+                                {% if invoice.document != "" %}
+                                <li style="text-align: center;color: #e19d16; cursor: pointer;" >
 
-  
-        </div>
-    </div><br>
-    </div><br>
-  
-    
-    <div  style="display: none;"></div>
-  
-    
-  <!-- Success message alert -->
-  <div id="successAlert"tabindex="-1" class=" text-success modal-dialog " role="alert" style="display: none;font: 1000px;">
-      <strong>Success!</strong> File uploaded successfully.Please reload the page to see changes.
-     
-  </div>
-  <script>
-      document.getElementById('attachmentForm').addEventListener('submit', function(event) {
-          event.preventDefault(); // Prevent the form from submitting normally
+                                <button type="button" class="btn btn-outline-warning">
+                                    <a href="{{invoice.document.url}}"  style="margin-left: 4px;cursor: pointer; text-decoration: none;color: #e19d16;" 
+                                        data-toggle="tooltip" title="Download Attached File">     <i class="fas fa-download text-grey "></i>Download Attachment
+
+                                        </a></button></li> 
+                                    {% endif %}
+                            </ul>
+                        </div> {% endcomment %}
+        
+          {% comment %} <a class=" ml-2 btn btn-outline-warning" href="" data-toggle="modal" data-target="#commentsModal1"  id="commentsBtn" style="margin-left: 4px;" data-toggle="tooltip" title="comment"> <i class="far fa-comment"></i> </a>
+
+          <a class=" ml-2 btn btn-outline-warning" href="{% url 'InvoiceHistory' invoice.id %}" data-toggle="modal" style="margin-left: 4px;" data-target="#commentModal2" id="historyBtn"data-toggle="tooltip" title="history"> <i class="fa-solid fa-clock-rotate-left"></i></a> {% endcomment %}
+
+          {% comment %} <a class="ml-2 btn btn-outline-secondary text-grey fa fa-table" role="button" id="exportBtn" style="display: none;" onclick="ExportToExcel('xlsx')">&nbsp;Export</a>
+
+          <a class="ml-2 btn btn-outline-warning fa fa-table" role="button" id="exportBtn" style="display: none;" onclick="ExportToExcel('xlsx')"></a> {% endcomment %}
+
+
+         
           
-          // Perform form submission via AJAX
-          var formData = new FormData(this);
-  
-          fetch(this.action, {
-              method: this.method,
-              body: formData
-          })
-          .then(response => {
-              if (response.ok) {
-                  // Show success message
-                  document.getElementById('successAlert').style.display = 'block';
-                  // Show reload message
-                  // Reset form
-                  this.reset();
-                  // Close modal
-                  var modal = document.getElementById('attachmentModal');
-                  var modalBackdrop = document.querySelector('.modal-backdrop');
-                  modal.classList.remove('show');
-                  modalBackdrop.parentNode.removeChild(modalBackdrop);
-                  // Return to previous window
-              } else {
-                  // Handle error response
-                  // You can show an error message here if needed
-              }
-          })
-          .catch(error => {
-              // Handle network errors
-              console.error('Error:', error);
-          });
-      });
-  </script>
-  
-  
-  
-    
-    <script>
-      function convertToPDF(sectionId) {
-          const element = document.getElementById(sectionId);
-  
-          html2pdf().from(element).save('invoice.pdf');
-      }
-  
-      function toggleTemplate(templateId, buttonId) {
-          $('.printTemplates').css('display', 'none');
-          $('#' + templateId).css('display', 'block');
-          $('.templateToggleButtons').removeClass('active');
-          $('#' + buttonId).addClass('active');
-          $("#templatePrintButton").attr("onclick", "convertToPDF('" + templateId + "')");
-          document.getElementById('page-content').scrollIntoView();
-      }
-  </script>
+          {% comment %} <div class=" ml-2 dropdown p-0 nav-item"  id="shareBtn" style="display: none;margin-left: 4px;">
+              <li  class="ml-2 dropdown-toggle btn btn-outline-warning text-grey fa fa-share-alt" data-toggle="dropdown"></li>
+              <ul class="dropdown-menu" style="background-color: black;" id="listdiv">
+                  <li style="text-align: center; cursor: pointer; text-decoration: none;color: #e19d16;" >{% post_to_whatsapp object_or_url "WhatsApp" %}</li>
+                  <li style="text-align: center;color: #e19d16; cursor: pointer;" data-toggle="modal" data-target="#shareToEmail">Email</li>
+              </ul>
+          </div> {% endcomment %}
+          {% comment %} <a class="ml-2 btn btn-outline-warning text-grey fa fa-print" role="button" id="printBtn" style="display: none;margin-left: 4px; " onclick="printSection('whatToPrint')"></a>
+          <a class="ml-2 btn btn-outline-warning text-grey fa fa-file" role="button" id="pdfBtn" style="display: none;margin-left: 4px; " onclick="convertToPDF('whatToPrint')"></a>
+ {% endcomment %}
 
+          {% comment %} <a href="{% url 'deleteInvoice' invoice.id %}"  style="margin-left: 4px;" title="Delete" class="ml-2 btn btn-outline-warning text-grey fa fa-trash" id="deleteBtn" role="button" onclick="return confirm('Are you ok sure you want to delete Invoice - {{invoice.invoice_number}}.?')"></a> {% endcomment %}
+        
+          {% comment %} <span class="d-flex justify-content-end p-2" style="cursor: pointer;" title="back" onclick="window.location.href=`{% url 'invoice_list_out' %}`"><i class="fa fa-times-circle ml-2 btn btn-outline-warning text-grey" style="font-size: 1.2rem;"></i></span> {% endcomment %}
+
+      
+      </div>
+  </div><br>
+  </div><br>
 
   
+  <div  style="display: none;"></div>
+
+  
+<!-- Success message alert -->
+<div id="successAlert"tabindex="-1" class=" text-success modal-dialog " role="alert" style="display: none;font: 1000px;">
+    <strong>Success!</strong> File uploaded successfully.Please reload the page to see changes.
+   
+</div>
+<script>
+    document.getElementById('attachmentForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+        
+        // Perform form submission via AJAX
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: this.method,
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Show success message
+                document.getElementById('successAlert').style.display = 'block';
+                // Show reload message
+                // Reset form
+                this.reset();
+                // Close modal
+                var modal = document.getElementById('attachmentModal');
+                var modalBackdrop = document.querySelector('.modal-backdrop');
+                modal.classList.remove('show');
+                modalBackdrop.parentNode.removeChild(modalBackdrop);
+                // Return to previous window
+            } else {
+                // Handle error response
+                // You can show an error message here if needed
+            }
+        })
+        .catch(error => {
+            // Handle network errors
+            console.error('Error:', error);
+        });
+    });
+</script>
+
+
+
+  
+  <script>
+    function convertToPDF(sectionId) {
+        const element = document.getElementById(sectionId);
+
+        html2pdf().from(element).save('invoice.pdf');
+    }
+
+    function toggleTemplate(templateId, buttonId) {
+        $('.printTemplates').css('display', 'none');
+        $('#' + templateId).css('display', 'block');
+        $('.templateToggleButtons').removeClass('active');
+        $('#' + buttonId).addClass('active');
+        $("#templatePrintButton").attr("onclick", "convertToPDF('" + templateId + "')");
+        document.getElementById('page-content').scrollIntoView();
+    }
+</script>
+
+
 <div class="row" id="div-to-pdf"
 style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right: 1rem; width: 100%;  ">
 <div id="overview" class="row g-0 mx-0">
@@ -986,15 +1368,12 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
                 <hr class="mx-2">
               </div>
               {% endfor %}
-                                </div>
-                            </div>
-                                    
-                                </div>
-                                
-        
-                            </div>
-                        </div>
-                    </div>
+            </div>
+
+          </div>
+        </div>
+</div>
+
 
             <div id="template" style="display: none;" >
                 <div  id="whatToPrint" class="print-only">
@@ -1013,7 +1392,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
                                         <div class="graphic-path">
                                             <p>Invoice</p>
                                         </div>
-                                        <div class="position-relative ">
+                                        <div class="position-relative">
                                             <p> Invoice No. <span>{{ invoice.invoice_number }}</span></p>
                                             {%if invoice.order_number %}
                                             <p>Order No. <span>{{ invoice.order_number }}</span></p>
@@ -1164,7 +1543,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
                             <div id="printdiv2">
                                 <div class="row px-5 py-4 bg-warning"  >
                                     <div id="ember2512" class="col-md-4 d-flex justify-content-start tooltip-container ember-view ribbon text-ellipsis">
-                                      <div class="text-white d-flex align-items-center px-5" style="border-radius: 1vh; background-color:#e9d679">{{invoice.status}}<!----></div>
+                                      <div class="text-white d-flex align-items-center px-5" style="border-radius: 1vh; background-color:#999999">{{invoice.status}}<!----></div>
                                   </div>
                                   <div class="col-md-4 d-flex justify-content-center">
                                       <center class="h3 text-white"><b>Invoice</b></center>
@@ -1901,6 +2280,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
         document.getElementById('page-content').scrollIntoView();
     }
 </script>
+
   
 <!-- Share To Email Modal -->
 <div class="modal fade" id="shareToEmail">
@@ -1934,8 +2314,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
                     <div class="col-md-4"></div>
                     <div class="col-md-4">
                       <div class="d-flex">
-                        <button class="btn save_btn btn-outline-warning mt-2 my-4 mx-2 w-50 text-white" type="submit">Send</button> 
-                        <input class="btn save_btn btn-outline-warning mt-2 my-4 mx-2 w-50 text-white" type="reset" value="Reset">
+                        <button type="submit" id="share_with_email" class="submitShareEmailBtn btn btn-outline-warning w-50 text-uppercase">SEND </button>
                       </div>
                     </div>
                     <div class="col-md-4"></div>
@@ -1990,8 +2369,8 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
         $('#editBtn').hide();
         $('#convertBtn').hide();
         $('#deleteBtn').hide();
-        $('#historyBtn').hide();
-        $('#commentsBtn').hide();
+        $('#historyBtn').show();
+        $('#commentsBtn').show();
     }
 
     function slip() {
@@ -2011,8 +2390,8 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
         $('#deleteBtn').hide();
         $('#editBtn').hide();
         $('#convertBtn').hide();
-        $('#historyBtn').hide();
-        $('#commentsBtn').hide();
+        $('#historyBtn').show();
+        $('#commentsBtn').show();
     }
 
     // function printSection(sectionId) {
@@ -2463,137 +2842,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
   
   
  
-  
-  
-  
-  <script>
-    function sortTable(columnIndex) {
-        alert("invoiceTable")
-       const table = document.getElementById("invoiceTable");
-       const tbody = table.getElementsByTagName('tbody')[0];
-       const rows = Array.from(tbody.rows);
-   
-       rows.sort((row1, row2) => {
-           const cellValue1 = row1.cells[columnIndex].textContent.toLowerCase();
-           const cellValue2 = row2.cells[columnIndex].textContent.toLowerCase();
-   
-           if (cellValue1 < cellValue2) {
-               return -1;
-           } else if (cellValue1 > cellValue2) {
-               return 1;
-           } else {
-               return 0;
-           }
-       });
-   
-       while (tbody.firstChild) {
-           tbody.removeChild(tbody.firstChild);
-       }
-   
-       rows.forEach(row => tbody.appendChild(row));
-   }
-   
-   
-   </script>
-  
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
-  <script>
-    $(document).ready(function() {
-      $('#searchInput').on('keyup', function() {
-        var searchText = $(this).val().toLowerCase();
-        $('#table2 tbody tr').each(function() {
-          var itemData = $(this).text().toLowerCase();
-          if (itemData.indexOf(searchText) === -1) {
-            $(this).hide();
-          } else {
-            $(this).show();
-          }
-        });
-      });
-    });
-  </script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
-  <script>
-    $(document).ready(function() {
-      $('#searchInput2').on('keyup', function() {
-        var searchText = $(this).val().toLowerCase();
-        $('#table1 tbody tr').each(function() {
-          var itemData = $(this).text().toLowerCase();
-          if (itemData.indexOf(searchText) === -1) {
-            $(this).hide();
-          } else {
-            $(this).show();
-          }
-        });
-      });
-    });
-  </script>
-  
-  
-  <script>
-    function cleardropdown(index) {
-      document.getElementById('filterInput' + index).value = '';
-    }
-  
-    function toggleDropdown(index) {
-      var dropdownContent = document.getElementById('dropdownContent' + index);
-      var isVisible = dropdownContent.style.display === 'block';
-      var allDropdowns = document.querySelectorAll('.dropdown-content');
-      allDropdowns.forEach(function (dropdown) {
-        dropdown.style.display = 'none';
-      });
-      dropdownContent.style.display = isVisible ? 'none' : 'block';
-    }
-  
-    function filterTable(index) {
-      var input;
-      document.getElementById('dropdownContent' + index).style.display = 'none';
-  
-      if (index === 3) {
-        input = document.getElementById('filterInput' + index).valueAsDate;
-      } else {
-        input = document.getElementById('filterInput' + index).value.toUpperCase();
-      }
-  
-      var table = document.getElementById('table1');
-      var rows = table.getElementsByTagName('tr');
-      var emptyMessage = document.getElementById('emptyMessage');
-      var isEmpty = true;
-  
-      for (var i = 1; i < rows.length; i++) {
-        var cells = rows[i].getElementsByTagName('td');
-        var cell = cells[index];
-  
-        if (cell) {
-          var textValue = cell.textContent || cell.innerText;
-  
-          if (index === 3) {
-            var dateVal = new Date(textValue);
-            var inputDate = new Date(input);
-  
-            if (dateVal.toISOString().split('T')[0] === inputDate.toISOString().split('T')[0]) {
-              rows[i].style.display = 'table-row';
-              isEmpty = false;
-            } else {
-              rows[i].style.display = 'none';
-            }
-          } else {
-            if (textValue.toUpperCase().includes(input)) {
-              rows[i].style.display = 'table-row';
-              isEmpty = false;
-            } else {
-              rows[i].style.display = 'none';
-            }
-          }
-        }
-      }
-  
-      emptyMessage.style.display = isEmpty ? 'block' : 'none';
-      // You can add any additional logic or calculations here
-    }
-  </script>
+ 
   <div class="modal fade" id="commentModal2" >
     <div class="modal-dialog modal-xl" >
       <div class="modal-content" style="background: #1f1f1ffd;border-radius: 20px;">
@@ -2633,70 +2882,8 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
       
   </div>
   </div></div>
-<!--  
-  <div class="modal fade " id="commentModal2"
-  style="width: 750px; margin-left: 350px; justify-content: center; overflow: hidden;">
-  <div class="modal-dialog modal-xl m-5 p-5">
-      <div class="modal-content" style="background: rgb(32, 35, 37);border-radius: 20px;">
-          <div class="modal-header " style="background: rgb(32, 35, 37);">
-            <center><h3 class="mt-3 text-white text-uppercase"># {{ invoice.invoice_number }} -  HISTORY</h3></center>
-            <button type="button" class="close text-dark bg-none" data-dismiss="modal"
-                  aria-label="Close">&times;</button>
- 
-          </div>
-          <div class="modal-body" style="background: rgb(32, 35, 37); justify-content: center; overflow: hidden;">
-              <div class="card p-0 m-0">
-  
- 
-                    <div id="history">
-                        <center><h3 class="mt-3 text-white text-uppercase"># {{ invoice.invoice_number }} -  HISTORY</h3></center>
-                        <div class="table-responsive px-2">
-                            <table class="table text-light table-borderless " style="margin:3px; background-color: #000000;width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">SL NO.</th>
-                                        <th class="text-center">DATE</th>
-                                        <th class="text-center">ACTION</th>
-                                        <th class="text-center">DONE BY</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for h in historys %}
-                                    <tr>
-                                        <td style="text-align: center;">{{forloop.counter}}</td>
-                                        <td style="text-align: center;">{{h.date}}</td>
-                                        {% if h.action == 'Created' %}<td class="text-success text-center">{{h.action}}</td>{% else %}<td class="text-warning text-center">{{h.action}}</td>{% endif %}
-                                        <td style="text-align: center;">{{h.login_details.first_name}} {{h.login_details.last_name}}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-       
-      </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Close</button>
-         
-  
-        </div>
-      </div>
-    </div>
-    
-  </div>
-  </div> -->
+
   <script>
-    var $rows = $('#invoiceTable tbody tr');
-    $('#search').keyup(function() {
-      var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
-      
-      $rows.show().filter(function() {
-        var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
-        return !~text.indexOf(val);
-      }).hide();
-    });
     
   
     
@@ -2707,69 +2894,7 @@ style="background-color: #c4c1c1fd;  height: auto; margin-left:1px; margin-right
       });
     });
   
-    function sortTable(columnIndex) {
-
-      var table, rows, switching, i, x, y, shouldSwitch;
-      table = document.getElementById("table2");
-      switching = true;
-  
-      while (switching) {
-        switching = false;
-        rows = table.rows;
-  
-        for (i = 1; i < (rows.length - 1); i++) {
-          shouldSwitch = false;
-          x = rows[i].getElementsByTagName("td")[columnIndex].textContent.toLowerCase();
-          y = rows[i + 1].getElementsByTagName("td")[columnIndex].textContent.toLowerCase();
-  
-          if (x > y) {
-              shouldSwitch = true;
-              break;
-          }
-        }
-  
-        if (shouldSwitch) {
-          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-          switching = true;
-        }
-      }
-    }
-  
-    function filterTable(row,filterValue) {
-      var table = document.getElementById("invoiceTable");
-      var rows = table.getElementsByTagName("tr");
-  
-      for (var i = 1; i < rows.length; i++) {
-        var statusCell = rows[i].getElementsByTagName("td")[row];
-  
-        if (filterValue == "all" || statusCell.textContent.toLowerCase() == filterValue) {
-          rows[i].style.display = "";
-        } else {
-          rows[i].style.display = "none";
-        }
-      }
-    }
-  
-    function sortBalAsc() {
-      var table = document.getElementById("invoiceTable");
-      var rows = Array.from(table.rows).slice(1);
-  
-      rows.sort(function (a, b) {
-        var balA = parseFloat(a.cells[7].textContent);
-        var balB = parseFloat(b.cells[7].textContent);
-        return balA - balB;
-      });
-  
-      // Remove existing rows from the table
-      for (var i = table.rows.length - 1; i > 0; i--) {
-          table.deleteRow(i);
-      }
-  
-      // Append the sorted rows back to the table
-      rows.forEach(function (row) {
-          table.tBodies[0].appendChild(row);
-      });
-    }
+   
   </script>
   
 <!-- Add Document  -->
