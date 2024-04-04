@@ -1144,6 +1144,7 @@ def shareInvoiceToEmail(request,id):
     try:
         if request.method == 'POST':
             emails_string = request.POST['email_ids']
+            print(emails_string)
 
             emails_list = [email.strip() for email in emails_string.split(',')]
             email_message = request.POST['email_message']
